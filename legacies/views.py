@@ -29,7 +29,8 @@ def home(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "home.html", {
+    return render(request, "index.html", {
+
         "legacies": page_obj.object_list,
         "page_obj": page_obj,
         "q": q,
