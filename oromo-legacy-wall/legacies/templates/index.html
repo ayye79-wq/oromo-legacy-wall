@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header_brand %}{% endblock %}
+
+{# Turn ON the forest shell ONLY for home #}
+{% block page_shell_open %}
+<div class="page-bg" style="--bg:url('{% static 'legacies/img/bosonafinal.jpg' %}');">
+{% endblock %}
+
+{% block page_shell_overlay %}
+  <div class="page-bg__overlay"></div>
+{% endblock %}
+
+{% block page_top %}
+<section class="hero">
+  <div class="hero-inner wrap">
+    <h1>Oromo Legacy Wall</h1>
+
+    <p class="hero-lead">A living memorial for lives that shaped us.</p>
+
+    <p class="hero-sub">
+      Here, we preserve names, stories, and memories—so they are never lost to silence.
+    </p>
+
+    <p class="hero-sub hero-sub-note">
+      Every story is reviewed by community guardians before it becomes part of this wall.
+    </p>
+
+    <div class="hero-actions">
+      <a href="{% url 'submit' %}" class="btn primary">Share a Legacy</a>
+      <span class="hero-note">Your story will be treated with care and dignity.</span>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+
+<form class="search" method="get" action="">
+  <input class="search-input" type="text" name="q"
+    placeholder="Search names, places, or keywords…"
+    value="{{ q|default:'' }}" autocomplete="off" />
+
+  <div class="sort">
+    <label class="sort-label" for="sort">View:</label>
+    <select id="sort" name="sort" class="sort-select" onchange="this.form.submit()">
+      <option value="recent" {% if sort == "recent" %}selected{% endif %}>Most recent</option>
+      <option value="az" {% if sort == "az" %}selected{% endif %}>A–Z</option>
+      <option value="za" {% if sort == "za" %}selected{% endif %}>Z–A</option>
+      <option value="year" {% if sort == "year" %}selected{% endif %}>By year</option>
+    </select>
+  </div>
+
+  <button class="search-btn" type="submit">Search</button>
+
+  {% if q %}
+    <a class="search-clear" href="{% url 'home' %}?sort={{ sort|urlencode }}">Clear</a>
+  {% endif %}
+</form>
+
+<div class="grid">
+  {% for l in legacies %}
+    <a class="card" href="{% url 'legacy_detail' l.slug %}">
+      <div class="muted small">In loving memory of</div>
+      <div class="name">{{ l.full_name }}</div>
+
+      {% if l.story %}
+        <div class="story-preview">{{ l.story|truncatechars:140 }}</div>
+      {% endif %}
+
+      {% if l.approved_at %}
+        <div class="verified">✓ Verified by local moderator</div>
+      {% endif %}
+    </a>
+  {% empty %}
+    <div class="card">No approved stories yet.</div>
+  {% endfor %}
+</div>
+
+{% if page_obj and page_obj.has_other_pages %}
+  <div class="pager">
+    {% if page_obj.has_previous %}
+      <a class="pager-btn" href="?q={{ q|urlencode }}&sort={{ sort|urlencode }}&page={{ page_obj.previous_page_number }}">← Previous</a>
+    {% else %}
+      <span class="pager-btn disabled">← Previous</span>
+    {% endif %}
+
+    <span class="pager-info">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+      <a class="pager-btn" href="?q={{ q|urlencode }}&sort={{ sort|urlencode }}&page={{ page_obj.next_page_number }}">Next →</a>
+    {% else %}
+      <span class="pager-btn disabled">Next →</span>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% if legacies %}
+  <ul>
+    {% for l in legacies %}
+      <li>
+        <strong>{{ l.full_name }}</strong> — {{ l.zone.name }} — {{ l.created_at }}
+        <a href="{% url 'mod_review' l.pk %}">Review</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No pending submissions 🎉</p>
+{% endif %}
