@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-(z)8@$mxrc-02ypc_c+q@l4_e6ya$z39%+$x!h5ifmypy^-z@1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "oromo-legacy-wall.onrender.com",
+    "oromolegacywall.com",
+    "www.oromolegacywall.com",
+]
+
 
 
 # Application definition
