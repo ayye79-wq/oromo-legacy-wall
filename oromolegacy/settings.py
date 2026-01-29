@@ -114,10 +114,15 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+
+# Where Django will collect static files for production
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Where your source static files live during development
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
 LOGIN_URL = "/admin/login/"
