@@ -1,0 +1,15 @@
+<h2>Review: {{ legacy.full_name }}</h2>
+<p><strong>Zone:</strong> {{ legacy.zone.name }}</p>
+<p>{{ legacy.story|linebreaks }}</p>
+
+{% if legacy.photo %}
+  <img src="{{ legacy.photo.url }}" style="max-width: 420px; border-radius: 12px;" />
+{% endif %}
+
+<hr />
+
+<a href="{% url 'mod_approve' legacy.pk %}">✅ Approve</a>
+&nbsp; | &nbsp;
+<a href="{% url 'mod_reject' legacy.pk %}">❌ Reject</a>
+&nbsp; | &nbsp;
+<a href="{% url 'mod_queue' %}">Back</a>

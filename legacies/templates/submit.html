@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{# Use a translucent surface on this page #}
+{% block main_class %}content-surface glass{% endblock %}
+
+{# Logo only in the header #}
+{% block header_brand %}
+<a href="{% url 'home' %}" class="brand-link" title="Back to Home">
+  <img
+    src="{% static 'legacies/img/oromo-legacy-wall-logo.png' %}"
+    alt="Oromo Legacy Wall"
+    class="brand-logo"
+  >
+</a>
+{% endblock %}
+
+{% block content %}
+  <h1 class="h1">Submit a legacy</h1>
+  <p class="muted">Your submission will be reviewed before it appears publicly.</p>
+
+  <form method="post" enctype="multipart/form-data" class="form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Submit for review</button>
+  </form>
+{% endblock %}
