@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{# Disable the home-page surface style for this page #}
+{% block main_class %}{% endblock %}
+
+{# Optional: hide the brand in the header on this page #}
+{% block header_brand %}{% endblock %}
+
+{% block content %}
+  <div class="legacy-wrap">
+    <article class="legacy-card">
+      <div class="legacy-inscription">In memory of</div>
+      <h1 class="legacy-name">{{ legacy.full_name }}</h1>
+
+      <div class="legacy-meta">
+        {% if legacy.birth_date or legacy.death_date %}
+          <span>
+            {{ legacy.birth_date|default:"" }}
+            {% if legacy.birth_date or legacy.death_date %} — {% endif %}
+            {{ legacy.death_date|default:"" }}
+          </span>
+        {% endif %}
+
+        {% if legacy.location %}
+          <span class="dot">•</span>
+          <span>{{ legacy.location }}</span>
+        {% endif %}
+      </div>
+
+      {% if legacy.photo %}
+        <div class="legacy-photo">
+          <img src="{{ legacy.photo.url }}" alt="{{ legacy.full_name }}">
+        </div>
+      {% endif %}
+
+      <div class="legacy-divider"></div>
+
+      <div class="legacy-story">
+        {% if legacy.story %}
+          {{ legacy.story|linebreaks }}
+        {% elif legacy.biography %}
+          {{ legacy.biography|linebreaks }}
+        {% else %}
+          <p class="muted">Story text was not provided.</p>
+        {% endif %}
+      </div>
+
+      <div class="legacy-back">
+        <a href="{% url 'home' %}">← Back to the Wall</a>
+      </div>
+    </article>
+
+    <p class="legacy-footer">
+      A dignified digital monument — stories preserved with care.
+    </p>
+  </div>
+{% endblock %}
