@@ -15,13 +15,13 @@
 .legacy-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lg), var(--glow);
-  border-color: rgba(201, 146, 58, 0.2);
+  border-color: rgba(212, 168, 67, 0.25);
 }
 
 .card-top-border {
   height: 2px;
   background: linear-gradient(to right, transparent, var(--accent), transparent);
-  opacity: 0.6;
+  opacity: 0.65;
   transition: opacity 0.3s;
 }
 .legacy-card:hover .card-top-border {
@@ -33,7 +33,7 @@
   width: 100%;
   aspect-ratio: 3/2;
   overflow: hidden;
-  background: #0a0703;
+  background: #090c16;
 }
 
 .card-photo {
@@ -42,7 +42,7 @@
   object-fit: cover;
   object-position: center top;
   transition: transform 0.4s ease, filter 0.3s ease;
-  filter: sepia(15%) brightness(0.95);
+  filter: sepia(10%) brightness(0.95);
 }
 
 .legacy-card:hover .card-photo {
@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #1f1408 0%, #120d05 100%);
+  background: linear-gradient(160deg, #1c2240 0%, #0f1220 100%);
   position: relative;
 }
 
@@ -64,7 +64,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(201,146,58,0.08) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(212,168,67,0.07) 0%, transparent 70%);
 }
 
 .card-initial {
@@ -72,7 +72,7 @@
   font-size: 3.5rem;
   font-weight: 400;
   color: var(--accent);
-  opacity: 0.6;
+  opacity: 0.55;
   line-height: 1;
   position: relative;
   z-index: 1;
@@ -91,7 +91,7 @@
 
 .card-name {
   font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 400;
   color: var(--text-primary);
   line-height: 1.25;
@@ -104,7 +104,7 @@
 }
 
 .card-story {
-  font-size: 0.92rem;
+  font-size: 1rem;
   color: var(--text-secondary);
   line-height: 1.7;
   display: -webkit-box;
@@ -117,7 +117,7 @@
 
 .card-date {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.73rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   letter-spacing: 0.04em;
   margin-top: auto;
@@ -128,12 +128,12 @@
 .card-footer {
   padding: 0.85rem 1.4rem;
   border-top: 1px solid var(--border);
-  background: rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.12);
 }
 
 .card-read-more {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   color: var(--accent);

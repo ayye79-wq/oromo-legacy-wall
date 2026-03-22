@@ -13,7 +13,7 @@
   gap: 0.75rem;
   margin-bottom: 1.75rem;
   color: var(--accent);
-  opacity: 0.3;
+  opacity: 0.35;
 }
 .footer-orn-line {
   width: 60px;
@@ -41,23 +41,23 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   color: var(--text-primary);
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .footer-tagline {
   font-family: 'EB Garamond', Georgia, serif;
   font-style: italic;
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  max-width: 420px;
-  line-height: 1.65;
-  opacity: 0.8;
+  font-size: 1rem;
+  max-width: 440px;
+  line-height: 1.7;
+  opacity: 0.85;
 }
 
 .footer-mission {
   font-family: 'Segoe UI', system-ui, sans-serif;
   color: var(--text-muted);
-  font-size: 0.78rem;
-  max-width: 420px;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  max-width: 440px;
+  line-height: 1.65;
 }

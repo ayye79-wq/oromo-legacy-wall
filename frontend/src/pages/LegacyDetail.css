@@ -21,7 +21,7 @@
   inset: 0;
   background-size: cover;
   background-position: center top;
-  filter: blur(28px) brightness(0.15) saturate(0.3) sepia(0.3);
+  filter: blur(28px) brightness(0.12) saturate(0.3) sepia(0.1);
   transform: scale(1.15);
 }
 
@@ -30,8 +30,8 @@
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(14, 10, 6, 0.5) 0%,
-    rgba(14, 10, 6, 0.92) 100%
+    rgba(12, 15, 24, 0.5) 0%,
+    rgba(12, 15, 24, 0.92) 100%
   );
 }
 
@@ -45,7 +45,7 @@
   margin-bottom: 2.5rem;
   color: var(--text-muted) !important;
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -61,7 +61,7 @@
   border-radius: 2px;
   overflow: hidden;
   margin-bottom: 1.75rem;
-  border: 1px solid rgba(201, 146, 58, 0.3);
+  border: 1px solid rgba(212, 168, 67, 0.35);
   box-shadow: 0 8px 40px rgba(0,0,0,0.7);
 }
 
@@ -70,7 +70,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  filter: sepia(15%) brightness(0.95);
+  filter: sepia(10%) brightness(0.95);
 }
 
 .detail-portrait-placeholder {
@@ -79,12 +79,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #1f1408 0%, #120d05 100%);
+  background: linear-gradient(160deg, #1c2240 0%, #0f1220 100%);
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 4rem;
   font-weight: 400;
   color: var(--accent);
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 .detail-meta {
@@ -105,7 +105,7 @@
 
 .detail-date {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   color: var(--text-muted);
   letter-spacing: 0.04em;
   font-style: italic;
@@ -134,17 +134,17 @@
 .story-orn-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(201,146,58,0.3), transparent);
+  background: linear-gradient(to right, transparent, rgba(212,168,67,0.35), transparent);
 }
 
 .story-orn-label {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--accent);
-  opacity: 0.6;
+  opacity: 0.75;
   white-space: nowrap;
 }
 
@@ -159,7 +159,7 @@
   font-family: 'EB Garamond', Georgia, serif;
   color: var(--text-body);
   line-height: 1.95;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .story-close {
@@ -172,14 +172,14 @@
 .sidebar-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-top: 2px solid rgba(201, 146, 58, 0.25);
+  border-top: 2px solid rgba(212, 168, 67, 0.3);
   padding: 1.5rem;
   margin-bottom: 1rem;
 }
 
 .sidebar-title {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -197,7 +197,7 @@
 
 .sidebar-dl dt {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -207,7 +207,7 @@
 
 .sidebar-dl dd {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--text-secondary);
 }
 
@@ -220,7 +220,7 @@
 .sidebar-btn {
   width: 100%;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 800px) {

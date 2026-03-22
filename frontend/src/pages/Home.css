@@ -7,7 +7,7 @@
   position: relative;
   overflow: hidden;
   padding: 5.5rem 0 5rem;
-  background: radial-gradient(ellipse 70% 60% at 50% 0%, #1f1206 0%, #0e0a06 60%);
+  background: radial-gradient(ellipse 70% 60% at 50% 0%, #18203a 0%, #0c0f18 60%);
   border-bottom: 1px solid var(--border);
   text-align: center;
 }
@@ -15,7 +15,7 @@
 .hero-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 55% 45% at 50% -10%, rgba(201,146,58,0.12) 0%, transparent 65%);
+  background: radial-gradient(ellipse 55% 45% at 50% -10%, rgba(212,168,67,0.13) 0%, transparent 65%);
   pointer-events: none;
 }
 
@@ -34,25 +34,24 @@
   width: 42px;
   height: 64px;
   margin-bottom: 1.5rem;
-  filter: drop-shadow(0 0 16px rgba(221, 176, 106, 0.5));
+  filter: drop-shadow(0 0 16px rgba(228, 186, 90, 0.55));
   animation: flicker 4s ease-in-out infinite;
 }
 
 @keyframes flicker {
-  0%, 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 16px rgba(221,176,106,0.5)); }
-  25% { transform: scale(0.97) translateY(-1px); filter: drop-shadow(0 0 20px rgba(221,176,106,0.65)); }
-  50% { transform: scale(1.02) translateY(0); filter: drop-shadow(0 0 14px rgba(221,176,106,0.45)); }
-  75% { transform: scale(0.98) translateY(-1px); filter: drop-shadow(0 0 18px rgba(221,176,106,0.55)); }
+  0%, 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 16px rgba(228,186,90,0.55)); }
+  25% { transform: scale(0.97) translateY(-1px); filter: drop-shadow(0 0 22px rgba(228,186,90,0.7)); }
+  50% { transform: scale(1.02) translateY(0); filter: drop-shadow(0 0 14px rgba(228,186,90,0.45)); }
+  75% { transform: scale(0.98) translateY(-1px); filter: drop-shadow(0 0 18px rgba(228,186,90,0.6)); }
 }
 
 .hero-kicker {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--accent);
-  opacity: 0.75;
   margin-bottom: 1rem;
 }
 
@@ -76,19 +75,19 @@
 .ornament-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(201,146,58,0.4), transparent);
+  background: linear-gradient(to right, transparent, rgba(212,168,67,0.45), transparent);
 }
 .ornament-star {
   color: var(--accent);
   font-size: 0.7rem;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 .hero-sub {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--text-secondary);
   max-width: 560px;
-  line-height: 1.9;
+  line-height: 1.85;
   margin-bottom: 2.5rem;
   font-style: italic;
 }
@@ -121,7 +120,7 @@
 
 .wall-subtitle {
   color: var(--text-muted);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-style: italic;
   margin-bottom: 1.25rem;
 }
@@ -132,7 +131,7 @@
   justify-content: center;
   gap: 0.6rem;
   color: var(--accent);
-  opacity: 0.5;
+  opacity: 0.55;
 }
 .ornament-line-short {
   width: 48px;
@@ -177,7 +176,7 @@
 }
 
 .search-result-info {
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   color: var(--text-muted);
   margin-bottom: 2rem;
   font-style: italic;
@@ -201,7 +200,7 @@
 }
 
 .page-info {
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
   font-style: italic;
 }
@@ -228,7 +227,7 @@
 
 .about-title {
   font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   font-weight: 400;
   color: var(--text-primary);
   margin-bottom: 1.5rem;
@@ -239,7 +238,7 @@
   color: var(--text-secondary);
   line-height: 1.9;
   margin-bottom: 1.25rem;
-  font-size: 1rem;
+  font-size: 1.05rem;
 }
 .about-text p:last-child { margin-bottom: 0; }
 
@@ -264,7 +263,7 @@
 
 .pillar h3 {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.4rem;
@@ -272,9 +271,9 @@
 }
 
 .pillar p {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 @media (max-width: 900px) {
