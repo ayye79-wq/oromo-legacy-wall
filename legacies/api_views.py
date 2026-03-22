@@ -22,7 +22,12 @@ class LegacyListView(generics.ListAPIView):
     serializer_class = LegacyListSerializer
 
     def get_queryset(self):
-        qs = Legacy.objects.filter(status=Legacy.STATUS_APPROVED).order_by("-approved_at", "-created_at")
+        qs = (
+            Legacy.objects
+            .filter(status=Legacy.STATUS_APPROVED)
+            .select_related("zone")
+            .order_by("-approved_at", "-created_at")
+        )
         q = self.request.query_params.get("q", "").strip()
         zone = self.request.query_params.get("zone", "").strip()
         if q:
@@ -40,7 +45,11 @@ class LegacyDetailView(generics.RetrieveAPIView):
     lookup_field = "slug"
 
     def get_queryset(self):
-        return Legacy.objects.filter(status=Legacy.STATUS_APPROVED)
+        return (
+            Legacy.objects
+            .filter(status=Legacy.STATUS_APPROVED)
+            .select_related("zone")
+        )
 
     def get_serializer_context(self):
         return {"request": self.request}

@@ -4,13 +4,22 @@ A digital memorial platform for preserving and honoring the lives of Oromo indiv
 
 ## Architecture
 
-**Full-stack:** React (Vite) frontend + Django REST API backend
+**Full-stack:** React (Vite) frontend + Django REST API backend + Expo React Native mobile app
 
 - **Frontend:** React with Vite, running on port 5000
 - **Backend:** Django REST Framework API, running on port 8000
-- **Database:** SQLite (dev) / PostgreSQL-ready via psycopg
+- **Database:** PostgreSQL (via Replit's built-in DB, using DATABASE_URL secret)
+- **Mobile:** Expo React Native app with expo-router, running on port 8080
 - **Image Handling:** Pillow + WhiteNoise
 - **Production Server:** Gunicorn
+
+## Design Language
+
+- **Background:** Warm charcoal `#0e0a06` (black with brown undertone)
+- **Accent:** Amber candlelight `#c9923a` / `#ddb06a`
+- **Text:** Cream `#f0e6d0` (primary), `#b8956a` (secondary)
+- **Fonts:** EB Garamond + Cormorant Garamond (web), system fonts (mobile)
+- **Tone:** Reverent, memorial — "Honor a Life", "Wall of Remembrance", "Read Their Story →"
 
 ## Project Structure
 
@@ -18,9 +27,9 @@ A digital memorial platform for preserving and honoring the lives of Oromo indiv
 /
 ├── oromolegacy/          # Django project config (settings, urls, wsgi)
 ├── legacies/             # Core Django app
-│   ├── models.py         # Zone, ZoneModerator, Legacy
+│   ├── models.py         # Zone, ZoneModerator, Legacy (+ 5 PostgreSQL indexes)
 │   ├── serializers.py    # DRF serializers
-│   ├── api_views.py      # REST API views
+│   ├── api_views.py      # REST API views (with select_related for N+1 prevention)
 │   ├── views.py          # Moderation dashboard views
 │   └── urls.py           # URL routing
 ├── frontend/             # React (Vite) frontend
@@ -29,46 +38,67 @@ A digital memorial platform for preserving and honoring the lives of Oromo indiv
 │       ├── api.js        # API utility
 │       ├── components/   # Navbar, Footer, LegacyCard
 │       └── pages/        # Home, SubmitLegacy, LegacyDetail
-├── static/               # Django source static files
-├── staticfiles/          # Collected static files
+├── mobile/               # Expo React Native mobile app
+│   ├── app/
+│   │   ├── _layout.tsx           # Root layout (QueryClient, SafeAreaProvider)
+│   │   ├── (tabs)/_layout.tsx    # Tab navigation (Wall, Honor a Life)
+│   │   ├── (tabs)/index.tsx      # Memorial Wall (search, zone filter, list)
+│   │   ├── (tabs)/honor.tsx      # Honor a Life form (photo picker)
+│   │   └── legacy/[slug].tsx     # Legacy detail screen
+│   ├── lib/api.ts                # API functions (EXPO_PUBLIC_API_URL)
+│   ├── app.json                  # Expo config
+│   └── package.json
 ├── legacy_photos/        # Uploaded memorial photos (MEDIA_ROOT)
-├── db.sqlite3            # SQLite database
 ├── requirements.txt      # Python dependencies
 └── start.sh              # Production startup script
 ```
 
 ## Key Models
 
-- **Zone** — Geographic/administrative zones of Oromiyaa
+- **Zone** — Geographic/administrative zones of Oromiyaa (22 zones seeded)
 - **ZoneModerator** — Links Django users to the zones they moderate
-- **Legacy** — Memorial entries (pending/approved/rejected)
+- **Legacy** — Memorial entries (pending/approved/rejected) with 5 PostgreSQL indexes for scale
 
 ## API Endpoints
 
 - `GET /api/zones/` — List all zones
 - `GET /api/legacies/` — List approved legacies (search: `?q=`, `?zone=`)
 - `GET /api/legacies/<slug>/` — Get a specific legacy
-- `POST /api/legacies/submit/` — Submit a new legacy (multipart)
+- `POST /api/submit/` — Submit a new legacy (multipart)
+
+## Environment Variables
+
+- `DATABASE_URL` — PostgreSQL connection string (Replit secret, auto-provided)
+- `EXPO_PUBLIC_API_URL` — Django API base URL for mobile app (set to main Replit dev domain)
 
 ## Development
 
 ```bash
-# Start Django API (port 8000)
+# Django API (port 8000) — workflow: "Django API"
 python manage.py runserver 0.0.0.0:8000
 
-# Start React frontend (port 5000)
+# React frontend (port 5000) — workflow: "Start application"
 cd frontend && npm run dev
+
+# Expo mobile app (port 8080) — workflow: "Expo Mobile"
+cd mobile && npx expo start --web --port 8080
 ```
 
 The Vite dev server proxies `/api` and `/media` requests to Django on port 8000.
+The Expo mobile app calls the API via `EXPO_PUBLIC_API_URL` (set to the Vite dev server URL).
+
+## Database
+
+- **Engine:** PostgreSQL (via `dj-database-url` + `psycopg2-binary`)
+- **Fallback:** SQLite if `DATABASE_URL` not set
+- **Indexes:** `legacy_status_idx`, `legacy_status_approved_idx`, `legacy_zone_status_idx`, `legacy_created_idx`, `legacy_approved_idx`
+- All 22 Oromiyaa zones and existing legacies are seeded in PostgreSQL
 
 ## Production Deployment
 
 Build step: `cd frontend && npm install && npm run build && cd .. && python manage.py collectstatic --noinput`
 
 Run command: `gunicorn --bind=0.0.0.0:5000 --reuse-port --workers=2 oromolegacy.wsgi:application`
-
-Django serves the React build via a catch-all view when deployed.
 
 ## Moderation
 

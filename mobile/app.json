@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Oromo Legacy Wall",
+    "slug": "oromo-legacy-wall",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0e0a06"
+    },
+    "scheme": "oromo-legacy",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.oromolegacy.wall"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0e0a06",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Oromo Legacy Wall to access your photos to add a portrait."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {}
+  }
+}

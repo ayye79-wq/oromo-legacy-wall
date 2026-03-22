@@ -21,6 +21,10 @@ args = "Start application"
 task = "workflow.run"
 args = "Django API"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Expo Mobile"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -45,6 +49,18 @@ task = "shell.exec"
 args = "python manage.py runserver 0.0.0.0:8000"
 waitForPort = 8000
 
+[[workflows.workflow]]
+name = "Expo Mobile"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd mobile && EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL npx expo start --web --port 8080"
+waitForPort = 8080
+
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[ports]]
 localPort = 5000
 externalPort = 80
@@ -53,7 +69,16 @@ externalPort = 80
 localPort = 8000
 externalPort = 8000
 
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
 [deployment]
 deploymentTarget = "autoscale"
 run = ["gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "--workers=2", "oromolegacy.wsgi:application"]
 build = ["bash", "-c", "cd frontend && npm install && npm run build && cd .. && python manage.py collectstatic --noinput"]
+
+[userenv]
+
+[userenv.shared]
+EXPO_PUBLIC_API_URL = "https://e3449ed0-f706-4bd9-8d98-a4f2fe7628c9-00-2qqp09yl2k8ue.kirk.replit.dev"

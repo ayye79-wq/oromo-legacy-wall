@@ -220,8 +220,8 @@ a:hover { color: var(--accent-pale); }
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 1rem;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 0.96rem;
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
 }

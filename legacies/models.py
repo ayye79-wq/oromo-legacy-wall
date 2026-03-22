@@ -46,6 +46,15 @@ class Legacy(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     approved_at = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["status"], name="legacy_status_idx"),
+            models.Index(fields=["status", "-approved_at"], name="legacy_status_approved_idx"),
+            models.Index(fields=["zone", "status"], name="legacy_zone_status_idx"),
+            models.Index(fields=["-created_at"], name="legacy_created_idx"),
+            models.Index(fields=["-approved_at"], name="legacy_approved_idx"),
+        ]
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base = slugify(self.full_name)[:180] or "legacy"
