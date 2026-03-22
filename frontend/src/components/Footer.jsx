@@ -3,16 +3,20 @@ import './Footer.css';
 export default function Footer() {
   return (
     <footer className="footer">
+      <div className="footer-ornament" aria-hidden="true">
+        <span className="footer-orn-line" />
+        <span className="footer-orn-star">✦</span>
+        <span className="footer-orn-line" />
+      </div>
       <div className="container footer-inner">
-        <div className="footer-brand">
-          <span className="footer-icon">✦</span>
-          <span>Oromo Legacy Wall</span>
-        </div>
+        <div className="footer-candle" aria-hidden="true">🕯</div>
+        <div className="footer-brand">Oromo Legacy Wall</div>
         <p className="footer-tagline">
-          Preserving the stories of Oromo individuals for generations to come.
+          "Until the lion learns to write, every story will glorify the hunter."
         </p>
-        <p className="footer-copy">
-          A community-driven digital memorial platform.
+        <p className="footer-mission">
+          A permanent digital memorial honoring Oromo lives — built by the community,
+          for all generations.
         </p>
       </div>
     </footer>

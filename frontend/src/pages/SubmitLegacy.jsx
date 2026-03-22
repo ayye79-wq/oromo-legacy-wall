@@ -37,10 +37,10 @@ export default function SubmitLegacy() {
 
   function validate() {
     const errs = {};
-    if (!form.full_name.trim()) errs.full_name = 'Full name is required.';
-    if (!form.zone) errs.zone = 'Please select a zone.';
-    if (!form.story.trim()) errs.story = 'Story is required.';
-    if (form.story.trim().length < 30) errs.story = 'Story must be at least 30 characters.';
+    if (!form.full_name.trim()) errs.full_name = 'Their full name is required.';
+    if (!form.zone) errs.zone = 'Please select the zone they are from.';
+    if (!form.story.trim()) errs.story = 'Please share their story.';
+    if (form.story.trim().length < 30) errs.story = 'Please share a little more — at least 30 characters.';
     return errs;
   }
 
@@ -87,17 +87,22 @@ export default function SubmitLegacy() {
       <div className="submit-page">
         <div className="container">
           <div className="success-card">
-            <div className="success-icon">✦</div>
-            <h1>Thank You</h1>
+            <div className="success-candle" aria-hidden="true">🕯</div>
+            <h1>Their Story Has Been Received</h1>
+            <div className="success-ornament">
+              <span className="ornament-line-short" />
+              <span style={{ color: 'var(--accent)', fontSize: '0.7rem' }}>✦</span>
+              <span className="ornament-line-short" />
+            </div>
             <p>
-              Your submission has been received. It will be reviewed by a community
-              moderator before it appears on the Legacy Wall. We honor your contribution
-              to preserving this story.
+              Your tribute has been received with honor. A community moderator
+              will review it carefully before it is placed on the Memorial Wall.
+              Thank you for helping preserve this life for generations to come.
             </p>
             <div className="success-actions">
-              <Link to="/" className="btn btn-primary">View the Wall</Link>
+              <Link to="/" className="btn btn-primary">Return to the Wall</Link>
               <button className="btn btn-outline" onClick={() => setSuccess(false)}>
-                Submit Another
+                Honor Another Life
               </button>
             </div>
           </div>
@@ -108,22 +113,26 @@ export default function SubmitLegacy() {
 
   return (
     <div className="submit-page">
-      <div className="container">
-        <div className="submit-header">
-          <h1 className="submit-title">Submit a Legacy</h1>
+      <div className="submit-page-header">
+        <div className="container">
+          <p className="submit-kicker">In Their Memory</p>
+          <h1 className="submit-title">Honor a Life</h1>
           <p className="submit-sub">
-            Share the story of an Oromo individual to be preserved on the Legacy Wall.
-            All submissions are reviewed by zone moderators before publication.
+            Share the story of an Oromo individual so that their life may be preserved
+            on this wall. Every submission is reviewed by a trusted community moderator
+            before it is placed here.
           </p>
         </div>
+      </div>
 
+      <div className="container submit-body">
         {errors._general && (
           <div className="alert alert-error">{errors._general}</div>
         )}
 
         <form className="submit-form" onSubmit={handleSubmit} noValidate>
           <div className="form-section">
-            <h2 className="form-section-title">Personal Information</h2>
+            <h2 className="form-section-title">Who Are You Honoring?</h2>
 
             <div className="form-group">
               <label htmlFor="full_name" className="form-label">
@@ -134,7 +143,7 @@ export default function SubmitLegacy() {
                 name="full_name"
                 type="text"
                 className={`form-input ${errors.full_name ? 'input-error' : ''}`}
-                placeholder="Enter the full name of the individual"
+                placeholder="Their full name…"
                 value={form.full_name}
                 onChange={handleChange}
               />
@@ -143,7 +152,7 @@ export default function SubmitLegacy() {
 
             <div className="form-group">
               <label htmlFor="zone" className="form-label">
-                Zone (Oromiyaa Region) <span className="required">*</span>
+                Zone of Oromiyaa <span className="required">*</span>
               </label>
               <select
                 id="zone"
@@ -152,47 +161,52 @@ export default function SubmitLegacy() {
                 value={form.zone}
                 onChange={handleChange}
               >
-                <option value="">Select a zone…</option>
+                <option value="">Select their zone…</option>
                 {zones.map(z => (
                   <option key={z.id} value={z.id}>{z.name}</option>
                 ))}
               </select>
               {errors.zone && <span className="form-error">{errors.zone}</span>}
-              <span className="form-help">
-                Select the zone of Oromiyaa this individual is from.
-              </span>
+              <span className="form-help">Which zone of Oromiyaa were they from?</span>
             </div>
           </div>
 
           <div className="form-section">
             <h2 className="form-section-title">Their Story</h2>
+            <p className="section-note">
+              Write as much as you'd like. Share who they were, what they meant to
+              you, their life, their contributions, their legacy.
+            </p>
 
-            <div className="form-group">
+            <div className="form-group" style={{ marginBottom: 0 }}>
               <label htmlFor="story" className="form-label">
-                Biography / Story <span className="required">*</span>
+                Biography &amp; Story <span className="required">*</span>
               </label>
               <textarea
                 id="story"
                 name="story"
                 className={`form-textarea ${errors.story ? 'input-error' : ''}`}
-                placeholder="Share their life story, achievements, memories, and the impact they had on family and community…"
+                placeholder="In the words of those who loved them…"
                 value={form.story}
                 onChange={handleChange}
-                rows={10}
+                rows={12}
               />
               {errors.story && <span className="form-error">{errors.story}</span>}
               <span className="form-help">
-                {form.story.length} characters — share as much as you'd like to preserve.
+                {form.story.length > 0 ? `${form.story.length} characters written` : 'No minimum length — share what feels right.'}
               </span>
             </div>
           </div>
 
           <div className="form-section">
-            <h2 className="form-section-title">Photo <span className="optional">(Optional)</span></h2>
+            <h2 className="form-section-title">
+              A Photo <span className="optional-label">(optional)</span>
+            </h2>
+            <p className="section-note">
+              A photograph helps bring their memory to life on the wall.
+            </p>
 
-            <div className="form-group">
-              <label htmlFor="photo" className="form-label">Upload a Photo</label>
-
+            <div className="form-group" style={{ marginBottom: 0 }}>
               {previewUrl && (
                 <div className="photo-preview">
                   <img src={previewUrl} alt="Preview" />
@@ -204,14 +218,14 @@ export default function SubmitLegacy() {
                       setPreviewUrl(null);
                     }}
                   >
-                    ✕ Remove
+                    Remove
                   </button>
                 </div>
               )}
 
               <label htmlFor="photo" className="file-upload-label">
-                <span className="file-icon">📷</span>
-                <span>{form.photo ? form.photo.name : 'Click to choose a photo…'}</span>
+                <span>🕯</span>
+                <span>{form.photo ? form.photo.name : 'Choose a photograph…'}</span>
                 <input
                   id="photo"
                   name="photo"
@@ -222,15 +236,15 @@ export default function SubmitLegacy() {
                 />
               </label>
               {errors.photo && <span className="form-error">{errors.photo}</span>}
-              <span className="form-help">JPG, PNG, or WEBP. Max 10MB recommended.</span>
+              <span className="form-help">JPG, PNG, or WEBP — any size is welcome.</span>
             </div>
           </div>
 
           <div className="submit-actions">
             <button type="submit" className="btn btn-primary btn-submit" disabled={submitting}>
-              {submitting ? 'Submitting…' : 'Submit Legacy for Review'}
+              {submitting ? 'Preserving their memory…' : 'Place Their Story on the Wall'}
             </button>
-            <Link to="/" className="btn btn-ghost">Cancel</Link>
+            <Link to="/" className="btn btn-ghost">Return to the Wall</Link>
           </div>
         </form>
       </div>

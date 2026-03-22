@@ -7,15 +7,15 @@ export default function Navbar() {
   const { pathname } = useLocation();
 
   const links = [
-    { to: '/', label: 'The Wall' },
-    { to: '/submit', label: 'Submit a Legacy' },
+    { to: '/', label: 'The Memorial Wall' },
+    { to: '/submit', label: 'Honor a Life' },
   ];
 
   return (
     <nav className="navbar">
       <div className="container navbar-inner">
         <Link to="/" className="navbar-brand" onClick={() => setOpen(false)}>
-          <span className="brand-icon">✦</span>
+          <span className="brand-flame" aria-hidden="true">🕯</span>
           <span className="brand-text">Oromo Legacy Wall</span>
         </Link>
 

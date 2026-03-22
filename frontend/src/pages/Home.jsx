@@ -4,6 +4,27 @@ import { fetchLegacies, fetchZones } from '../api';
 import LegacyCard from '../components/LegacyCard';
 import './Home.css';
 
+function FlameIcon() {
+  return (
+    <svg className="hero-flame" viewBox="0 0 36 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M18 2C18 2 5 20 5 32C5 43.6 10.9 52 18 54C25.1 52 31 43.6 31 32C31 20 18 2 18 2Z"
+        fill="url(#fg1)" />
+      <path d="M18 22C18 22 12 30 12 36C12 40.4 14.7 44 18 45C21.3 44 24 40.4 24 36C24 30 18 22 18 22Z"
+        fill="url(#fg2)" />
+      <defs>
+        <linearGradient id="fg1" x1="18" y1="2" x2="18" y2="54" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#ddb06a" />
+          <stop offset="100%" stopColor="#a06820" stopOpacity="0.8" />
+        </linearGradient>
+        <linearGradient id="fg2" x1="18" y1="22" x2="18" y2="45" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#f5ead5" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#ddb06a" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [legacies, setLegacies] = useState([]);
@@ -63,88 +84,90 @@ export default function Home() {
   return (
     <div className="home">
       <section className="hero">
+        <div className="hero-glow" aria-hidden="true" />
         <div className="container hero-inner">
-          <div className="hero-badge">Digital Memorial Platform</div>
+          <FlameIcon />
+          <p className="hero-kicker">In Remembrance</p>
           <h1 className="hero-title">
-            Preserving Oromo Lives,<br />
-            <span className="hero-highlight">Honoring Their Legacy</span>
+            Their Stories Live On
           </h1>
+          <div className="hero-ornament">
+            <span className="ornament-line" />
+            <span className="ornament-star">✦</span>
+            <span className="ornament-line" />
+          </div>
           <p className="hero-sub">
-            A dignified archive where families and communities document and preserve
-            the stories of loved ones — for generations to come.
+            A sacred space where Oromo families and communities come together
+            to document, preserve, and honor the lives of those who shaped
+            our world — so their memory endures for all generations.
           </p>
           <div className="hero-actions">
-            <Link to="/submit" className="btn btn-primary">Submit a Legacy</Link>
-            <a href="#wall" className="btn btn-outline">Explore the Wall</a>
+            <Link to="/submit" className="btn btn-primary">Honor a Life</Link>
+            <a href="#wall" className="btn btn-outline">Enter the Memorial Wall</a>
           </div>
-        </div>
-        <div className="hero-decoration" aria-hidden="true">
-          <div className="deco-ring deco-ring-1" />
-          <div className="deco-ring deco-ring-2" />
-          <div className="deco-ring deco-ring-3" />
         </div>
       </section>
 
       <section className="wall-section" id="wall">
         <div className="container">
-          <div className="wall-header">
-            <div>
-              <h2 className="wall-title">The Legacy Wall</h2>
-              <p className="wall-subtitle">Stories of Oromo individuals, preserved with dignity</p>
+          <div className="wall-heading">
+            <h2 className="wall-title">Wall of Remembrance</h2>
+            <p className="wall-subtitle">Each name here was a life lived, a story worth telling</p>
+            <div className="wall-ornament">
+              <span className="ornament-line-short" />
+              <span className="ornament-star-sm">✦</span>
+              <span className="ornament-line-short" />
             </div>
-            <Link to="/submit" className="btn btn-outline btn-sm">+ Add a Legacy</Link>
           </div>
 
-          <form className="search-bar" onSubmit={handleSearch}>
-            <div className="search-input-wrap">
-              <span className="search-icon" aria-hidden="true">🔍</span>
-              <input
-                name="q"
-                type="search"
-                className="form-input search-input"
-                placeholder="Search by name or story…"
-                defaultValue={q}
-                key={q}
-              />
-            </div>
-            <select name="zone" className="form-select zone-select" defaultValue={zone} key={zone}>
-              <option value="">All Zones</option>
-              {zones.map(z => (
-                <option key={z.id} value={z.slug}>{z.name}</option>
-              ))}
-            </select>
-            <button type="submit" className="btn btn-primary">Search</button>
-            {(q || zone) && (
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={() => setSearchParams({})}
-              >
-                Clear
-              </button>
-            )}
-          </form>
+          <div className="search-row">
+            <form className="search-bar" onSubmit={handleSearch}>
+              <div className="search-input-wrap">
+                <input
+                  name="q"
+                  type="search"
+                  className="form-input search-input"
+                  placeholder="Search by name or story…"
+                  defaultValue={q}
+                  key={q}
+                />
+              </div>
+              <select name="zone" className="form-select zone-select" defaultValue={zone} key={zone}>
+                <option value="">All Zones of Oromiyaa</option>
+                {zones.map(z => (
+                  <option key={z.id} value={z.slug}>{z.name}</option>
+                ))}
+              </select>
+              <button type="submit" className="btn btn-primary">Search</button>
+              {(q || zone) && (
+                <button type="button" className="btn btn-ghost" onClick={() => setSearchParams({})}>
+                  Clear
+                </button>
+              )}
+            </form>
+            <Link to="/submit" className="btn btn-outline btn-honor">Honor a Life</Link>
+          </div>
 
           {(q || zone) && (
             <p className="search-result-info">
-              {loading ? 'Searching…' : `${legacies.length} result${legacies.length !== 1 ? 's' : ''} found`}
-              {q && <> for "<strong>{q}</strong>"</>}
-              {zone && zones.find(z => z.slug === zone) && <> in <strong>{zones.find(z => z.slug === zone)?.name}</strong></>}
+              {loading ? 'Searching…' : `${legacies.length} ${legacies.length === 1 ? 'life' : 'lives'} found`}
+              {q && <> for "<em>{q}</em>"</>}
+              {zone && zones.find(z => z.slug === zone) && <> in <em>{zones.find(z => z.slug === zone)?.name}</em></>}
             </p>
           )}
 
           {loading ? (
             <div className="page-loading">
               <div className="spinner" />
-              <p>Loading legacies…</p>
+              <span>Gathering stories…</span>
             </div>
           ) : legacies.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">✦</div>
-              <h3>No legacies found</h3>
-              <p>Be the first to share a story.</p>
-              <Link to="/submit" className="btn btn-primary" style={{ marginTop: '1.5rem' }}>
-                Submit a Legacy
+              <div className="empty-flame">🕯</div>
+              <h3>No lives have been honored yet</h3>
+              <p>Be the first to preserve a story on this wall.</p>
+              <Link to="/submit" className="btn btn-primary" style={{ marginTop: '2rem' }}>
+                Honor a Life
               </Link>
             </div>
           ) : (
@@ -155,19 +178,11 @@ export default function Home() {
 
               {totalPages > 1 && (
                 <div className="pagination">
-                  <button
-                    className="btn btn-ghost"
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 1}
-                  >
+                  <button className="btn btn-ghost" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
                     ← Previous
                   </button>
                   <span className="page-info">Page {page} of {totalPages}</span>
-                  <button
-                    className="btn btn-ghost"
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === totalPages || !pagination.next}
-                  >
+                  <button className="btn btn-ghost" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages || !pagination.next}>
                     Next →
                   </button>
                 </div>
@@ -177,29 +192,36 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mission-section">
-        <div className="container mission-inner">
-          <div className="mission-text">
-            <h2>Our Mission</h2>
+      <section className="about-section">
+        <div className="container about-inner">
+          <div className="about-text">
+            <h2 className="about-title">A Permanent Place of Memory</h2>
             <p>
-              Oromo Legacy Wall is a permanent, respectful digital monument where families
-              and communities can document and preserve the stories of loved ones for future
-              generations. Every legacy submitted undergoes a thoughtful review by trusted
-              community moderators assigned to each zone of Oromiyaa.
+              The Oromo Legacy Wall is a living archive — a digital monument built to ensure
+              that the stories of Oromo individuals are never forgotten. Every submission is
+              reviewed with care by trusted community moderators from each zone of Oromiyaa,
+              preserving authenticity, dignity, and cultural truth.
+            </p>
+            <p>
+              This is not just a website. It is a place of mourning, of pride, and of
+              remembrance — where future generations will come to learn who came before them.
             </p>
           </div>
-          <div className="mission-stats">
-            <div className="stat">
-              <span className="stat-icon">✦</span>
-              <span className="stat-label">Community Driven</span>
+          <div className="about-pillars">
+            <div className="pillar">
+              <span className="pillar-icon">🕯</span>
+              <h3>Dignity First</h3>
+              <p>Every life honored here is treated with the respect it deserves.</p>
             </div>
-            <div className="stat">
-              <span className="stat-icon">🛡</span>
-              <span className="stat-label">Zone-Based Moderation</span>
+            <div className="pillar">
+              <span className="pillar-icon">🌍</span>
+              <h3>Community Verified</h3>
+              <p>Zone moderators from Oromiyaa ensure authenticity and cultural care.</p>
             </div>
-            <div className="stat">
-              <span className="stat-icon">📜</span>
-              <span className="stat-label">Permanent Archive</span>
+            <div className="pillar">
+              <span className="pillar-icon">📜</span>
+              <h3>Forever Preserved</h3>
+              <p>Stories submitted here are kept for generations yet to come.</p>
             </div>
           </div>
         </div>

@@ -28,7 +28,7 @@ export default function LegacyDetail() {
     return (
       <div className="page-loading">
         <div className="spinner" />
-        <p>Loading legacy…</p>
+        <span>Loading their story…</span>
       </div>
     );
   }
@@ -38,10 +38,10 @@ export default function LegacyDetail() {
       <div className="detail-error">
         <div className="container">
           <div className="empty-state">
-            <div style={{ fontSize: '2.5rem', marginBottom: '1rem', opacity: 0.4 }}>✦</div>
-            <h3>Legacy Not Found</h3>
-            <p>This legacy may not exist or is still pending review.</p>
-            <Link to="/" className="btn btn-primary" style={{ marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '1rem', opacity: 0.3 }}>🕯</div>
+            <h3>Story Not Found</h3>
+            <p>This legacy may not exist or is still awaiting review.</p>
+            <Link to="/" className="btn btn-outline" style={{ marginTop: '2rem' }}>
               Return to the Wall
             </Link>
           </div>
@@ -55,38 +55,44 @@ export default function LegacyDetail() {
       <div className="detail-error">
         <div className="container">
           <div className="alert alert-error">Something went wrong. Please try again.</div>
-          <Link to="/">← Back to the Wall</Link>
+          <Link to="/" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>← Return to the Wall</Link>
         </div>
       </div>
     );
   }
 
-  const { full_name, zone_name, story, photo_url, approved_at, created_at } = legacy;
+  const { full_name, zone_name, story, photo_url, approved_at } = legacy;
 
   return (
     <div className="detail-page">
       <div className="detail-hero">
         {photo_url && (
-          <div className="detail-photo-bg" style={{ backgroundImage: `url(${photo_url})` }} aria-hidden="true" />
+          <div
+            className="detail-photo-bg"
+            style={{ backgroundImage: `url(${photo_url})` }}
+            aria-hidden="true"
+          />
         )}
         <div className="detail-hero-overlay" aria-hidden="true" />
         <div className="container detail-hero-inner">
-          <Link to="/" className="detail-back">← Back to the Wall</Link>
-          <div className={`detail-photo-wrap ${!photo_url ? 'no-photo' : ''}`}>
+          <Link to="/" className="detail-back">← Wall of Remembrance</Link>
+
+          <div className="detail-portrait-wrap">
             {photo_url ? (
-              <img src={photo_url} alt={full_name} className="detail-photo" />
+              <img src={photo_url} alt={full_name} className="detail-portrait" />
             ) : (
-              <div className="detail-photo-placeholder">
-                {full_name.charAt(0)}
+              <div className="detail-portrait-placeholder" aria-hidden="true">
+                <span>{full_name.charAt(0)}</span>
               </div>
             )}
           </div>
+
           <div className="detail-meta">
             {zone_name && <span className="tag tag-zone">{zone_name}</span>}
             <h1 className="detail-name">{full_name}</h1>
             {approved_at && (
               <time className="detail-date" dateTime={approved_at}>
-                Honored on {formatDate(approved_at)}
+                Honored on the wall · {formatDate(approved_at)}
               </time>
             )}
           </div>
@@ -94,32 +100,41 @@ export default function LegacyDetail() {
       </div>
 
       <div className="container detail-body">
-        <div className="detail-story-wrap">
-          <div className="story-header">
-            <span className="story-divider">✦ Their Story ✦</span>
+        <article className="detail-story-wrap">
+          <div className="story-intro">
+            <div className="story-ornament">
+              <span className="story-orn-line" />
+              <span className="story-orn-label">Their Story</span>
+              <span className="story-orn-line" />
+            </div>
           </div>
           <div className="detail-story">
-            {story.split('\n').filter(Boolean).map((para, i) => (
+            {story.split('\n').filter(p => p.trim()).map((para, i) => (
               <p key={i}>{para}</p>
             ))}
           </div>
-        </div>
+          <div className="story-close">
+            <span className="story-orn-line" />
+            <span style={{ color: 'var(--accent)', fontSize: '0.7rem', opacity: 0.5 }}>✦</span>
+            <span className="story-orn-line" />
+          </div>
+        </article>
 
-        <div className="detail-sidebar">
+        <aside className="detail-sidebar">
           <div className="sidebar-card">
-            <h3>About This Legacy</h3>
-            <dl>
+            <h3 className="sidebar-title">In Remembrance</h3>
+            <dl className="sidebar-dl">
               <dt>Name</dt>
               <dd>{full_name}</dd>
               {zone_name && (
                 <>
-                  <dt>Zone</dt>
-                  <dd>{zone_name}</dd>
+                  <dt>Region</dt>
+                  <dd>{zone_name}, Oromiyaa</dd>
                 </>
               )}
               {approved_at && (
                 <>
-                  <dt>Added to Wall</dt>
+                  <dt>Honored</dt>
                   <dd>{formatDate(approved_at)}</dd>
                 </>
               )}
@@ -127,14 +142,14 @@ export default function LegacyDetail() {
           </div>
 
           <div className="sidebar-actions">
-            <Link to="/" className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center' }}>
-              ← All Legacies
+            <Link to="/" className="btn btn-ghost sidebar-btn">
+              ← Return to the Wall
             </Link>
-            <Link to="/submit" className="btn btn-outline" style={{ width: '100%', justifyContent: 'center' }}>
-              Submit a Legacy
+            <Link to="/submit" className="btn btn-outline sidebar-btn">
+              Honor Another Life
             </Link>
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

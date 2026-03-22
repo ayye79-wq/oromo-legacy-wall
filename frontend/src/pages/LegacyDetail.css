@@ -3,17 +3,17 @@
 }
 
 .detail-error {
-  padding: 4rem 0;
+  padding: 5rem 0;
   flex: 1;
 }
 
-/* Hero */
+/* ── Hero ── */
 .detail-hero {
   position: relative;
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
   overflow: hidden;
-  padding: 2rem 0 3rem;
+  padding: 2.5rem 0 3.5rem;
 }
 
 .detail-photo-bg {
@@ -21,14 +21,18 @@
   inset: 0;
   background-size: cover;
   background-position: center top;
-  filter: blur(24px) brightness(0.2) saturate(0.5);
-  transform: scale(1.1);
+  filter: blur(28px) brightness(0.15) saturate(0.3) sepia(0.3);
+  transform: scale(1.15);
 }
 
 .detail-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(13,27,42,0.6) 0%, rgba(13,27,42,0.9) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(14, 10, 6, 0.5) 0%,
+    rgba(14, 10, 6, 0.92) 100%
+  );
 }
 
 .detail-hero-inner {
@@ -38,42 +42,49 @@
 
 .detail-back {
   display: inline-block;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   color: var(--text-muted) !important;
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   transition: color 0.2s;
+  text-decoration: none;
 }
 .detail-back:hover { color: var(--accent) !important; }
 
-.detail-photo-wrap {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  border: 3px solid rgba(201,168,76,0.4);
+/* Portrait */
+.detail-portrait-wrap {
+  width: 130px;
+  height: 130px;
+  border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  margin-bottom: 1.75rem;
+  border: 1px solid rgba(201, 146, 58, 0.3);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
 }
 
-.detail-photo {
+.detail-portrait {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top;
+  object-position: center top;
+  filter: sepia(15%) brightness(0.95);
 }
 
-.detail-photo-placeholder {
+.detail-portrait-placeholder {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a2e47, #0f2035);
-  font-size: 3.5rem;
-  font-weight: 700;
+  background: linear-gradient(160deg, #1f1408 0%, #120d05 100%);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 4rem;
+  font-weight: 400;
   color: var(--accent);
-  font-family: Georgia, serif;
+  opacity: 0.5;
 }
 
 .detail-meta {
@@ -84,90 +95,119 @@
 }
 
 .detail-name {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  font-weight: 700;
+  font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400;
   color: var(--text-primary);
-  line-height: 1.2;
-  margin: 0;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
 }
 
 .detail-date {
-  font-size: 0.88rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.78rem;
   color: var(--text-muted);
+  letter-spacing: 0.04em;
+  font-style: italic;
 }
 
-/* Body */
+/* ── Body ── */
 .detail-body {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 3rem;
-  padding: 3rem 1.5rem;
+  grid-template-columns: 1fr 280px;
+  gap: 4rem;
+  padding: 4rem 2rem 5rem;
   align-items: start;
 }
 
-.story-header {
-  text-align: center;
-  margin-bottom: 2rem;
+/* Story */
+.story-intro {
+  margin-bottom: 2.5rem;
 }
 
-.story-divider {
-  font-size: 0.85rem;
-  color: var(--accent);
-  letter-spacing: 0.2em;
+.story-ornament {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.story-orn-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201,146,58,0.3), transparent);
+}
+
+.story-orn-label {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.7rem;
   font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.6;
+  white-space: nowrap;
 }
 
 .detail-story {
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 1.6rem;
+  margin-bottom: 2.5rem;
 }
 
 .detail-story p {
-  color: var(--text-secondary);
-  line-height: 1.85;
-  font-size: 1.05rem;
+  font-family: 'EB Garamond', Georgia, serif;
+  color: var(--text-body);
+  line-height: 1.95;
+  font-size: 1.1rem;
+}
+
+.story-close {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 /* Sidebar */
 .sidebar-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-top: 2px solid rgba(201, 146, 58, 0.25);
   padding: 1.5rem;
   margin-bottom: 1rem;
 }
 
-.sidebar-card h3 {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 0.95rem;
+.sidebar-title {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
-.sidebar-card dl {
+.sidebar-dl {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 0.5rem 1rem;
+  gap: 0.6rem 1rem;
 }
 
-.sidebar-card dt {
-  font-size: 0.8rem;
+.sidebar-dl dt {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   padding-top: 0.1rem;
 }
 
-.sidebar-card dd {
-  font-size: 0.9rem;
+.sidebar-dl dd {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
   color: var(--text-secondary);
 }
 
@@ -177,16 +217,18 @@
   gap: 0.75rem;
 }
 
-@media (max-width: 768px) {
+.sidebar-btn {
+  width: 100%;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 800px) {
   .detail-body {
     grid-template-columns: 1fr;
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 1.5rem 4rem;
+    gap: 2.5rem;
   }
-  .detail-sidebar {
-    order: -1;
-  }
-  .detail-photo-wrap {
-    width: 100px;
-    height: 100px;
-  }
+  .detail-sidebar { order: -1; }
+  .detail-portrait-wrap { width: 90px; height: 90px; }
 }
