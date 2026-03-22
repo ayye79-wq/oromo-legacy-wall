@@ -48,15 +48,14 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Application definition
 INSTALLED_APPS = [
-    # Django defaults...
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    # Your app
+    "rest_framework",
+    "corsheaders",
     "legacies.apps.LegaciesConfig",
 ]
 
@@ -64,6 +63,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -142,7 +142,8 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Where your source static files live during development
-STATICFILES_DIRS = [BASE_DIR / "static"]
+_frontend_dist = BASE_DIR / "frontend" / "dist"
+STATICFILES_DIRS = [BASE_DIR / "static"] + ([_frontend_dist / "assets"] if (_frontend_dist / "assets").exists() else [])
 
 LOGIN_URL = "/admin/login/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -151,3 +152,11 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "legacy_photos"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+}
