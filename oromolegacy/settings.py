@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,6 +30,18 @@ ALLOWED_HOSTS = [
     "oromo-legacy-wall.onrender.com",
     "oromolegacywall.com",
     "www.oromolegacywall.com",
+    "0.0.0.0",
+    "localhost",
+    "127.0.0.1",
+    ".replit.dev",
+    ".repl.co",
+    ".replit.app",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.replit.dev",
+    "https://*.repl.co",
+    "https://*.replit.app",
 ]
 
 
@@ -50,14 +63,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # add this line
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
 ]
 
 ROOT_URLCONF = 'oromolegacy.urls'
@@ -134,3 +146,8 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 LOGIN_URL = "/admin/login/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "legacy_photos"
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
