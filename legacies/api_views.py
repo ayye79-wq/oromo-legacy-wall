@@ -1,11 +1,12 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from rest_framework.authentication import BasicAuthentication
-from rest_framework.permissions import AllowAny
+from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from rest_framework import generics, status
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Legacy, Zone, Tribute
 from .serializers import (
@@ -13,8 +14,20 @@ from .serializers import (
     LegacyListSerializer,
     LegacyDetailSerializer,
     LegacySubmitSerializer,
+    LegacyModerationSerializer,
     TributeSerializer,
 )
+
+
+def _check_mod_auth(request):
+    mod_secret = getattr(settings, 'MOD_SECRET', '')
+    if not mod_secret:
+        return False
+    auth = request.headers.get('Authorization', '')
+    if auth.startswith('Bearer '):
+        token = auth[7:]
+        return token == mod_secret
+    return False
 
 
 class ZoneListView(generics.ListAPIView):
@@ -44,6 +57,15 @@ class LegacyListView(generics.ListAPIView):
         return {"request": self.request}
 
 
+class LegacyCountView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        count = Legacy.objects.filter(status=Legacy.STATUS_APPROVED).count()
+        return Response({"approved": count})
+
+
 class LegacyDetailView(generics.RetrieveAPIView):
     serializer_class = LegacyDetailSerializer
     lookup_field = "slug"
@@ -65,6 +87,12 @@ class LegacySubmitView(APIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def post(self, request):
+        if request.data.get('website', '').strip():
+            return Response(
+                {"message": "Thank you. Your submission was received and will be reviewed before it appears publicly."},
+                status=status.HTTP_201_CREATED,
+            )
+
         serializer = LegacySubmitSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -102,3 +130,47 @@ class TributeListCreateView(APIView):
                 "candle_count": candle_count,
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ModPendingView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        if not _check_mod_auth(request):
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        legacies = (
+            Legacy.objects
+            .filter(status=Legacy.STATUS_PENDING)
+            .select_related("zone")
+            .order_by("created_at")
+        )
+        serializer = LegacyModerationSerializer(legacies, many=True)
+        return Response({"results": serializer.data, "count": legacies.count()})
+
+
+class ModApproveView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request, pk):
+        if not _check_mod_auth(request):
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        legacy = get_object_or_404(Legacy, pk=pk)
+        legacy.status = Legacy.STATUS_APPROVED
+        legacy.approved_at = timezone.now()
+        legacy.save(update_fields=["status", "approved_at"])
+        return Response({"ok": True, "status": "APPROVED"})
+
+
+class ModRejectView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request, pk):
+        if not _check_mod_auth(request):
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        legacy = get_object_or_404(Legacy, pk=pk)
+        legacy.status = Legacy.STATUS_REJECTED
+        legacy.save(update_fields=["status"])
+        return Response({"ok": True, "status": "REJECTED"})

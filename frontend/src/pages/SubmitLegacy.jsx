@@ -1,21 +1,58 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchZones, submitLegacy } from '../api';
 import { useLang } from '../i18n/LanguageContext';
 import './SubmitLegacy.css';
+
+const OROMO_CHARS = [
+  { label: "'", title: "Apostrophe / glottal stop (as in 'dh')" },
+  { label: "ch", title: "ch sound" },
+  { label: "dh", title: "dh retroflex" },
+  { label: "ny", title: "ny sound (ñ)" },
+  { label: "ph", title: "ph aspirated" },
+  { label: "sh", title: "sh sound" },
+  { label: "ts", title: "ts sound" },
+  { label: "Ā", title: "Long A (Ā)" },
+  { label: "ā", title: "Long a (ā)" },
+  { label: "Ī", title: "Long I (Ī)" },
+  { label: "ī", title: "Long i (ī)" },
+  { label: "Ū", title: "Long U (Ū)" },
+  { label: "ū", title: "Long u (ū)" },
+];
+
+function OromoCharPicker({ onInsert }) {
+  return (
+    <div className="char-picker" aria-label="Afaan Oromo special characters">
+      <span className="char-picker-label">Insert:</span>
+      {OROMO_CHARS.map(c => (
+        <button
+          key={c.label}
+          type="button"
+          className="char-btn"
+          title={c.title}
+          onClick={() => onInsert(c.label)}
+        >
+          {c.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function SubmitLegacy() {
   const { t } = useLang();
   const [zones, setZones] = useState([]);
   const [storyLang, setStoryLang] = useState('en');
   const [form, setForm] = useState({
-    full_name: '', occupation: '', zone: '',
+    full_name: '', occupation: '', relationship_to_person: '', zone: '',
     story_en: '', story_om: '', photo: null,
+    website: '',
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const storyOmRef = useRef(null);
 
   useEffect(() => {
     fetchZones()
@@ -39,6 +76,20 @@ export default function SubmitLegacy() {
       setForm(f => ({ ...f, [name]: value }));
       if (errors[name]) setErrors(e => ({ ...e, [name]: null }));
     }
+  }
+
+  function insertOromoChar(char) {
+    const el = storyOmRef.current;
+    if (!el) return;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const current = form.story_om;
+    const next = current.slice(0, start) + char + current.slice(end);
+    setForm(f => ({ ...f, story_om: next }));
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(start + char.length, start + char.length);
+    });
   }
 
   function validate() {
@@ -73,18 +124,23 @@ export default function SubmitLegacy() {
     const fd = new FormData();
     fd.append('full_name', form.full_name.trim());
     if (form.occupation.trim()) fd.append('occupation', form.occupation.trim());
+    if (form.relationship_to_person.trim()) fd.append('relationship_to_person', form.relationship_to_person.trim());
     fd.append('zone', form.zone);
     if (form.story_en.trim()) fd.append('story_en', form.story_en.trim());
     if (form.story_om.trim()) fd.append('story_om', form.story_om.trim());
     fd.append('original_language', storyLang === 'both' ? 'en' : storyLang);
     const primaryStory = form.story_en.trim() || form.story_om.trim();
     fd.append('story', primaryStory);
+    fd.append('website', form.website);
     if (form.photo) fd.append('photo', form.photo);
 
     try {
       await submitLegacy(fd);
       setSuccess(true);
-      setForm({ full_name: '', occupation: '', zone: '', story_en: '', story_om: '', photo: null });
+      setForm({
+        full_name: '', occupation: '', relationship_to_person: '', zone: '',
+        story_en: '', story_om: '', photo: null, website: '',
+      });
       setPreviewUrl(null);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -146,6 +202,17 @@ export default function SubmitLegacy() {
         )}
 
         <form className="submit-form" onSubmit={handleSubmit} noValidate>
+          <input
+            type="text"
+            name="website"
+            value={form.website}
+            onChange={handleChange}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0 }}
+          />
+
           <div className="form-section">
             <h2 className="form-section-title">{t('submit.section_who')}</h2>
 
@@ -179,6 +246,23 @@ export default function SubmitLegacy() {
                 onChange={handleChange}
               />
               <span className="form-help">{t('submit.occupation_help')}</span>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="relationship_to_person" className="form-label">
+                Your relationship to this person <span className="optional-label">(optional)</span>
+              </label>
+              <input
+                id="relationship_to_person"
+                name="relationship_to_person"
+                type="text"
+                className="form-input"
+                placeholder="e.g. Son, Daughter, Colleague, Community member, Former student…"
+                value={form.relationship_to_person}
+                onChange={handleChange}
+                maxLength={120}
+              />
+              <span className="form-help">Helps reviewers understand the connection to the person being honored.</span>
             </div>
 
             <div className="form-group">
@@ -252,9 +336,11 @@ export default function SubmitLegacy() {
                   {storyLang === 'both' ? t('submit.story_om') : t('submit.section_story')}
                   {storyLang !== 'both' && <span className="required"> *</span>}
                 </label>
+                <OromoCharPicker onInsert={insertOromoChar} />
                 <textarea
                   id="story_om"
                   name="story_om"
+                  ref={storyOmRef}
                   className={`form-textarea ${errors.story_om ? 'input-error' : ''}`}
                   placeholder={t('submit.story_placeholder_om')}
                   value={form.story_om}

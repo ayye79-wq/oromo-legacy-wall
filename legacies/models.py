@@ -1,4 +1,8 @@
+import io
+import os
+
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.db import models
 from django.utils.text import slugify
 
@@ -44,6 +48,7 @@ class Legacy(models.Model):
 
     full_name = models.CharField(max_length=200)
     occupation = models.CharField(max_length=200, blank=True, default='')
+    relationship_to_person = models.CharField(max_length=120, blank=True, default='')
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT, related_name="legacies")
     story = models.TextField()
     story_en = models.TextField(blank=True, default='')
@@ -67,10 +72,35 @@ class Legacy(models.Model):
         ]
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
         if not self.slug:
             base = slugify(self.full_name)[:180] or "legacy"
             self.slug = base
         super().save(*args, **kwargs)
+        if self.photo and is_new:
+            self._compress_photo()
+
+    def _compress_photo(self):
+        try:
+            from PIL import Image
+            img = Image.open(self.photo.path)
+            if img.mode in ('RGBA', 'P', 'LA'):
+                img = img.convert('RGB')
+            img.thumbnail((800, 1000), Image.LANCZOS)
+            output = io.BytesIO()
+            img.save(output, format='JPEG', quality=82, optimize=True)
+            output.seek(0)
+            old_path = self.photo.path
+            new_name = f"legacy_photos/{self.slug}.jpg"
+            self.photo.save(new_name, ContentFile(output.read()), save=False)
+            Legacy.objects.filter(pk=self.pk).update(photo=self.photo.name)
+            if old_path != self.photo.path:
+                try:
+                    os.remove(old_path)
+                except OSError:
+                    pass
+        except Exception:
+            pass
 
     def __str__(self):
         return self.full_name

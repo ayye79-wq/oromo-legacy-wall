@@ -15,7 +15,11 @@ class LegacyListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Legacy
-        fields = ["id", "full_name", "occupation", "slug", "zone_name", "photo_url", "story_preview", "approved_at", "created_at"]
+        fields = [
+            "id", "full_name", "occupation", "relationship_to_person",
+            "slug", "zone_name", "photo_url", "story_preview",
+            "approved_at", "created_at",
+        ]
 
     def get_story_preview(self, obj):
         if obj.story:
@@ -35,7 +39,8 @@ class LegacyDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Legacy
         fields = [
-            "id", "full_name", "occupation", "slug", "zone_name",
+            "id", "full_name", "occupation", "relationship_to_person",
+            "slug", "zone_name",
             "story", "story_en", "story_om", "original_language",
             "photo_url", "approved_at", "created_at",
         ]
@@ -49,7 +54,10 @@ class LegacyDetailSerializer(serializers.ModelSerializer):
 class LegacySubmitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Legacy
-        fields = ["full_name", "occupation", "zone", "story", "story_en", "story_om", "original_language", "photo"]
+        fields = [
+            "full_name", "occupation", "relationship_to_person",
+            "zone", "story", "story_en", "story_om", "original_language", "photo",
+        ]
 
     def validate(self, data):
         story_en = (data.get("story_en") or "").strip()
@@ -64,6 +72,25 @@ class LegacySubmitSerializer(serializers.ModelSerializer):
         if not story_en and story:
             data["story_en"] = story
         return data
+
+
+class LegacyModerationSerializer(serializers.ModelSerializer):
+    zone_name = serializers.CharField(source="zone.name", read_only=True)
+    photo_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Legacy
+        fields = [
+            "id", "full_name", "occupation", "relationship_to_person",
+            "slug", "zone_name", "photo_url",
+            "story", "story_en", "story_om", "original_language",
+            "status", "created_at",
+        ]
+
+    def get_photo_url(self, obj):
+        if obj.photo:
+            return obj.photo.url
+        return None
 
 
 class TributeSerializer(serializers.ModelSerializer):

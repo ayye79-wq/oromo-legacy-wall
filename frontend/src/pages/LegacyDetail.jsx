@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { fetchLegacy } from '../api';
 import { useLang } from '../i18n/LanguageContext';
 import TributeSection from '../components/TributeSection';
@@ -13,12 +14,31 @@ function formatDate(dateStr, lang) {
   });
 }
 
+function Lightbox({ src, name, onClose }) {
+  useEffect(() => {
+    function onKey(e) { if (e.key === 'Escape') onClose(); }
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div className="lightbox-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={`Portrait of ${name}`}>
+      <button className="lightbox-close" onClick={onClose} aria-label="Close">✕</button>
+      <div className="lightbox-inner" onClick={e => e.stopPropagation()}>
+        <img src={src} alt={name} className="lightbox-img" />
+        <p className="lightbox-caption">{name}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function LegacyDetail() {
   const { slug } = useParams();
   const { lang, t } = useLang();
   const [legacy, setLegacy] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -28,6 +48,8 @@ export default function LegacyDetail() {
       .catch(err => setError(err.status === 404 ? 'not_found' : 'error'))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  const closeLightbox = useCallback(() => setLightboxOpen(false), []);
 
   if (loading) {
     return (
@@ -68,7 +90,10 @@ export default function LegacyDetail() {
     );
   }
 
-  const { full_name, occupation, zone_name, story, story_en, story_om, original_language, photo_url, approved_at } = legacy;
+  const {
+    full_name, occupation, relationship_to_person, zone_name,
+    story, story_en, story_om, original_language, photo_url, approved_at,
+  } = legacy;
 
   function resolveStory() {
     if (lang === 'om') {
@@ -85,8 +110,38 @@ export default function LegacyDetail() {
 
   const { text: storyText, note: storyNote } = resolveStory();
 
+  const pageTitle = `${full_name} — Oromo Legacy Wall`;
+  const pageDesc = (story_en || story || '').slice(0, 200).trim();
+  const canonicalUrl = `${window.location.origin}/legacy/${slug}`;
+  const absolutePhoto = photo_url
+    ? (photo_url.startsWith('http') ? photo_url : `${window.location.origin}${photo_url}`)
+    : null;
+
   return (
     <div className="detail-page">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href={canonicalUrl} />
+
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Oromo Legacy Wall" />
+        {absolutePhoto && <meta property="og:image" content={absolutePhoto} />}
+        {absolutePhoto && <meta property="og:image:alt" content={`Portrait of ${full_name}`} />}
+
+        <meta name="twitter:card" content={absolutePhoto ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDesc} />
+        {absolutePhoto && <meta name="twitter:image" content={absolutePhoto} />}
+      </Helmet>
+
+      {lightboxOpen && photo_url && (
+        <Lightbox src={photo_url} name={full_name} onClose={closeLightbox} />
+      )}
+
       <div className="detail-hero">
         {photo_url && (
           <div
@@ -101,7 +156,15 @@ export default function LegacyDetail() {
 
           <div className="detail-portrait-wrap">
             {photo_url ? (
-              <img src={photo_url} alt={full_name} className="detail-portrait" />
+              <button
+                className="detail-portrait-btn"
+                onClick={() => setLightboxOpen(true)}
+                title="Click to enlarge portrait"
+                aria-label={`Enlarge portrait of ${full_name}`}
+              >
+                <img src={photo_url} alt={full_name} className="detail-portrait" />
+                <span className="portrait-enlarge-hint" aria-hidden="true">⤢</span>
+              </button>
             ) : (
               <div className="detail-portrait-placeholder" aria-hidden="true">
                 <span>{full_name.charAt(0)}</span>
@@ -156,6 +219,18 @@ export default function LegacyDetail() {
             <dl className="sidebar-dl">
               <dt>{t('detail.name')}</dt>
               <dd>{full_name}</dd>
+              {occupation && (
+                <>
+                  <dt>Occupation</dt>
+                  <dd>{occupation}</dd>
+                </>
+              )}
+              {relationship_to_person && (
+                <>
+                  <dt>Submitted by</dt>
+                  <dd>{relationship_to_person}</dd>
+                </>
+              )}
               {zone_name && (
                 <>
                   <dt>{t('detail.region')}</dt>

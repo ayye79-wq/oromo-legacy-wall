@@ -5,6 +5,8 @@ import { useLang } from '../i18n/LanguageContext';
 import LegacyCard from '../components/LegacyCard';
 import './Home.css';
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 function FlameIcon() {
   return (
     <svg className="hero-flame" viewBox="0 0 36 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -52,6 +54,20 @@ function OdaaWatermark() {
   );
 }
 
+function SkeletonCard() {
+  return (
+    <div className="skeleton-card" aria-hidden="true">
+      <div className="skeleton-photo" />
+      <div className="skeleton-body">
+        <div className="skeleton-line skeleton-name" />
+        <div className="skeleton-line skeleton-occ" />
+        <div className="skeleton-line skeleton-text" />
+        <div className="skeleton-line skeleton-text short" />
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const { t } = useLang();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -60,9 +76,17 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ count: 0, next: null, previous: null });
   const [page, setPage] = useState(1);
+  const [heroCount, setHeroCount] = useState(null);
 
   const q = searchParams.get('q') || '';
   const zone = searchParams.get('zone') || '';
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/count/`)
+      .then(r => r.json())
+      .then(data => setHeroCount(data.approved ?? null))
+      .catch(() => {});
+  }, []);
 
   const load = useCallback(async (currentPage = 1) => {
     setLoading(true);
@@ -125,6 +149,16 @@ export default function Home() {
             <span className="ornament-line" />
           </div>
           <p className="hero-sub">{t('hero.subtitle')}</p>
+
+          {heroCount !== null && (
+            <div className="hero-counter">
+              <span className="hero-counter-number">{heroCount.toLocaleString()}</span>
+              <span className="hero-counter-label">
+                {heroCount === 1 ? 'life honored on this wall' : 'lives honored on this wall'}
+              </span>
+            </div>
+          )}
+
           <div className="hero-actions">
             <Link to="/submit" className="btn btn-primary">{t('hero.btn_honor')}</Link>
             <a href="#wall" className="btn btn-outline">{t('hero.btn_explore')}</a>
@@ -186,9 +220,8 @@ export default function Home() {
           )}
 
           {loading ? (
-            <div className="page-loading">
-              <div className="spinner" />
-              <span>Gathering stories…</span>
+            <div className="legacy-grid">
+              {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
           ) : legacies.length === 0 ? (
             <div className="empty-state">

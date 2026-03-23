@@ -229,3 +229,49 @@
   border-color: var(--accent);
   color: var(--accent);
 }
+
+/* ── Afaan Oromo character picker ── */
+.char-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  background: rgba(212,175,55,0.05);
+  border: 1px solid rgba(212,175,55,0.14);
+  border-radius: 6px 6px 0 0;
+}
+
+.char-picker-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: 0.2rem;
+  flex-shrink: 0;
+}
+
+.char-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212,175,55,0.2);
+  color: var(--text-secondary);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.82rem;
+  padding: 0.22rem 0.52rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  line-height: 1.4;
+}
+
+.char-btn:hover {
+  background: rgba(212,175,55,0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.char-btn:active {
+  transform: scale(0.95);
+}
