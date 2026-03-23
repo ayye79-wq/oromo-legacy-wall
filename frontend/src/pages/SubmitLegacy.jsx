@@ -382,7 +382,7 @@ export default function SubmitLegacy() {
               )}
 
               <label htmlFor="photo" className="file-upload-label">
-                <span>🕯</span>
+                <span className="upload-icon">📷</span>
                 <span>{form.photo ? form.photo.name : t('submit.photo_choose')}</span>
                 <input
                   id="photo"
@@ -394,6 +394,7 @@ export default function SubmitLegacy() {
                 />
               </label>
               {errors.photo && <span className="form-error">{errors.photo}</span>}
+              <p className="photo-reassure">{t('submit.photo_reassure')}</p>
               <span className="form-help">{t('submit.photo_help')}</span>
             </div>
           </div>

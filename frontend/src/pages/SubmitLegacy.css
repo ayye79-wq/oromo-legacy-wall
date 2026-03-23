@@ -101,20 +101,46 @@
 
 .file-upload-label {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  background: #090c16;
-  border: 1px dashed var(--border-light);
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 2rem 1.5rem;
+  background: rgba(9, 12, 22, 0.8);
+  border: 1px dashed rgba(212, 175, 55, 0.3);
+  border-radius: 6px;
   cursor: pointer;
-  color: var(--text-muted);
+  color: var(--gold-soft);
   font-size: 1rem;
+  font-family: 'EB Garamond', Georgia, serif;
   font-style: italic;
-  transition: border-color 0.2s, color 0.2s;
+  text-align: center;
+  transition: border-color 0.25s, color 0.25s, background 0.25s, box-shadow 0.25s;
+}
+.file-upload-label .upload-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
 }
 .file-upload-label:hover {
   border-color: var(--accent);
-  color: var(--accent-light);
+  color: var(--accent);
+  background: rgba(212, 175, 55, 0.04);
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.07);
+}
+.file-upload-label:hover .upload-icon {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.photo-reassure {
+  margin-top: 0.65rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-style: italic;
+  font-family: 'EB Garamond', Georgia, serif;
+  text-align: center;
 }
 
 .file-input-hidden {
