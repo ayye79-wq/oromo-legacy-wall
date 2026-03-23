@@ -32,9 +32,9 @@
 .brand-odaa {
   width: 28px;
   height: 24px;
-  color: var(--accent);
+  color: #5c9e4c;
   flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .brand-text {
