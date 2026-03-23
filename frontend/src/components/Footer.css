@@ -11,10 +11,12 @@
   height: 6px;
   width: 100%;
   margin-bottom: 2.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
-.stripe-black { flex: 1; background: #111111; opacity: 0.85; }
-.stripe-red   { flex: 1; background: #c8232c; opacity: 0.85; }
-.stripe-white { flex: 1; background: #e8e0d0; opacity: 0.70; }
+.stripe-black { flex: 1; background: #2a2a2a; }
+.stripe-red   { flex: 1; background: #c8232c; }
+.stripe-white { flex: 1; background: #e8e0d0; opacity: 0.80; }
 
 .footer-ornament {
   display: flex;
