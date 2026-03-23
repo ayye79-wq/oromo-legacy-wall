@@ -23,9 +23,9 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="gadaa-stripe" aria-hidden="true">
+        <span className="stripe-black" />
         <span className="stripe-red" />
         <span className="stripe-white" />
-        <span className="stripe-green" />
       </div>
 
       <div className="footer-ornament" aria-hidden="true">

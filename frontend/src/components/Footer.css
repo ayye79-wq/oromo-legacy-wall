@@ -12,9 +12,9 @@
   width: 100%;
   margin-bottom: 2.5rem;
 }
-.stripe-red   { flex: 1; background: #c8232c; opacity: 0.75; }
-.stripe-white { flex: 1; background: #e8e0d0; opacity: 0.55; }
-.stripe-green { flex: 1; background: #3a7d44; opacity: 0.75; }
+.stripe-black { flex: 1; background: #111111; opacity: 0.85; }
+.stripe-red   { flex: 1; background: #c8232c; opacity: 0.85; }
+.stripe-white { flex: 1; background: #e8e0d0; opacity: 0.70; }
 
 .footer-ornament {
   display: flex;
