@@ -151,30 +151,35 @@ export default function Home() {
           <div className="search-row">
             <form className="search-bar" onSubmit={handleSearch}>
               <div className="search-input-wrap">
+                <span className="search-icon" aria-hidden="true">🔍</span>
                 <input
                   name="q"
                   type="search"
                   className="form-input search-input"
-                  placeholder="Search by name or story…"
+                  placeholder="Search by name, location, or story…"
                   defaultValue={q}
                   key={q}
                 />
+                <button type="submit" className="btn btn-primary search-btn-inline">Search</button>
               </div>
-              <select name="zone" className="form-select zone-select" defaultValue={zone} key={zone}>
-                <option value="">All Zones of Oromiyaa</option>
-                {zones.map(z => (
-                  <option key={z.id} value={z.slug}>{z.name}</option>
-                ))}
-              </select>
-              <button type="submit" className="btn btn-primary">Search</button>
+              <div className="zone-filter-wrap">
+                <span className="zone-filter-label">Filter by Zone</span>
+                <select name="zone" className="form-select zone-select" defaultValue={zone} key={zone}>
+                  <option value="">All Zones of Oromiyaa</option>
+                  {zones.map(z => (
+                    <option key={z.id} value={z.slug}>{z.name}</option>
+                  ))}
+                </select>
+              </div>
               {(q || zone) && (
                 <button type="button" className="btn btn-ghost" onClick={() => setSearchParams({})}>
-                  Clear
+                  Clear filters
                 </button>
               )}
             </form>
             <Link to="/submit" className="btn btn-outline btn-honor">Honor a Life</Link>
           </div>
+          <p className="search-hint">Names, hometown, or words from their story</p>
 
           {(q || zone) && (
             <p className="search-result-info">

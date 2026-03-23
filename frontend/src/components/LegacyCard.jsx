@@ -7,9 +7,26 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 }
 
+function PersonSilhouette() {
+  return (
+    <svg
+      className="card-silhouette"
+      viewBox="0 0 120 140"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <circle cx="60" cy="42" r="26" fill="currentColor" />
+      <path
+        d="M10 130 C10 100 28 84 60 84 C92 84 110 100 110 130 Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 export default function LegacyCard({ legacy }) {
-  const { full_name, slug, zone_name, story, photo_url, approved_at } = legacy;
-  const initial = full_name ? full_name.trim().charAt(0).toUpperCase() : '?';
+  const { full_name, occupation, slug, zone_name, story_preview, photo_url, approved_at } = legacy;
 
   return (
     <Link to={`/legacy/${slug}`} className="legacy-card">
@@ -19,7 +36,7 @@ export default function LegacyCard({ legacy }) {
           <img src={photo_url} alt={full_name} className="card-photo" loading="lazy" />
         ) : (
           <div className="card-photo-placeholder" aria-hidden="true">
-            <span className="card-initial">{initial}</span>
+            <PersonSilhouette />
           </div>
         )}
       </div>
@@ -27,11 +44,17 @@ export default function LegacyCard({ legacy }) {
       <div className="card-body">
         <h3 className="card-name">{full_name}</h3>
 
+        {occupation && (
+          <p className="card-occupation">{occupation}</p>
+        )}
+
         {zone_name && (
           <span className="tag tag-zone card-zone">{zone_name}</span>
         )}
 
-        <p className="card-story">{story}</p>
+        {!occupation && story_preview && (
+          <p className="card-story">{story_preview}</p>
+        )}
 
         {approved_at && (
           <time className="card-date" dateTime={approved_at}>

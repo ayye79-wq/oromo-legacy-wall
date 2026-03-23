@@ -22,7 +22,7 @@
 .hero-pattern {
   position: absolute;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpath d='M24 2 L46 24 L24 46 L2 24 Z' fill='none' stroke='rgba(212,168,67,0.045)' stroke-width='0.8'/%3E%3Cpath d='M24 10 L38 24 L24 38 L10 24 Z' fill='none' stroke='rgba(212,168,67,0.03)' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpath d='M24 2 L46 24 L24 46 L2 24 Z' fill='none' stroke='rgba(212,168,67,0.032)' stroke-width='0.8'/%3E%3Cpath d='M24 10 L38 24 L24 38 L10 24 Z' fill='none' stroke='rgba(212,168,67,0.018)' stroke-width='0.5'/%3E%3C/svg%3E");
   background-repeat: repeat;
   pointer-events: none;
   opacity: 1;
@@ -74,6 +74,8 @@
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 1rem;
+  animation: fadeInUp 0.8s ease both;
+  animation-delay: 0.1s;
 }
 
 .hero-title {
@@ -84,6 +86,8 @@
   color: var(--text-primary);
   margin-bottom: 1.25rem;
   letter-spacing: 0.01em;
+  animation: fadeInUp 0.9s ease both;
+  animation-delay: 0.25s;
 }
 
 .hero-ornament {
@@ -111,6 +115,8 @@
   line-height: 1.85;
   margin-bottom: 2.5rem;
   font-style: italic;
+  animation: fadeInUp 1s ease both;
+  animation-delay: 0.4s;
 }
 
 .hero-actions {
@@ -118,6 +124,8 @@
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+  animation: fadeInUp 1s ease both;
+  animation-delay: 0.6s;
 }
 
 /* ── Wall Section ── */
@@ -180,15 +188,68 @@
 
 .search-input-wrap {
   flex: 1;
-  min-width: 200px;
+  min-width: 220px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.85rem;
+  font-size: 0.85rem;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.45;
 }
 
 .search-input {
   width: 100%;
+  padding-left: 2.25rem !important;
+  padding-right: 6.5rem !important;
+}
+
+.search-btn-inline {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 0;
+  font-size: 0.88rem;
+  padding: 0 1.25rem;
+  white-space: nowrap;
+}
+
+.zone-filter-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 200px;
+}
+
+.zone-filter-label {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.7;
+  white-space: nowrap;
 }
 
 .zone-select {
-  min-width: 200px;
+  flex: 1;
+  min-width: 0;
+}
+
+.search-hint {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: -1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.75;
 }
 
 .btn-honor {

@@ -292,3 +292,29 @@ a:hover { color: var(--accent-pale); }
   border: 1px solid rgba(201, 112, 112, 0.3);
   color: #d9958e;
 }
+
+/* ── Animations ── */
+@keyframes flamePulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(212,168,67,0.35)) drop-shadow(0 0 14px rgba(212,168,67,0.15));
+    transform: scaleY(1) scaleX(1);
+  }
+  40% {
+    filter: drop-shadow(0 0 18px rgba(232,194,104,0.6)) drop-shadow(0 0 32px rgba(212,168,67,0.25));
+    transform: scaleY(1.04) scaleX(0.97);
+  }
+  70% {
+    filter: drop-shadow(0 0 10px rgba(212,168,67,0.45)) drop-shadow(0 0 20px rgba(212,168,67,0.2));
+    transform: scaleY(0.98) scaleX(1.01);
+  }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

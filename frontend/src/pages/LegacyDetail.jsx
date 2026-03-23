@@ -61,7 +61,7 @@ export default function LegacyDetail() {
     );
   }
 
-  const { full_name, zone_name, story, photo_url, approved_at } = legacy;
+  const { full_name, occupation, zone_name, story, photo_url, approved_at } = legacy;
 
   return (
     <div className="detail-page">
@@ -90,6 +90,9 @@ export default function LegacyDetail() {
           <div className="detail-meta">
             {zone_name && <span className="tag tag-zone">{zone_name}</span>}
             <h1 className="detail-name">{full_name}</h1>
+            {occupation && (
+              <p className="detail-occupation">{occupation}</p>
+            )}
             {approved_at && (
               <time className="detail-date" dateTime={approved_at}>
                 Honored on the wall · {formatDate(approved_at)}

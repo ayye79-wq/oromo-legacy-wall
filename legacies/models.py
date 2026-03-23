@@ -36,6 +36,7 @@ class Legacy(models.Model):
     ]
 
     full_name = models.CharField(max_length=200)
+    occupation = models.CharField(max_length=200, blank=True, default='')
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT, related_name="legacies")
     story = models.TextField()
     photo = models.ImageField(upload_to="legacy_photos/", blank=True, null=True)

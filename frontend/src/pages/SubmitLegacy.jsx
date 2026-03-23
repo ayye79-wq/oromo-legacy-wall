@@ -5,7 +5,7 @@ import './SubmitLegacy.css';
 
 export default function SubmitLegacy() {
   const [zones, setZones] = useState([]);
-  const [form, setForm] = useState({ full_name: '', zone: '', story: '', photo: null });
+  const [form, setForm] = useState({ full_name: '', occupation: '', zone: '', story: '', photo: null });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -57,6 +57,7 @@ export default function SubmitLegacy() {
 
     const fd = new FormData();
     fd.append('full_name', form.full_name.trim());
+    if (form.occupation.trim()) fd.append('occupation', form.occupation.trim());
     fd.append('zone', form.zone);
     fd.append('story', form.story.trim());
     if (form.photo) fd.append('photo', form.photo);
@@ -64,7 +65,7 @@ export default function SubmitLegacy() {
     try {
       await submitLegacy(fd);
       setSuccess(true);
-      setForm({ full_name: '', zone: '', story: '', photo: null });
+      setForm({ full_name: '', occupation: '', zone: '', story: '', photo: null });
       setPreviewUrl(null);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -148,6 +149,22 @@ export default function SubmitLegacy() {
                 onChange={handleChange}
               />
               {errors.full_name && <span className="form-error">{errors.full_name}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="occupation" className="form-label">
+                Their Role or Calling <span className="optional-label">(optional)</span>
+              </label>
+              <input
+                id="occupation"
+                name="occupation"
+                type="text"
+                className="form-input"
+                placeholder="e.g. Teacher, farmer, mother of seven, community elder…"
+                value={form.occupation}
+                onChange={handleChange}
+              />
+              <span className="form-help">One line that captures who they were. This appears on their memorial card.</span>
             </div>
 
             <div className="form-group">

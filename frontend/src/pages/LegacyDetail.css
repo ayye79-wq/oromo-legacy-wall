@@ -103,6 +103,15 @@
   letter-spacing: 0.01em;
 }
 
+.detail-occupation {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--accent-light);
+  opacity: 0.9;
+  letter-spacing: 0.01em;
+}
+
 .detail-date {
   font-family: 'Segoe UI', system-ui, sans-serif;
   font-size: 0.84rem;
