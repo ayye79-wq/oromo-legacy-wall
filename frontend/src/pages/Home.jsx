@@ -131,7 +131,7 @@ export default function Home() {
           </p>
           <div className="hero-actions">
             <Link to="/submit" className="btn btn-primary">Honor a Life</Link>
-            <a href="#wall" className="btn btn-outline">Enter the Memorial Wall</a>
+            <a href="#wall" className="btn btn-outline">Explore the Memorial</a>
           </div>
         </div>
       </section>
