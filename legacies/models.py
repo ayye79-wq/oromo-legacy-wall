@@ -64,3 +64,32 @@ class Legacy(models.Model):
 
     def __str__(self):
         return self.full_name
+
+    @property
+    def candle_count(self):
+        return self.tributes.filter(tribute_type=Tribute.CANDLE).count()
+
+    @property
+    def message_count(self):
+        return self.tributes.filter(tribute_type=Tribute.MESSAGE).count()
+
+
+class Tribute(models.Model):
+    CANDLE = 'candle'
+    MESSAGE = 'message'
+    TYPE_CHOICES = [
+        (CANDLE, 'Candle'),
+        (MESSAGE, 'Message'),
+    ]
+
+    legacy = models.ForeignKey(Legacy, on_delete=models.CASCADE, related_name='tributes')
+    tribute_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    author_name = models.CharField(max_length=100, blank=True, default='')
+    message = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.tribute_type} for {self.legacy.full_name}"

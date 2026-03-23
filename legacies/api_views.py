@@ -3,13 +3,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
-from .models import Legacy, Zone
+from .models import Legacy, Zone, Tribute
 from .serializers import (
     ZoneSerializer,
     LegacyListSerializer,
     LegacyDetailSerializer,
     LegacySubmitSerializer,
+    TributeSerializer,
 )
 
 
@@ -66,4 +68,30 @@ class LegacySubmitView(APIView):
                 {"message": "Thank you. Your submission was received and will be reviewed before it appears publicly."},
                 status=status.HTTP_201_CREATED,
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TributeListCreateView(APIView):
+    def get(self, request, slug):
+        legacy = get_object_or_404(Legacy, slug=slug, status=Legacy.STATUS_APPROVED)
+        tributes = legacy.tributes.all()
+        candle_count = tributes.filter(tribute_type=Tribute.CANDLE).count()
+        messages_qs = tributes.filter(tribute_type=Tribute.MESSAGE)
+        serializer = TributeSerializer(messages_qs, many=True)
+        return Response({
+            "candle_count": candle_count,
+            "message_count": messages_qs.count(),
+            "messages": serializer.data,
+        })
+
+    def post(self, request, slug):
+        legacy = get_object_or_404(Legacy, slug=slug, status=Legacy.STATUS_APPROVED)
+        serializer = TributeSerializer(data=request.data)
+        if serializer.is_valid():
+            tribute = serializer.save(legacy=legacy)
+            candle_count = legacy.tributes.filter(tribute_type=Tribute.CANDLE).count()
+            return Response({
+                "tribute": TributeSerializer(tribute).data,
+                "candle_count": candle_count,
+            }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

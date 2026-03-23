@@ -4,6 +4,7 @@ from . import views, api_views
 urlpatterns = [
     path("api/zones/", api_views.ZoneListView.as_view(), name="api-zones"),
     path("api/legacies/submit/", api_views.LegacySubmitView.as_view(), name="api-submit"),
+    path("api/legacies/<slug:slug>/tributes/", api_views.TributeListCreateView.as_view(), name="api-tributes"),
     path("api/legacies/<slug:slug>/", api_views.LegacyDetailView.as_view(), name="api-legacy-detail"),
     path("api/legacies/", api_views.LegacyListView.as_view(), name="api-legacies"),
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Legacy, Zone
+from .models import Legacy, Zone, Tribute
 
 
 class ZoneSerializer(serializers.ModelSerializer):
@@ -48,3 +48,15 @@ class LegacySubmitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Legacy
         fields = ["full_name", "occupation", "zone", "story", "photo"]
+
+
+class TributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tribute
+        fields = ["id", "tribute_type", "author_name", "message", "created_at"]
+        read_only_fields = ["id", "created_at"]
+
+    def validate(self, data):
+        if data.get("tribute_type") == Tribute.MESSAGE and not data.get("message", "").strip():
+            raise serializers.ValidationError({"message": "A message tribute requires message text."})
+        return data

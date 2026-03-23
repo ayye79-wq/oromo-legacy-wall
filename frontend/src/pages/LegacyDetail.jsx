@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchLegacy } from '../api';
+import TributeSection from '../components/TributeSection';
 import './LegacyDetail.css';
 
 function formatDate(dateStr) {
@@ -154,6 +155,8 @@ export default function LegacyDetail() {
           </div>
         </aside>
       </div>
+
+      <TributeSection slug={slug} />
     </div>
   );
 }
