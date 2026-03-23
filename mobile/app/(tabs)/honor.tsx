@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useQuery } from '@tanstack/react-query';
 import { fetchZones, submitLegacy, Zone } from '@/lib/api';
+import { useLang } from '@/lib/lang';
 
 const ACCENT = '#c9923a';
 const BG = '#0e0a06';
@@ -29,11 +30,18 @@ const BORDER = '#2c1e0a';
 const BORDER_LIGHT = '#3e2c12';
 const ERROR = '#c97070';
 
+type StoryLang = 'en' | 'om' | 'both';
+
 export default function HonorScreen() {
   const insets = useSafeAreaInsets();
+  const { lang, t } = useLang();
+
   const [fullName, setFullName] = useState('');
+  const [occupation, setOccupation] = useState('');
   const [zoneId, setZoneId] = useState('');
-  const [story, setStory] = useState('');
+  const [storyLang, setStoryLang] = useState<StoryLang>('en');
+  const [storyEn, setStoryEn] = useState('');
+  const [storyOm, setStoryOm] = useState('');
   const [photo, setPhoto] = useState<{ uri: string; name: string; type: string } | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -64,10 +72,19 @@ export default function HonorScreen() {
 
   function validate() {
     const errs: Record<string, string> = {};
-    if (!fullName.trim()) errs.full_name = 'Their full name is required.';
-    if (!zoneId) errs.zone = 'Please select a zone.';
-    if (!story.trim()) errs.story = 'Please share their story.';
-    if (story.trim().length < 30) errs.story = 'Please write a little more — at least 30 characters.';
+    if (!fullName.trim()) errs.full_name = t('err_name');
+    if (!zoneId) errs.zone = t('err_zone');
+    const enTrimmed = storyEn.trim();
+    const omTrimmed = storyOm.trim();
+    if (storyLang === 'en' && !enTrimmed) errs.story_en = t('err_story');
+    else if (storyLang === 'en' && enTrimmed.length < 30) errs.story_en = t('err_story_short');
+    if (storyLang === 'om' && !omTrimmed) errs.story_om = t('err_story');
+    else if (storyLang === 'om' && omTrimmed.length < 30) errs.story_om = t('err_story_short');
+    if (storyLang === 'both') {
+      if (!enTrimmed && !omTrimmed) errs.story_en = t('err_story');
+      else if (enTrimmed && enTrimmed.length < 30) errs.story_en = t('err_story_short');
+      else if (omTrimmed && omTrimmed.length < 30) errs.story_om = t('err_story_short');
+    }
     return errs;
   }
 
@@ -82,8 +99,19 @@ export default function HonorScreen() {
 
     const fd = new FormData();
     fd.append('full_name', fullName.trim());
+    if (occupation.trim()) fd.append('occupation', occupation.trim());
     fd.append('zone', zoneId);
-    fd.append('story', story.trim());
+    fd.append('original_language', storyLang === 'both' ? 'both' : storyLang);
+
+    if (storyLang === 'en' || storyLang === 'both') {
+      if (storyEn.trim()) fd.append('story_en', storyEn.trim());
+    }
+    if (storyLang === 'om' || storyLang === 'both') {
+      if (storyOm.trim()) fd.append('story_om', storyOm.trim());
+    }
+    const primaryStory = storyEn.trim() || storyOm.trim();
+    fd.append('story', primaryStory);
+
     if (photo) {
       fd.append('photo', { uri: photo.uri, name: photo.name, type: photo.type } as any);
     }
@@ -92,8 +120,10 @@ export default function HonorScreen() {
       await submitLegacy(fd);
       setSuccess(true);
       setFullName('');
+      setOccupation('');
       setZoneId('');
-      setStory('');
+      setStoryEn('');
+      setStoryOm('');
       setPhoto(null);
     } catch (err: any) {
       if (err.data) {
@@ -117,20 +147,21 @@ export default function HonorScreen() {
       <View style={[styles.container, { paddingTop: topPad }]}>
         <View style={styles.successWrap}>
           <Ionicons name="flame" size={48} color={ACCENT} style={{ opacity: 0.7, marginBottom: 20 }} />
-          <Text style={styles.successTitle}>Their Story Has Been Received</Text>
+          <Text style={styles.successTitle}>{t('success_title')}</Text>
           <View style={styles.successDivider} />
-          <Text style={styles.successText}>
-            Your tribute has been received. A community moderator will review it
-            carefully before it appears on the Memorial Wall. Thank you for
-            preserving this life for generations to come.
-          </Text>
+          <Text style={styles.successText}>{t('success_body')}</Text>
           <TouchableOpacity style={styles.successBtn} onPress={() => setSuccess(false)}>
-            <Text style={styles.successBtnText}>Honor Another Life</Text>
+            <Text style={styles.successBtnText}>{t('honor_another')}</Text>
           </TouchableOpacity>
         </View>
       </View>
     );
   }
+
+  const showEnField = storyLang === 'en' || storyLang === 'both';
+  const showOmField = storyLang === 'om' || storyLang === 'both';
+  const enChars = storyEn.length;
+  const omChars = storyOm.length;
 
   return (
     <KeyboardAvoidingView
@@ -139,8 +170,8 @@ export default function HonorScreen() {
     >
       <View style={[styles.container, { paddingTop: topPad }]}>
         <View style={styles.header}>
-          <Text style={styles.headerKicker}>In Their Memory</Text>
-          <Text style={styles.headerTitle}>Honor a Life</Text>
+          <Text style={styles.headerKicker}>{t('honor_kicker')}</Text>
+          <Text style={styles.headerTitle}>{t('honor_title')}</Text>
         </View>
 
         <ScrollView
@@ -149,28 +180,40 @@ export default function HonorScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Who Are You Honoring?</Text>
+            <Text style={styles.sectionTitle}>{t('who_honoring')}</Text>
 
             <View style={styles.field}>
-              <Text style={styles.label}>FULL NAME <Text style={styles.required}>*</Text></Text>
+              <Text style={styles.label}>{t('full_name_label')} <Text style={styles.required}>*</Text></Text>
               <TextInput
                 style={[styles.input, errors.full_name ? styles.inputError : null]}
                 placeholder="Their full name…"
                 placeholderTextColor={TEXT_MUTED}
                 value={fullName}
-                onChangeText={(t) => { setFullName(t); setErrors((e) => ({ ...e, full_name: '' })); }}
+                onChangeText={(v) => { setFullName(v); setErrors((e) => ({ ...e, full_name: '' })); }}
               />
               {errors.full_name ? <Text style={styles.errorText}>{errors.full_name}</Text> : null}
             </View>
 
             <View style={styles.field}>
-              <Text style={styles.label}>ZONE OF OROMIYAA <Text style={styles.required}>*</Text></Text>
+              <Text style={styles.label}>{t('role_label')} <Text style={styles.optional}>(optional)</Text></Text>
+              <TextInput
+                style={styles.input}
+                placeholder={t('role_placeholder')}
+                placeholderTextColor={TEXT_MUTED}
+                value={occupation}
+                onChangeText={setOccupation}
+              />
+              <Text style={styles.helpText}>{t('role_help')}</Text>
+            </View>
+
+            <View style={styles.field}>
+              <Text style={styles.label}>{t('zone_label')} <Text style={styles.required}>*</Text></Text>
               <TouchableOpacity
                 style={[styles.input, styles.selectInput, errors.zone ? styles.inputError : null]}
                 onPress={() => setShowZones(!showZones)}
               >
                 <Text style={selectedZone ? styles.inputText : styles.placeholderText}>
-                  {selectedZone?.name || 'Select their zone…'}
+                  {selectedZone?.name || t('zone_placeholder')}
                 </Text>
                 <Ionicons name={showZones ? 'chevron-up' : 'chevron-down'} size={14} color={TEXT_MUTED} />
               </TouchableOpacity>
@@ -194,28 +237,66 @@ export default function HonorScreen() {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Their Story</Text>
-            <Text style={styles.sectionNote}>
-              Share who they were, what they meant to you, their life and legacy.
-            </Text>
+            <Text style={styles.sectionTitle}>{t('story_section')}</Text>
+            <Text style={styles.sectionNote}>{t('story_note')}</Text>
+
             <View style={styles.field}>
-              <Text style={styles.label}>BIOGRAPHY &amp; STORY <Text style={styles.required}>*</Text></Text>
-              <TextInput
-                style={[styles.input, styles.textArea, errors.story ? styles.inputError : null]}
-                placeholder="In the words of those who loved them…"
-                placeholderTextColor={TEXT_MUTED}
-                value={story}
-                onChangeText={(t) => { setStory(t); setErrors((e) => ({ ...e, story: '' })); }}
-                multiline
-                textAlignVertical="top"
-              />
-              {errors.story ? <Text style={styles.errorText}>{errors.story}</Text> : null}
-              <Text style={styles.helpText}>{story.length} characters written</Text>
+              <Text style={styles.label}>{t('story_lang_label')}</Text>
+              <View style={styles.storyLangRow}>
+                {(['en', 'om', 'both'] as StoryLang[]).map((opt) => {
+                  const labels = { en: t('story_lang_en'), om: t('story_lang_om'), both: t('story_lang_both') };
+                  return (
+                    <TouchableOpacity
+                      key={opt}
+                      style={[styles.storyLangChip, storyLang === opt && styles.storyLangChipActive]}
+                      onPress={() => setStoryLang(opt)}
+                    >
+                      <Text style={[styles.storyLangChipText, storyLang === opt && styles.storyLangChipTextActive]}>
+                        {labels[opt]}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </View>
+
+            {showEnField && (
+              <View style={styles.field}>
+                <Text style={styles.label}>{t('story_en_label')} <Text style={styles.required}>*</Text></Text>
+                <TextInput
+                  style={[styles.input, styles.textArea, errors.story_en ? styles.inputError : null]}
+                  placeholder={t('story_placeholder_en')}
+                  placeholderTextColor={TEXT_MUTED}
+                  value={storyEn}
+                  onChangeText={(v) => { setStoryEn(v); setErrors((e) => ({ ...e, story_en: '' })); }}
+                  multiline
+                  textAlignVertical="top"
+                />
+                {errors.story_en ? <Text style={styles.errorText}>{errors.story_en}</Text> : null}
+                <Text style={styles.helpText}>{enChars} {t('chars_written')}</Text>
+              </View>
+            )}
+
+            {showOmField && (
+              <View style={styles.field}>
+                <Text style={styles.label}>{t('story_om_label')} <Text style={styles.required}>*</Text></Text>
+                <TextInput
+                  style={[styles.input, styles.textArea, errors.story_om ? styles.inputError : null]}
+                  placeholder={t('story_placeholder_om')}
+                  placeholderTextColor={TEXT_MUTED}
+                  value={storyOm}
+                  onChangeText={(v) => { setStoryOm(v); setErrors((e) => ({ ...e, story_om: '' })); }}
+                  multiline
+                  textAlignVertical="top"
+                />
+                {errors.story_om ? <Text style={styles.errorText}>{errors.story_om}</Text> : null}
+                <Text style={styles.helpText}>{omChars} {t('chars_written')}</Text>
+              </View>
+            )}
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>A Portrait <Text style={styles.optional}>(optional)</Text></Text>
+            <Text style={styles.sectionTitle}>{t('photo_section')} <Text style={styles.optional}>(optional)</Text></Text>
 
             {photo ? (
               <View style={styles.photoPreview}>
@@ -227,7 +308,7 @@ export default function HonorScreen() {
             ) : (
               <TouchableOpacity style={styles.photoBtn} onPress={pickPhoto}>
                 <Ionicons name="image-outline" size={20} color={TEXT_MUTED} />
-                <Text style={styles.photoBtnText}>Choose a photograph…</Text>
+                <Text style={styles.photoBtnText}>{t('choose_photo')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -248,7 +329,7 @@ export default function HonorScreen() {
               <ActivityIndicator color="#0e0a06" size="small" />
             ) : null}
             <Text style={styles.submitBtnText}>
-              {submitting ? 'Preserving their memory…' : 'Place Their Story on the Wall'}
+              {submitting ? t('submitting') : t('submit_btn')}
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -297,7 +378,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   required: { color: ACCENT },
-  optional: { fontWeight: '400', color: TEXT_MUTED, textTransform: 'none', letterSpacing: 0, fontSize: 12 },
+  optional: { fontWeight: '400', color: TEXT_MUTED, textTransform: 'none', letterSpacing: 0, fontSize: 11 },
   input: {
     backgroundColor: '#0b0803',
     borderWidth: 1,
@@ -312,9 +393,24 @@ const styles = StyleSheet.create({
   placeholderText: { color: TEXT_MUTED, fontSize: 15, fontStyle: 'italic', flex: 1 },
   inputError: { borderColor: ERROR },
   selectInput: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  textArea: { minHeight: 160, paddingTop: 10 },
+  textArea: { minHeight: 140, paddingTop: 10 },
   errorText: { fontSize: 12, color: ERROR, marginTop: 4 },
   helpText: { fontSize: 11, color: TEXT_MUTED, marginTop: 4, fontStyle: 'italic' },
+  storyLangRow: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
+  storyLangChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: BORDER_LIGHT,
+    backgroundColor: '#0b0803',
+  },
+  storyLangChipActive: {
+    borderColor: ACCENT,
+    backgroundColor: 'rgba(201,146,58,0.12)',
+  },
+  storyLangChipText: { fontSize: 13, color: TEXT_MUTED },
+  storyLangChipTextActive: { color: ACCENT, fontWeight: '600' },
   zoneDropdown: {
     backgroundColor: '#0b0803',
     borderWidth: 1,

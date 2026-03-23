@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchLegacies, fetchZones, LegacyItem, Zone } from '@/lib/api';
+import { useLang } from '@/lib/lang';
 
 const ACCENT = '#c9923a';
 const ACCENT_LIGHT = '#ddb06a';
@@ -33,7 +34,12 @@ function formatDate(str: string | null): string {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 }
 
-function LegacyCard({ item, onPress }: { item: LegacyItem; onPress: () => void }) {
+function LegacyCard({ item, onPress, rememberedLabel, readMoreLabel }: {
+  item: LegacyItem;
+  onPress: () => void;
+  rememberedLabel: string;
+  readMoreLabel: string;
+}) {
   const initial = item.full_name?.charAt(0)?.toUpperCase() || '?';
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
@@ -50,17 +56,20 @@ function LegacyCard({ item, onPress }: { item: LegacyItem; onPress: () => void }
         </View>
         <View style={styles.cardContent}>
           <Text style={styles.cardName} numberOfLines={1}>{item.full_name}</Text>
+          {item.occupation ? (
+            <Text style={styles.cardOccupation} numberOfLines={1}>{item.occupation}</Text>
+          ) : null}
           {item.zone_name ? (
             <Text style={styles.cardZone}>{item.zone_name}</Text>
           ) : null}
-          <Text style={styles.cardStory} numberOfLines={2}>{item.story}</Text>
+          <Text style={styles.cardStory} numberOfLines={2}>{item.story_preview}</Text>
           {item.approved_at ? (
-            <Text style={styles.cardDate}>Remembered · {formatDate(item.approved_at)}</Text>
+            <Text style={styles.cardDate}>{rememberedLabel} · {formatDate(item.approved_at)}</Text>
           ) : null}
         </View>
       </View>
       <View style={styles.cardFooter}>
-        <Text style={styles.cardReadMore}>Read Their Story</Text>
+        <Text style={styles.cardReadMore}>{readMoreLabel}</Text>
         <Ionicons name="chevron-forward" size={12} color={ACCENT} />
       </View>
     </TouchableOpacity>
@@ -71,15 +80,17 @@ function ZoneFilter({
   zones,
   selected,
   onSelect,
+  allZonesLabel,
 }: {
   zones: Zone[];
   selected: string;
   onSelect: (slug: string) => void;
+  allZonesLabel: string;
 }) {
   return (
     <FlatList
       horizontal
-      data={[{ id: 0, name: 'All Zones', slug: '' }, ...zones]}
+      data={[{ id: 0, name: allZonesLabel, slug: '' }, ...zones]}
       keyExtractor={(z) => String(z.id)}
       contentContainerStyle={styles.zoneList}
       showsHorizontalScrollIndicator={false}
@@ -104,6 +115,7 @@ function ZoneFilter({
 export default function WallScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { lang, setLang, t } = useLang();
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   const [zone, setZone] = useState('');
@@ -140,8 +152,26 @@ export default function WallScreen() {
   return (
     <View style={[styles.container, { paddingTop: topPad }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Wall of Remembrance</Text>
-        <Text style={styles.headerSub}>Preserving Oromo lives with dignity</Text>
+        <View style={styles.headerRow}>
+          <View style={styles.headerText}>
+            <Text style={styles.headerTitle}>{t('wall_title')}</Text>
+            <Text style={styles.headerSub}>{t('wall_sub')}</Text>
+          </View>
+          <View style={styles.langToggle}>
+            <TouchableOpacity
+              style={[styles.langBtn, lang === 'en' && styles.langBtnActive]}
+              onPress={() => setLang('en')}
+            >
+              <Text style={[styles.langBtnText, lang === 'en' && styles.langBtnTextActive]}>EN</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.langBtn, lang === 'om' && styles.langBtnActive]}
+              onPress={() => setLang('om')}
+            >
+              <Text style={[styles.langBtnText, lang === 'om' && styles.langBtnTextActive]}>AO</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
 
       <View style={styles.searchRow}>
@@ -150,7 +180,7 @@ export default function WallScreen() {
           <TextInput
             ref={inputRef}
             style={styles.searchInput}
-            placeholder="Search by name or story…"
+            placeholder={t('search_placeholder')}
             placeholderTextColor={TEXT_MUTED}
             value={query}
             onChangeText={setQuery}
@@ -164,7 +194,7 @@ export default function WallScreen() {
           )}
         </View>
         <TouchableOpacity style={styles.searchBtn} onPress={handleSearch}>
-          <Text style={styles.searchBtnText}>Search</Text>
+          <Text style={styles.searchBtnText}>{t('search_btn')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -172,18 +202,19 @@ export default function WallScreen() {
         zones={zonesData || []}
         selected={zone}
         onSelect={handleZone}
+        allZonesLabel={t('all_zones')}
       />
 
       {isLoading ? (
         <View style={styles.centered}>
           <ActivityIndicator color={ACCENT} size="large" />
-          <Text style={styles.loadingText}>Gathering stories…</Text>
+          <Text style={styles.loadingText}>{t('loading')}</Text>
         </View>
       ) : legacies.length === 0 ? (
         <View style={styles.centered}>
           <Ionicons name="flame-outline" size={40} color={TEXT_MUTED} />
-          <Text style={styles.emptyTitle}>No lives honored yet</Text>
-          <Text style={styles.emptyText}>Be the first to preserve a story.</Text>
+          <Text style={styles.emptyTitle}>{t('empty_title')}</Text>
+          <Text style={styles.emptyText}>{t('empty_sub')}</Text>
         </View>
       ) : (
         <FlatList
@@ -193,6 +224,8 @@ export default function WallScreen() {
             <LegacyCard
               item={item}
               onPress={() => router.push(`/legacy/${item.slug}` as any)}
+              rememberedLabel={t('remembered')}
+              readMoreLabel={t('read_more')}
             />
           )}
           contentContainerStyle={styles.listContent}
@@ -209,7 +242,7 @@ export default function WallScreen() {
                 style={styles.loadMoreBtn}
                 onPress={() => setPage((p) => p + 1)}
               >
-                <Text style={styles.loadMoreText}>Load More</Text>
+                <Text style={styles.loadMoreText}>{t('load_more')}</Text>
               </TouchableOpacity>
             ) : null
           }
@@ -228,8 +261,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: BORDER,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+  headerText: { flex: 1, marginRight: 12 },
   headerTitle: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: '300',
     color: TEXT_PRIMARY,
     letterSpacing: 0.3,
@@ -240,6 +279,22 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontStyle: 'italic',
   },
+  langToggle: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#3e2c12',
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginTop: 4,
+  },
+  langBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: 'transparent',
+  },
+  langBtnActive: { backgroundColor: ACCENT },
+  langBtnText: { fontSize: 11, color: TEXT_MUTED, fontWeight: '700', letterSpacing: 0.5 },
+  langBtnTextActive: { color: '#0e0a06' },
   searchRow: {
     flexDirection: 'row',
     gap: 8,
@@ -335,6 +390,12 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: TEXT_PRIMARY,
     letterSpacing: 0.2,
+    marginBottom: 2,
+  },
+  cardOccupation: {
+    fontSize: 12,
+    color: TEXT_SECONDARY,
+    fontStyle: 'italic',
     marginBottom: 3,
   },
   cardZone: {
