@@ -13,7 +13,7 @@
 .tribute-divider-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(212,168,67,0.35), transparent);
+  background: linear-gradient(to right, transparent, rgba(202,168,90,0.4), transparent);
 }
 .tribute-divider-icon {
   color: var(--accent, #d4a843);

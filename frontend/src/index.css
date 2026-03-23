@@ -11,17 +11,20 @@
   --bg-card: #131825;
   --bg-card-hover: #192030;
   --bg-surface: #0f121e;
-  --accent: #d4a843;
-  --accent-light: #e8c268;
-  --accent-pale: #f5dfa0;
-  --accent-dim: rgba(212, 168, 67, 0.1);
+  --gold-primary: #d4af37;
+  --gold-soft: #caa85a;
+  --gold-muted: #a88f3a;
+  --accent: var(--gold-primary);
+  --accent-light: var(--gold-soft);
+  --accent-pale: #e8d080;
+  --accent-dim: rgba(212, 175, 55, 0.1);
   --text-primary: #f5f0e8;
   --text-secondary: #d4c8a8;
   --text-body: #c0b490;
   --text-muted: #90876a;
   --border: #1c2035;
   --border-light: #283050;
-  --border-accent: rgba(212, 168, 67, 0.3);
+  --border-accent: rgba(212, 175, 55, 0.3);
   --success: #7aad8c;
   --error: #c97070;
   --shadow-sm: 0 2px 12px rgba(0,0,0,0.5);
@@ -144,9 +147,9 @@ a:hover { color: var(--accent-pale); }
 }
 
 .tag-zone {
-  background: rgba(212, 168, 67, 0.1);
-  color: var(--accent-light);
-  border: 1px solid rgba(212, 168, 67, 0.25);
+  background: rgba(168, 143, 58, 0.1);
+  color: var(--gold-muted);
+  border: 1px solid rgba(168, 143, 58, 0.28);
 }
 
 .spinner {

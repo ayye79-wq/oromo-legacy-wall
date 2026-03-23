@@ -68,8 +68,8 @@
 }
 
 .nav-link.active {
-  color: var(--accent-light) !important;
-  border-bottom-color: rgba(212, 168, 67, 0.45);
+  color: var(--gold-primary) !important;
+  border-bottom-color: rgba(212, 175, 55, 0.5);
 }
 
 .navbar-toggle {
@@ -136,8 +136,8 @@
 }
 
 .lang-btn.active {
-  background: rgba(212,168,67,0.15);
-  color: var(--accent);
+  background: rgba(168, 143, 58, 0.18);
+  color: var(--gold-primary);
 }
 
 .lang-sep {
