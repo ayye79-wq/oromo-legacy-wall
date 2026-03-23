@@ -1,3 +1,4 @@
+import { useLang } from '../i18n/LanguageContext';
 import './Footer.css';
 
 function OdaaSmall() {
@@ -20,6 +21,8 @@ function OdaaSmall() {
 }
 
 export default function Footer() {
+  const { t } = useLang();
+
   return (
     <footer className="footer">
       <div className="gadaa-stripe" aria-hidden="true">
@@ -36,16 +39,9 @@ export default function Footer() {
 
       <div className="container footer-inner">
         <div className="footer-brand">Oromo Legacy Wall</div>
-        <p className="footer-tagline">
-          "Until the lion learns to write, every story will glorify the hunter."
-        </p>
-        <p className="footer-mission">
-          A permanent digital memorial honoring Oromo lives — built by the community,
-          for all generations.
-        </p>
-        <p className="footer-odaa-label">
-          Beneath the Odaa, no voice is ever forgotten.
-        </p>
+        <p className="footer-tagline">{t('footer.tagline')}</p>
+        <p className="footer-mission">{t('footer.mission')}</p>
+        <p className="footer-odaa-label">{t('footer.odaa')}</p>
       </div>
     </footer>
   );

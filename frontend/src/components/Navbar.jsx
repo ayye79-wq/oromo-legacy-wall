@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useLang } from '../i18n/LanguageContext';
 import './Navbar.css';
 
 function OdaaNavIcon() {
@@ -24,10 +25,11 @@ function OdaaNavIcon() {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const { lang, setLang, t } = useLang();
 
   const links = [
-    { to: '/', label: 'The Memorial Wall' },
-    { to: '/submit', label: 'Honor a Life' },
+    { to: '/', label: t('nav.wall') },
+    { to: '/submit', label: t('nav.honor') },
   ];
 
   return (
@@ -59,6 +61,25 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          <li className="lang-toggle-li">
+            <div className="lang-toggle" role="group" aria-label="Language">
+              <button
+                className={`lang-btn ${lang === 'en' ? 'active' : ''}`}
+                onClick={() => setLang('en')}
+                aria-pressed={lang === 'en'}
+              >
+                EN
+              </button>
+              <span className="lang-sep" aria-hidden="true">|</span>
+              <button
+                className={`lang-btn ${lang === 'om' ? 'active' : ''}`}
+                onClick={() => setLang('om')}
+                aria-pressed={lang === 'om'}
+              >
+                AO
+              </button>
+            </div>
+          </li>
         </ul>
       </div>
     </nav>

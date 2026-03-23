@@ -1,26 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { LanguageProvider } from './i18n/LanguageContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import SubmitLegacy from './pages/SubmitLegacy';
 import LegacyDetail from './pages/LegacyDetail';
-
-function App() {
-  return (
-    <BrowserRouter>
-      <Navbar />
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/submit" element={<SubmitLegacy />} />
-          <Route path="/legacy/:slug" element={<LegacyDetail />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
-    </BrowserRouter>
-  );
-}
 
 function NotFound() {
   return (
@@ -32,6 +16,25 @@ function NotFound() {
       </p>
       <a href="/" className="btn btn-primary">Return Home</a>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <BrowserRouter>
+        <Navbar />
+        <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/submit" element={<SubmitLegacy />} />
+            <Route path="/legacy/:slug" element={<LegacyDetail />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }
 

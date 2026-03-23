@@ -35,10 +35,20 @@ class Legacy(models.Model):
         (STATUS_REJECTED, "Rejected"),
     ]
 
+    LANG_EN = 'en'
+    LANG_OM = 'om'
+    LANG_CHOICES = [
+        (LANG_EN, 'English'),
+        (LANG_OM, 'Afaan Oromo'),
+    ]
+
     full_name = models.CharField(max_length=200)
     occupation = models.CharField(max_length=200, blank=True, default='')
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT, related_name="legacies")
     story = models.TextField()
+    story_en = models.TextField(blank=True, default='')
+    story_om = models.TextField(blank=True, default='')
+    original_language = models.CharField(max_length=2, choices=LANG_CHOICES, default=LANG_EN)
     photo = models.ImageField(upload_to="legacy_photos/", blank=True, null=True)
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)

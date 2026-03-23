@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useLang } from '../i18n/LanguageContext';
 import './LegacyCard.css';
 
 function formatDate(dateStr) {
@@ -26,6 +27,7 @@ function PersonSilhouette() {
 }
 
 export default function LegacyCard({ legacy }) {
+  const { t } = useLang();
   const { full_name, occupation, slug, zone_name, story_preview, photo_url, approved_at } = legacy;
 
   return (
@@ -58,13 +60,13 @@ export default function LegacyCard({ legacy }) {
 
         {approved_at && (
           <time className="card-date" dateTime={approved_at}>
-            Remembered · {formatDate(approved_at)}
+            {t('card.remembered')} · {formatDate(approved_at)}
           </time>
         )}
       </div>
 
       <div className="card-footer">
-        <span className="card-read-more">Read Their Story →</span>
+        <span className="card-read-more">{t('card.read')}</span>
       </div>
     </Link>
   );

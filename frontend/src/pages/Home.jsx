@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { fetchLegacies, fetchZones } from '../api';
+import { useLang } from '../i18n/LanguageContext';
 import LegacyCard from '../components/LegacyCard';
 import './Home.css';
 
@@ -52,6 +53,7 @@ function OdaaWatermark() {
 }
 
 export default function Home() {
+  const { t } = useLang();
   const [searchParams, setSearchParams] = useSearchParams();
   const [legacies, setLegacies] = useState([]);
   const [zones, setZones] = useState([]);
@@ -115,23 +117,17 @@ export default function Home() {
         <OdaaWatermark />
         <div className="container hero-inner">
           <FlameIcon />
-          <p className="hero-kicker">In Remembrance</p>
-          <h1 className="hero-title">
-            Their Stories Live On
-          </h1>
+          <p className="hero-kicker">{t('hero.kicker')}</p>
+          <h1 className="hero-title">{t('hero.title')}</h1>
           <div className="hero-ornament">
             <span className="ornament-line" />
             <span className="ornament-star">✦</span>
             <span className="ornament-line" />
           </div>
-          <p className="hero-sub">
-            A sacred space where Oromo families and communities come together
-            to document, preserve, and honor the lives of those who shaped
-            our world — so their memory endures for all generations.
-          </p>
+          <p className="hero-sub">{t('hero.subtitle')}</p>
           <div className="hero-actions">
-            <Link to="/submit" className="btn btn-primary">Honor a Life</Link>
-            <a href="#wall" className="btn btn-outline">Explore the Memorial</a>
+            <Link to="/submit" className="btn btn-primary">{t('hero.btn_honor')}</Link>
+            <a href="#wall" className="btn btn-outline">{t('hero.btn_explore')}</a>
           </div>
         </div>
       </section>
@@ -139,8 +135,8 @@ export default function Home() {
       <section className="wall-section" id="wall">
         <div className="container">
           <div className="wall-heading">
-            <h2 className="wall-title">Wall of Remembrance</h2>
-            <p className="wall-subtitle">Each name here was a life lived, a story worth telling</p>
+            <h2 className="wall-title">{t('wall.title')}</h2>
+            <p className="wall-subtitle">{t('wall.subtitle')}</p>
             <div className="wall-ornament">
               <span className="ornament-line-short" />
               <span className="ornament-star-sm">✦</span>
@@ -156,16 +152,16 @@ export default function Home() {
                   name="q"
                   type="search"
                   className="form-input search-input"
-                  placeholder="Search by name, location, or story…"
+                  placeholder={t('wall.search_placeholder')}
                   defaultValue={q}
                   key={q}
                 />
-                <button type="submit" className="btn btn-primary search-btn-inline">Search</button>
+                <button type="submit" className="btn btn-primary search-btn-inline">{t('wall.search_btn')}</button>
               </div>
               <div className="zone-filter-wrap">
-                <span className="zone-filter-label">Filter by Zone</span>
+                <span className="zone-filter-label">{t('wall.filter_zone')}</span>
                 <select name="zone" className="form-select zone-select" defaultValue={zone} key={zone}>
-                  <option value="">All Zones of Oromiyaa</option>
+                  <option value="">{t('wall.all_zones')}</option>
                   {zones.map(z => (
                     <option key={z.id} value={z.slug}>{z.name}</option>
                   ))}
@@ -177,9 +173,9 @@ export default function Home() {
                 </button>
               )}
             </form>
-            <Link to="/submit" className="btn btn-outline btn-honor">Honor a Life</Link>
+            <Link to="/submit" className="btn btn-outline btn-honor">{t('wall.be_first')}</Link>
           </div>
-          <p className="search-hint">Names, hometown, or words from their story</p>
+          <p className="search-hint">{t('wall.search_hint')}</p>
 
           {(q || zone) && (
             <p className="search-result-info">
@@ -197,10 +193,10 @@ export default function Home() {
           ) : legacies.length === 0 ? (
             <div className="empty-state">
               <div className="empty-flame">🕯</div>
-              <h3>No lives have been honored yet</h3>
-              <p>Be the first to preserve a story on this wall.</p>
+              <h3>{t('wall.no_lives')}</h3>
+              <p>{t('wall.empty_sub')}</p>
               <Link to="/submit" className="btn btn-primary" style={{ marginTop: '2rem' }}>
-                Honor a Life
+                {t('wall.be_first')}
               </Link>
             </div>
           ) : (
@@ -212,11 +208,11 @@ export default function Home() {
               {totalPages > 1 && (
                 <div className="pagination">
                   <button className="btn btn-ghost" onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
-                    ← Previous
+                    {t('wall.prev')}
                   </button>
-                  <span className="page-info">Page {page} of {totalPages}</span>
+                  <span className="page-info">{t('wall.page_of', { page, total: totalPages })}</span>
                   <button className="btn btn-ghost" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages || !pagination.next}>
-                    Next →
+                    {t('wall.next')}
                   </button>
                 </div>
               )}

@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchLegacy } from '../api';
+import { useLang } from '../i18n/LanguageContext';
 import TributeSection from '../components/TributeSection';
 import './LegacyDetail.css';
 
-function formatDate(dateStr) {
+function formatDate(dateStr, lang) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
-  return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  return d.toLocaleDateString(lang === 'om' ? 'en-US' : 'en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  });
 }
 
 export default function LegacyDetail() {
   const { slug } = useParams();
+  const { lang, t } = useLang();
   const [legacy, setLegacy] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,7 +33,7 @@ export default function LegacyDetail() {
     return (
       <div className="page-loading">
         <div className="spinner" />
-        <span>Loading their story…</span>
+        <span>{t('detail.loading')}</span>
       </div>
     );
   }
@@ -40,10 +44,10 @@ export default function LegacyDetail() {
         <div className="container">
           <div className="empty-state">
             <div style={{ fontSize: '2rem', marginBottom: '1rem', opacity: 0.3 }}>🕯</div>
-            <h3>Story Not Found</h3>
-            <p>This legacy may not exist or is still awaiting review.</p>
+            <h3>{t('detail.not_found')}</h3>
+            <p>{t('detail.not_found_sub')}</p>
             <Link to="/" className="btn btn-outline" style={{ marginTop: '2rem' }}>
-              Return to the Wall
+              {t('detail.return_wall')}
             </Link>
           </div>
         </div>
@@ -55,14 +59,31 @@ export default function LegacyDetail() {
     return (
       <div className="detail-error">
         <div className="container">
-          <div className="alert alert-error">Something went wrong. Please try again.</div>
-          <Link to="/" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>← Return to the Wall</Link>
+          <div className="alert alert-error">{t('detail.error')}</div>
+          <Link to="/" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            {t('detail.back')}
+          </Link>
         </div>
       </div>
     );
   }
 
-  const { full_name, occupation, zone_name, story, photo_url, approved_at } = legacy;
+  const { full_name, occupation, zone_name, story, story_en, story_om, original_language, photo_url, approved_at } = legacy;
+
+  function resolveStory() {
+    if (lang === 'om') {
+      if (story_om && story_om.trim()) return { text: story_om, note: null };
+      const fallback = story_en || story || '';
+      return { text: fallback, note: t('detail.fallback_note') };
+    }
+    if (story_en && story_en.trim()) return { text: story_en, note: null };
+    if (original_language === 'om' && story_om && story_om.trim()) {
+      return { text: story_om, note: t('detail.story_in_om') };
+    }
+    return { text: story || '', note: null };
+  }
+
+  const { text: storyText, note: storyNote } = resolveStory();
 
   return (
     <div className="detail-page">
@@ -76,7 +97,7 @@ export default function LegacyDetail() {
         )}
         <div className="detail-hero-overlay" aria-hidden="true" />
         <div className="container detail-hero-inner">
-          <Link to="/" className="detail-back">← Wall of Remembrance</Link>
+          <Link to="/" className="detail-back">{t('detail.back')}</Link>
 
           <div className="detail-portrait-wrap">
             {photo_url ? (
@@ -96,7 +117,7 @@ export default function LegacyDetail() {
             )}
             {approved_at && (
               <time className="detail-date" dateTime={approved_at}>
-                Honored on the wall · {formatDate(approved_at)}
+                {t('detail.honored_on')} · {formatDate(approved_at, lang)}
               </time>
             )}
           </div>
@@ -108,12 +129,17 @@ export default function LegacyDetail() {
           <div className="story-intro">
             <div className="story-ornament">
               <span className="story-orn-line" />
-              <span className="story-orn-label">Their Story</span>
+              <span className="story-orn-label">{t('detail.their_story')}</span>
               <span className="story-orn-line" />
             </div>
           </div>
+
+          {storyNote && (
+            <p className="story-lang-note">{storyNote}</p>
+          )}
+
           <div className="detail-story">
-            {story.split('\n').filter(p => p.trim()).map((para, i) => (
+            {storyText.split('\n').filter(p => p.trim()).map((para, i) => (
               <p key={i}>{para}</p>
             ))}
           </div>
@@ -126,20 +152,20 @@ export default function LegacyDetail() {
 
         <aside className="detail-sidebar">
           <div className="sidebar-card">
-            <h3 className="sidebar-title">In Remembrance</h3>
+            <h3 className="sidebar-title">{t('detail.in_remembrance')}</h3>
             <dl className="sidebar-dl">
-              <dt>Name</dt>
+              <dt>{t('detail.name')}</dt>
               <dd>{full_name}</dd>
               {zone_name && (
                 <>
-                  <dt>Region</dt>
+                  <dt>{t('detail.region')}</dt>
                   <dd>{zone_name}, Oromiyaa</dd>
                 </>
               )}
               {approved_at && (
                 <>
-                  <dt>Honored</dt>
-                  <dd>{formatDate(approved_at)}</dd>
+                  <dt>{t('detail.honored')}</dt>
+                  <dd>{formatDate(approved_at, lang)}</dd>
                 </>
               )}
             </dl>
@@ -147,10 +173,10 @@ export default function LegacyDetail() {
 
           <div className="sidebar-actions">
             <Link to="/" className="btn btn-ghost sidebar-btn">
-              ← Return to the Wall
+              {t('detail.return')}
             </Link>
             <Link to="/submit" className="btn btn-outline sidebar-btn">
-              Honor Another Life
+              {t('detail.honor_another')}
             </Link>
           </div>
         </aside>

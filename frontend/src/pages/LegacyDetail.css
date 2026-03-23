@@ -232,6 +232,18 @@
   font-size: 0.9rem;
 }
 
+.story-lang-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+  padding: 0.55rem 1rem;
+  border-left: 2px solid rgba(212,168,67,0.3);
+  background: rgba(212,168,67,0.05);
+  border-radius: 0 4px 4px 0;
+}
+
 @media (max-width: 800px) {
   .detail-body {
     grid-template-columns: 1fr;

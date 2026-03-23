@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLang } from '../i18n/LanguageContext';
 import './TributeSection.css';
 
 function FlameIcon({ lit = false, size = 28 }) {
@@ -35,6 +36,7 @@ function formatDate(iso) {
 }
 
 export default function TributeSection({ slug }) {
+  const { t } = useLang();
   const [candleCount, setCandleCount] = useState(0);
   const [messages, setMessages] = useState([]);
   const [messageCount, setMessageCount] = useState(0);
@@ -79,7 +81,7 @@ export default function TributeSection({ slug }) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message?.[0] || 'Something went wrong. Please try again.');
+        setError(data.message?.[0] || t('tribute.error_connect'));
         setSubmitting(false);
         return;
       }
@@ -97,9 +99,20 @@ export default function TributeSection({ slug }) {
       setAuthorName('');
       setSubmitting(false);
     } catch {
-      setError('Could not connect. Please try again.');
+      setError(t('tribute.error_connect'));
       setSubmitting(false);
     }
+  }
+
+  function candleLabel() {
+    if (candleCount === 0) return t('tribute.candle_zero');
+    if (candleCount === 1) return t('tribute.candle_one');
+    return t('tribute.candle_many', { n: candleCount });
+  }
+
+  function messageCountLabel() {
+    if (messageCount === 1) return t('tribute.count_one');
+    return t('tribute.count_many', { n: messageCount });
   }
 
   return (
@@ -110,33 +123,25 @@ export default function TributeSection({ slug }) {
         <span className="tribute-divider-line" />
       </div>
 
-      <h2 className="tribute-heading">Leave a Tribute</h2>
-      <p className="tribute-subheading">
-        Light a candle in their memory, or leave words that will remain with their story.
-      </p>
+      <h2 className="tribute-heading">{t('tribute.heading')}</h2>
+      <p className="tribute-subheading">{t('tribute.subheading')}</p>
 
       <div className="candle-count-bar">
         <FlameIcon lit={candleCount > 0 || justLitCandle} size={32} />
-        <span className="candle-count-text">
-          {candleCount === 0
-            ? 'Be the first to light a candle'
-            : candleCount === 1
-            ? '1 candle has been lit'
-            : `${candleCount} candles have been lit`}
-        </span>
+        <span className="candle-count-text">{candleLabel()}</span>
       </div>
 
       {justLitCandle && (
         <div className="tribute-success candle-success" role="status">
           <FlameIcon lit size={20} />
-          <span>Your candle burns here. May their memory be light.</span>
+          <span>{t('tribute.success_candle')}</span>
         </div>
       )}
 
       {justSentMessage && (
         <div className="tribute-success message-success" role="status">
           <span>✦</span>
-          <span>Your words have been received. They will remain here.</span>
+          <span>{t('tribute.success_message')}</span>
         </div>
       )}
 
@@ -148,7 +153,7 @@ export default function TributeSection({ slug }) {
             onClick={() => { setMode('candle'); setError(''); }}
           >
             <FlameIcon lit={mode === 'candle'} size={18} />
-            Light a Candle
+            {t('tribute.mode_candle')}
           </button>
           <button
             type="button"
@@ -158,7 +163,7 @@ export default function TributeSection({ slug }) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
-            Leave a Message
+            {t('tribute.mode_message')}
           </button>
         </div>
 
@@ -166,7 +171,7 @@ export default function TributeSection({ slug }) {
           <input
             type="text"
             className="tribute-input"
-            placeholder="Your name (optional — leave blank to be anonymous)"
+            placeholder={t('tribute.name_placeholder')}
             value={authorName}
             onChange={e => setAuthorName(e.target.value)}
             maxLength={100}
@@ -175,7 +180,7 @@ export default function TributeSection({ slug }) {
           {mode === 'message' && (
             <textarea
               className="tribute-textarea"
-              placeholder="Write your tribute… a memory, a prayer, a few words that carry their meaning forward."
+              placeholder={t('tribute.message_placeholder')}
               value={messageText}
               onChange={e => setMessageText(e.target.value)}
               rows={4}
@@ -192,25 +197,23 @@ export default function TributeSection({ slug }) {
             disabled={submitting}
           >
             {submitting
-              ? 'Sending…'
+              ? t('tribute.submitting')
               : mode === 'candle'
-              ? 'Light the Candle'
-              : 'Leave this Tribute'}
+              ? t('tribute.submit_candle')
+              : t('tribute.submit_message')}
           </button>
         </div>
       </form>
 
       {!loading && messages.length > 0 && (
         <div className="message-wall">
-          <h3 className="message-wall-heading">
-            {messageCount === 1 ? '1 tribute left' : `${messageCount} tributes left`}
-          </h3>
+          <h3 className="message-wall-heading">{messageCountLabel()}</h3>
           <div className="message-list">
             {messages.map(m => (
               <div key={m.id} className="tribute-message-card">
                 <div className="tribute-message-header">
                   <span className="tribute-author">
-                    {m.author_name?.trim() || 'Anonymous'}
+                    {m.author_name?.trim() || t('tribute.anonymous')}
                   </span>
                   <span className="tribute-date">{formatDate(m.created_at)}</span>
                 </div>
@@ -222,9 +225,7 @@ export default function TributeSection({ slug }) {
       )}
 
       {!loading && messages.length === 0 && (
-        <p className="tribute-empty">
-          No messages yet. Be the first to leave words for their memory.
-        </p>
+        <p className="tribute-empty">{t('tribute.empty')}</p>
       )}
     </section>
   );

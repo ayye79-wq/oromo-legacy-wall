@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchZones, submitLegacy } from '../api';
+import { useLang } from '../i18n/LanguageContext';
 import './SubmitLegacy.css';
 
 export default function SubmitLegacy() {
+  const { t } = useLang();
   const [zones, setZones] = useState([]);
-  const [form, setForm] = useState({ full_name: '', occupation: '', zone: '', story: '', photo: null });
+  const [storyLang, setStoryLang] = useState('en');
+  const [form, setForm] = useState({
+    full_name: '', occupation: '', zone: '',
+    story_en: '', story_om: '', photo: null,
+  });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -37,10 +43,19 @@ export default function SubmitLegacy() {
 
   function validate() {
     const errs = {};
-    if (!form.full_name.trim()) errs.full_name = 'Their full name is required.';
-    if (!form.zone) errs.zone = 'Please select the zone they are from.';
-    if (!form.story.trim()) errs.story = 'Please share their story.';
-    if (form.story.trim().length < 30) errs.story = 'Please share a little more — at least 30 characters.';
+    if (!form.full_name.trim()) errs.full_name = t('submit.full_name_required');
+    if (!form.zone) errs.zone = t('submit.zone_required');
+
+    const hasEn = form.story_en.trim().length > 0;
+    const hasOm = form.story_om.trim().length > 0;
+
+    if (!hasEn && !hasOm) {
+      if (storyLang === 'om') errs.story_om = t('submit.story_required');
+      else errs.story_en = t('submit.story_required');
+    } else {
+      if (hasEn && form.story_en.trim().length < 30) errs.story_en = t('submit.story_short');
+      if (hasOm && form.story_om.trim().length < 30) errs.story_om = t('submit.story_short');
+    }
     return errs;
   }
 
@@ -59,13 +74,17 @@ export default function SubmitLegacy() {
     fd.append('full_name', form.full_name.trim());
     if (form.occupation.trim()) fd.append('occupation', form.occupation.trim());
     fd.append('zone', form.zone);
-    fd.append('story', form.story.trim());
+    if (form.story_en.trim()) fd.append('story_en', form.story_en.trim());
+    if (form.story_om.trim()) fd.append('story_om', form.story_om.trim());
+    fd.append('original_language', storyLang === 'both' ? 'en' : storyLang);
+    const primaryStory = form.story_en.trim() || form.story_om.trim();
+    fd.append('story', primaryStory);
     if (form.photo) fd.append('photo', form.photo);
 
     try {
       await submitLegacy(fd);
       setSuccess(true);
-      setForm({ full_name: '', occupation: '', zone: '', story: '', photo: null });
+      setForm({ full_name: '', occupation: '', zone: '', story_en: '', story_om: '', photo: null });
       setPreviewUrl(null);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -76,7 +95,7 @@ export default function SubmitLegacy() {
         });
         setErrors(apiErrs);
       } else {
-        setErrors({ _general: 'Something went wrong. Please try again.' });
+        setErrors({ _general: t('submit.error_general') });
       }
     }
 
@@ -89,21 +108,17 @@ export default function SubmitLegacy() {
         <div className="container">
           <div className="success-card">
             <div className="success-candle" aria-hidden="true">🕯</div>
-            <h1>Their Story Has Been Received</h1>
+            <h1>{t('submit.success_title')}</h1>
             <div className="success-ornament">
               <span className="ornament-line-short" />
               <span style={{ color: 'var(--accent)', fontSize: '0.7rem' }}>✦</span>
               <span className="ornament-line-short" />
             </div>
-            <p>
-              Your tribute has been received with honor. A community moderator
-              will review it carefully before it is placed on the Memorial Wall.
-              Thank you for helping preserve this life for generations to come.
-            </p>
+            <p>{t('submit.success_body')}</p>
             <div className="success-actions">
-              <Link to="/" className="btn btn-primary">Return to the Wall</Link>
+              <Link to="/" className="btn btn-primary">{t('submit.success_return')}</Link>
               <button className="btn btn-outline" onClick={() => setSuccess(false)}>
-                Honor Another Life
+                {t('submit.success_another')}
               </button>
             </div>
           </div>
@@ -112,17 +127,16 @@ export default function SubmitLegacy() {
     );
   }
 
+  const showEn = storyLang === 'en' || storyLang === 'both';
+  const showOm = storyLang === 'om' || storyLang === 'both';
+
   return (
     <div className="submit-page">
       <div className="submit-page-header">
         <div className="container">
-          <p className="submit-kicker">In Their Memory</p>
-          <h1 className="submit-title">Honor a Life</h1>
-          <p className="submit-sub">
-            Share the story of an Oromo individual so that their life may be preserved
-            on this wall. Every submission is reviewed by a trusted community moderator
-            before it is placed here.
-          </p>
+          <p className="submit-kicker">{t('submit.kicker')}</p>
+          <h1 className="submit-title">{t('submit.title')}</h1>
+          <p className="submit-sub">{t('submit.subtitle')}</p>
         </div>
       </div>
 
@@ -133,18 +147,18 @@ export default function SubmitLegacy() {
 
         <form className="submit-form" onSubmit={handleSubmit} noValidate>
           <div className="form-section">
-            <h2 className="form-section-title">Who Are You Honoring?</h2>
+            <h2 className="form-section-title">{t('submit.section_who')}</h2>
 
             <div className="form-group">
               <label htmlFor="full_name" className="form-label">
-                Full Name <span className="required">*</span>
+                {t('submit.full_name')} <span className="required">*</span>
               </label>
               <input
                 id="full_name"
                 name="full_name"
                 type="text"
                 className={`form-input ${errors.full_name ? 'input-error' : ''}`}
-                placeholder="Their full name…"
+                placeholder={t('submit.full_name_placeholder')}
                 value={form.full_name}
                 onChange={handleChange}
               />
@@ -153,23 +167,23 @@ export default function SubmitLegacy() {
 
             <div className="form-group">
               <label htmlFor="occupation" className="form-label">
-                Their Role or Calling <span className="optional-label">(optional)</span>
+                {t('submit.occupation')} <span className="optional-label">{t('submit.occupation_optional')}</span>
               </label>
               <input
                 id="occupation"
                 name="occupation"
                 type="text"
                 className="form-input"
-                placeholder="e.g. Teacher, farmer, mother of seven, community elder…"
+                placeholder={t('submit.occupation_placeholder')}
                 value={form.occupation}
                 onChange={handleChange}
               />
-              <span className="form-help">One line that captures who they were. This appears on their memorial card.</span>
+              <span className="form-help">{t('submit.occupation_help')}</span>
             </div>
 
             <div className="form-group">
               <label htmlFor="zone" className="form-label">
-                Zone of Oromiyaa <span className="required">*</span>
+                {t('submit.zone')} <span className="required">*</span>
               </label>
               <select
                 id="zone"
@@ -178,50 +192,91 @@ export default function SubmitLegacy() {
                 value={form.zone}
                 onChange={handleChange}
               >
-                <option value="">Select their zone…</option>
+                <option value="">{t('submit.zone_select')}</option>
                 {zones.map(z => (
                   <option key={z.id} value={z.id}>{z.name}</option>
                 ))}
               </select>
               {errors.zone && <span className="form-error">{errors.zone}</span>}
-              <span className="form-help">Which zone of Oromiyaa were they from?</span>
+              <span className="form-help">{t('submit.zone_help')}</span>
             </div>
           </div>
 
           <div className="form-section">
-            <h2 className="form-section-title">Their Story</h2>
-            <p className="section-note">
-              Write as much as you'd like. Share who they were, what they meant to
-              you, their life, their contributions, their legacy.
-            </p>
+            <h2 className="form-section-title">{t('submit.section_story')}</h2>
+            <p className="section-note">{t('submit.story_note')}</p>
 
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label htmlFor="story" className="form-label">
-                Biography &amp; Story <span className="required">*</span>
-              </label>
-              <textarea
-                id="story"
-                name="story"
-                className={`form-textarea ${errors.story ? 'input-error' : ''}`}
-                placeholder="In the words of those who loved them…"
-                value={form.story}
-                onChange={handleChange}
-                rows={12}
-              />
-              {errors.story && <span className="form-error">{errors.story}</span>}
-              <span className="form-help">
-                {form.story.length > 0 ? `${form.story.length} characters written` : 'No minimum length — share what feels right.'}
-              </span>
+            <div className="form-group">
+              <label className="form-label">{t('submit.story_lang')}</label>
+              <div className="story-lang-toggle" role="group">
+                {['en', 'om', 'both'].map(opt => (
+                  <button
+                    key={opt}
+                    type="button"
+                    className={`story-lang-btn ${storyLang === opt ? 'active' : ''}`}
+                    onClick={() => setStoryLang(opt)}
+                  >
+                    {t(`submit.lang_${opt}`)}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {showEn && (
+              <div className="form-group">
+                <label htmlFor="story_en" className="form-label">
+                  {storyLang === 'both' ? t('submit.story_en') : t('submit.section_story')}
+                  {storyLang !== 'both' && <span className="required"> *</span>}
+                </label>
+                <textarea
+                  id="story_en"
+                  name="story_en"
+                  className={`form-textarea ${errors.story_en ? 'input-error' : ''}`}
+                  placeholder={t('submit.story_placeholder_en')}
+                  value={form.story_en}
+                  onChange={handleChange}
+                  rows={10}
+                />
+                {errors.story_en && <span className="form-error">{errors.story_en}</span>}
+                <span className="form-help">
+                  {form.story_en.length > 0
+                    ? t('submit.story_chars', { n: form.story_en.length })
+                    : t('submit.story_no_min')}
+                </span>
+              </div>
+            )}
+
+            {showOm && (
+              <div className="form-group">
+                <label htmlFor="story_om" className="form-label">
+                  {storyLang === 'both' ? t('submit.story_om') : t('submit.section_story')}
+                  {storyLang !== 'both' && <span className="required"> *</span>}
+                </label>
+                <textarea
+                  id="story_om"
+                  name="story_om"
+                  className={`form-textarea ${errors.story_om ? 'input-error' : ''}`}
+                  placeholder={t('submit.story_placeholder_om')}
+                  value={form.story_om}
+                  onChange={handleChange}
+                  rows={10}
+                  dir="ltr"
+                />
+                {errors.story_om && <span className="form-error">{errors.story_om}</span>}
+                <span className="form-help">
+                  {form.story_om.length > 0
+                    ? t('submit.story_chars', { n: form.story_om.length })
+                    : t('submit.story_no_min')}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="form-section">
             <h2 className="form-section-title">
-              A Photo <span className="optional-label">(optional)</span>
+              {t('submit.section_photo')} <span className="optional-label">{t('submit.occupation_optional')}</span>
             </h2>
-            <p className="section-note">
-              A photograph helps bring their memory to life on the wall.
-            </p>
+            <p className="section-note">{t('submit.photo_note')}</p>
 
             <div className="form-group" style={{ marginBottom: 0 }}>
               {previewUrl && (
@@ -235,14 +290,14 @@ export default function SubmitLegacy() {
                       setPreviewUrl(null);
                     }}
                   >
-                    Remove
+                    {t('submit.photo_remove')}
                   </button>
                 </div>
               )}
 
               <label htmlFor="photo" className="file-upload-label">
                 <span>🕯</span>
-                <span>{form.photo ? form.photo.name : 'Choose a photograph…'}</span>
+                <span>{form.photo ? form.photo.name : t('submit.photo_choose')}</span>
                 <input
                   id="photo"
                   name="photo"
@@ -253,15 +308,15 @@ export default function SubmitLegacy() {
                 />
               </label>
               {errors.photo && <span className="form-error">{errors.photo}</span>}
-              <span className="form-help">JPG, PNG, or WEBP — any size is welcome.</span>
+              <span className="form-help">{t('submit.photo_help')}</span>
             </div>
           </div>
 
           <div className="submit-actions">
             <button type="submit" className="btn btn-primary btn-submit" disabled={submitting}>
-              {submitting ? 'Preserving their memory…' : 'Place Their Story on the Wall'}
+              {submitting ? t('submit.btn_submitting') : t('submit.btn')}
             </button>
-            <Link to="/" className="btn btn-ghost">Return to the Wall</Link>
+            <Link to="/" className="btn btn-ghost">{t('submit.btn_return')}</Link>
           </div>
         </form>
       </div>

@@ -57,14 +57,29 @@ A digital memorial platform for preserving and honoring the lives of Oromo indiv
 
 - **Zone** — Geographic/administrative zones of Oromiyaa (22 zones seeded)
 - **ZoneModerator** — Links Django users to the zones they moderate
-- **Legacy** — Memorial entries (pending/approved/rejected) with 5 PostgreSQL indexes for scale
+- **Legacy** — Memorial entries with `story_en`, `story_om`, `original_language` fields; pending/approved/rejected status; 5 PostgreSQL indexes
+- **Tribute** — Candles and messages left on individual legacy pages
+
+## Bilingual System (EN + Afaan Oromo)
+
+- Language toggle `EN | AO` in navbar — persisted in localStorage
+- All UI strings translated: `frontend/src/i18n/translations.js`
+- Language context: `frontend/src/i18n/LanguageContext.jsx` — `useLang()` hook returns `{ lang, setLang, t }`
+- Story display logic on detail page:
+  - Toggle = OM: show `story_om` if present, else fallback to `story_en` + note
+  - Toggle = EN: show `story_en` if present, else show original language story
+- Submission form: choose "Write in English", "Write in Afaan Oromo", or "Write in Both"
+- No auto-translation ever — all story content is human-authored
+- `original_language` field records which language a story was written in
 
 ## API Endpoints
 
 - `GET /api/zones/` — List all zones
 - `GET /api/legacies/` — List approved legacies (search: `?q=`, `?zone=`)
-- `GET /api/legacies/<slug>/` — Get a specific legacy
-- `POST /api/submit/` — Submit a new legacy (multipart)
+- `GET /api/legacies/<slug>/` — Get a specific legacy (includes `story_en`, `story_om`, `original_language`)
+- `POST /api/submit/` — Submit a new legacy (multipart, accepts `story_en`, `story_om`, `original_language`)
+- `GET /api/legacies/<slug>/tributes/` — List tributes (candle count + messages)
+- `POST /api/legacies/<slug>/tributes/` — Light a candle or leave a message
 
 ## Environment Variables
 
