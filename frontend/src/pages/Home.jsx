@@ -131,7 +131,7 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const totalPages = pagination.count ? Math.ceil(pagination.count / 12) : 1;
+  const totalPages = pagination.count ? Math.ceil(pagination.count / 9) : 1;
 
   return (
     <div className="home">
