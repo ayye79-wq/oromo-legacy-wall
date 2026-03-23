@@ -2,6 +2,25 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
+function OdaaNavIcon() {
+  return (
+    <svg
+      className="brand-odaa"
+      viewBox="0 0 56 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <ellipse cx="11" cy="23" rx="12" ry="11" fill="currentColor" />
+      <ellipse cx="45" cy="23" rx="12" ry="11" fill="currentColor" />
+      <ellipse cx="28" cy="16" rx="22" ry="16" fill="currentColor" />
+      <ellipse cx="28" cy="7" rx="14" ry="9" fill="currentColor" />
+      <rect x="25" y="31" width="6" height="13" rx="2" fill="currentColor" />
+      <ellipse cx="28" cy="44" rx="12" ry="2.5" fill="currentColor" opacity="0.4" />
+    </svg>
+  );
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -13,9 +32,10 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
+      <div className="gadaa-navbar-stripe" aria-hidden="true" />
       <div className="container navbar-inner">
         <Link to="/" className="navbar-brand" onClick={() => setOpen(false)}>
-          <span className="brand-flame" aria-hidden="true">🕯</span>
+          <OdaaNavIcon />
           <span className="brand-text">Oromo Legacy Wall</span>
         </Link>
 

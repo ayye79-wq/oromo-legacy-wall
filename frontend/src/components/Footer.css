@@ -2,37 +2,49 @@
   margin-top: auto;
   background: var(--bg-surface);
   border-top: 1px solid var(--border);
-  padding: 3rem 0 2.5rem;
+  padding: 2.5rem 0 2.5rem;
   text-align: center;
 }
+
+.gadaa-stripe {
+  display: flex;
+  height: 6px;
+  width: 100%;
+  margin-bottom: 2.5rem;
+}
+.stripe-red   { flex: 1; background: #c8232c; opacity: 0.75; }
+.stripe-white { flex: 1; background: #e8e0d0; opacity: 0.55; }
+.stripe-green { flex: 1; background: #3a7d44; opacity: 0.75; }
 
 .footer-ornament {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 1.25rem;
   margin-bottom: 1.75rem;
   color: var(--accent);
-  opacity: 0.35;
+  opacity: 0.4;
 }
 .footer-orn-line {
-  width: 60px;
+  flex: 1;
+  max-width: 80px;
   height: 1px;
   background: currentColor;
 }
-.footer-orn-star { font-size: 0.65rem; }
+
+.footer-odaa {
+  width: 52px;
+  height: 44px;
+  color: var(--accent);
+  opacity: 0.9;
+  flex-shrink: 0;
+}
 
 .footer-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.65rem;
-}
-
-.footer-candle {
-  font-size: 1.25rem;
-  opacity: 0.5;
-  margin-bottom: 0.25rem;
 }
 
 .footer-brand {
@@ -60,4 +72,14 @@
   font-size: 0.9rem;
   max-width: 440px;
   line-height: 1.65;
+}
+
+.footer-odaa-label {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-style: italic;
+  color: var(--accent);
+  font-size: 0.88rem;
+  opacity: 0.45;
+  margin-top: 0.25rem;
+  letter-spacing: 0.02em;
 }

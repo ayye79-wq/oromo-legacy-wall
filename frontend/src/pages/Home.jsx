@@ -13,14 +13,40 @@ function FlameIcon() {
         fill="url(#fg2)" />
       <defs>
         <linearGradient id="fg1" x1="18" y1="2" x2="18" y2="54" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ddb06a" />
+          <stop offset="0%" stopColor="#e8c268" />
           <stop offset="100%" stopColor="#a06820" stopOpacity="0.8" />
         </linearGradient>
         <linearGradient id="fg2" x1="18" y1="22" x2="18" y2="45" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#f5ead5" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#ddb06a" />
+          <stop offset="100%" stopColor="#e8c268" />
         </linearGradient>
       </defs>
+    </svg>
+  );
+}
+
+function OdaaWatermark() {
+  return (
+    <svg
+      className="hero-odaa-watermark"
+      viewBox="0 0 280 230"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <mask id="odaa-mask">
+          <ellipse cx="55" cy="110" rx="58" ry="52" fill="white" />
+          <ellipse cx="225" cy="110" rx="58" ry="52" fill="white" />
+          <ellipse cx="140" cy="80" rx="100" ry="72" fill="white" />
+          <ellipse cx="140" cy="40" rx="65" ry="40" fill="white" />
+          <ellipse cx="80" cy="55" rx="42" ry="36" fill="white" />
+          <ellipse cx="200" cy="55" rx="42" ry="36" fill="white" />
+          <rect x="128" y="152" width="24" height="62" rx="6" fill="white" />
+          <ellipse cx="140" cy="215" rx="52" ry="8" fill="white" />
+        </mask>
+      </defs>
+      <rect x="0" y="0" width="280" height="230" fill="currentColor" mask="url(#odaa-mask)" />
     </svg>
   );
 }
@@ -85,6 +111,8 @@ export default function Home() {
     <div className="home">
       <section className="hero">
         <div className="hero-glow" aria-hidden="true" />
+        <div className="hero-pattern" aria-hidden="true" />
+        <OdaaWatermark />
         <div className="container hero-inner">
           <FlameIcon />
           <p className="hero-kicker">In Remembrance</p>
