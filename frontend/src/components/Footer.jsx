@@ -31,7 +31,7 @@ export default function Footer() {
         <span className="stripe-white" />
       </div>
 
-      <div className="footer-ornament" aria-hidden="true">
+      <div className="footer-odaa-row" aria-hidden="true">
         <span className="footer-orn-line" />
         <OdaaSmall />
         <span className="footer-orn-line" />

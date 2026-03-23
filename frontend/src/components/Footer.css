@@ -18,20 +18,20 @@
 .stripe-red   { flex: 1; background: #c8232c; }
 .stripe-white { flex: 1; background: #e8e0d0; opacity: 0.80; }
 
-.footer-ornament {
+.footer-odaa-row {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1.25rem;
   margin-bottom: 1.75rem;
   color: var(--accent);
-  opacity: 0.4;
 }
 .footer-orn-line {
   flex: 1;
   max-width: 80px;
   height: 1px;
   background: currentColor;
+  opacity: 0.4;
 }
 
 .footer-odaa {
