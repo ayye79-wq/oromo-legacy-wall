@@ -43,8 +43,8 @@ export default function Footer() {
           A permanent digital memorial honoring Oromo lives — built by the community,
           for all generations.
         </p>
-        <p className="footer-odaa-label" aria-hidden="true">
-          Under the Odaa tree, all stories are heard.
+        <p className="footer-odaa-label">
+          Beneath the Odaa, no voice is ever forgotten.
         </p>
       </div>
     </footer>

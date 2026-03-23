@@ -77,9 +77,12 @@
 .footer-odaa-label {
   font-family: 'EB Garamond', Georgia, serif;
   font-style: italic;
-  color: var(--accent);
-  font-size: 0.92rem;
-  opacity: 0.65;
-  margin-top: 0.25rem;
-  letter-spacing: 0.02em;
+  color: var(--accent-light);
+  font-size: 1.05rem;
+  opacity: 0.9;
+  margin-top: 0.5rem;
+  letter-spacing: 0.03em;
+  border-top: 1px solid rgba(212, 168, 67, 0.18);
+  padding-top: 1rem;
+  max-width: 340px;
 }
