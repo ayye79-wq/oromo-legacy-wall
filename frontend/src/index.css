@@ -38,7 +38,8 @@ html {
 }
 
 body {
-  background: var(--bg-primary);
+  background: linear-gradient(180deg, #0b1220 0%, #0a0f1a 100%);
+  background-attachment: fixed;
   color: var(--text-body);
   font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   line-height: 1.75;
