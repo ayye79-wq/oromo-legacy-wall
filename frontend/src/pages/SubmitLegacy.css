@@ -47,20 +47,35 @@
 }
 
 .form-section {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, #141929 0%, #131825 100%);
   border: 1px solid var(--border-card);
-  border-top: 2px solid rgba(212, 168, 67, 0.3);
+  border-top: 2px solid rgba(212, 168, 67, 0.35);
   padding: 2rem 2rem 2rem;
   margin-bottom: 1.5rem;
+  border-radius: 0 0 4px 4px;
+  box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.04);
 }
 
 .form-section-title {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 400;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
   letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.form-section-title::before {
+  content: '✦';
+  font-size: 0.6rem;
+  color: var(--accent);
+  opacity: 0.7;
+  flex-shrink: 0;
+  position: relative;
+  top: 1px;
 }
 
 .section-note {
@@ -274,4 +289,29 @@
 
 .char-btn:active {
   transform: scale(0.95);
+}
+
+/* ── Label warmth — override global all-caps in the submit form ── */
+.submit-form .form-label {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--gold-soft);
+}
+
+.submit-form .form-label .required {
+  color: var(--accent);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.8rem;
+}
+
+.submit-form .form-label .optional-label {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  font-style: italic;
+  font-family: 'EB Garamond', Georgia, serif;
+  letter-spacing: 0;
 }
