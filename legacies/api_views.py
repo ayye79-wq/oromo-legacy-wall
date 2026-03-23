@@ -2,6 +2,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import AllowAny
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
@@ -58,6 +60,8 @@ class LegacyDetailView(generics.RetrieveAPIView):
 
 
 class LegacySubmitView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def post(self, request):
@@ -72,6 +76,9 @@ class LegacySubmitView(APIView):
 
 
 class TributeListCreateView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
     def get(self, request, slug):
         legacy = get_object_or_404(Legacy, slug=slug, status=Legacy.STATUS_APPROVED)
         tributes = legacy.tributes.all()
