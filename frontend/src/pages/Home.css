@@ -333,7 +333,7 @@
 .pillar {
   padding: 1.5rem;
   background: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-card);
   border-left: 2px solid var(--accent);
 }
 

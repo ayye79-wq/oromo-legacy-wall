@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   background: var(--bg-card);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-card);
   border-top: none;
   overflow: hidden;
   text-decoration: none;
