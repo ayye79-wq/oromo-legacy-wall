@@ -22,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(z)8@$mxrc-02ypc_c+q@l4_e6ya$z39%+$x!h5ifmypy^-z@1'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(z)8@$mxrc-02ypc_c+q@l4_e6ya$z39%+$x!h5ifmypy^-z@1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
     "oromo-legacy-wall.onrender.com",
@@ -37,12 +37,18 @@ ALLOWED_HOSTS = [
     ".replit.dev",
     ".repl.co",
     ".replit.app",
+    ".railway.app",
+    ".up.railway.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.replit.dev",
     "https://*.repl.co",
     "https://*.replit.app",
+    "https://*.railway.app",
+    "https://*.up.railway.app",
+    "https://oromolegacywall.com",
+    "https://www.oromolegacywall.com",
 ]
 
 
