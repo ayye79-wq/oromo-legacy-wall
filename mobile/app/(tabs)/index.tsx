@@ -154,6 +154,7 @@ export default function WallScreen() {
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <View style={styles.headerText}>
+            <Text style={styles.headerKicker}>{t('wall_kicker')}</Text>
             <Text style={styles.headerTitle}>{t('wall_title')}</Text>
             <Text style={styles.headerSub}>{t('wall_sub')}</Text>
           </View>
@@ -267,17 +268,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerText: { flex: 1, marginRight: 12 },
+  headerKicker: {
+    fontSize: 9,
+    color: ACCENT,
+    letterSpacing: 1.8,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    marginBottom: 4,
+    opacity: 0.85,
+  },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 19,
     fontWeight: '300',
     color: TEXT_PRIMARY,
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
+    lineHeight: 25,
   },
   headerSub: {
-    fontSize: 13,
+    fontSize: 12,
     color: TEXT_MUTED,
-    marginTop: 2,
+    marginTop: 4,
     fontStyle: 'italic',
+    lineHeight: 17,
   },
   langToggle: {
     flexDirection: 'row',
