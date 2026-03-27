@@ -5,3 +5,4 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  VITE_API_URL = "https://oromo-legacy-wall-production.up.railway.app"
