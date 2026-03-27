@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
-import dj_database_url
 from pathlib import Path
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -104,8 +104,18 @@ WSGI_APPLICATION = 'oromolegacy.wsgi.application'
 
 _db_url = os.environ.get('DATABASE_URL')
 if _db_url:
+    _parsed = urlparse(_db_url)
     DATABASES = {
-        'default': dj_database_url.config(default=_db_url, conn_max_age=600, ssl_require=False)
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': _parsed.path.lstrip('/'),
+            'USER': _parsed.username,
+            'PASSWORD': _parsed.password,
+            'HOST': _parsed.hostname,
+            'PORT': str(_parsed.port or 5432),
+            'CONN_MAX_AGE': 600,
+            'OPTIONS': {'sslmode': 'prefer'},
+        }
     }
 else:
     DATABASES = {
