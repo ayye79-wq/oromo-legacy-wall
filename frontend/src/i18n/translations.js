@@ -3,11 +3,11 @@ const translations = {
     'nav.wall': 'The Memorial Wall',
     'nav.honor': 'Honor a Life',
 
-    'hero.kicker': 'In Remembrance',
-    'hero.title': 'Their Stories Live On',
-    'hero.subtitle': 'A sacred space where Oromo families and communities come together to document, preserve, and honor the lives of those who shaped our world — so their memory endures for all generations.',
-    'hero.btn_honor': 'Honor a Life',
-    'hero.btn_explore': 'Explore the Memorial',
+    'hero.kicker': 'For Those Who Gave Everything',
+    'hero.title': 'They Fell So Their People Could Rise',
+    'hero.subtitle': 'A memorial for the Oromo sons and daughters who laid down their lives in the struggle for freedom, justice, and the dignity of their people. Their names belong to history. Their courage belongs to us all.',
+    'hero.btn_honor': 'Honor a Hero',
+    'hero.btn_explore': 'Enter the Memorial',
 
     'wall.title': 'Wall of Remembrance',
     'wall.subtitle': 'Each name here was a life lived, a story worth telling',
@@ -66,7 +66,7 @@ const translations = {
 
     'submit.kicker': 'In Their Memory',
     'submit.title': 'Honor a Life',
-    'submit.subtitle': 'Share the story of an Oromo individual so that their life may be preserved on this wall. Every submission is reviewed by a trusted community moderator before it is placed here.',
+    'submit.subtitle': 'Share the story of an Oromo son or daughter who gave their life for the freedom of their people — so that their name and courage may be preserved on this wall for every generation to come. Every submission is reviewed by a trusted community moderator before it is placed here.',
     'submit.section_who': 'Who Are You Honoring?',
     'submit.full_name': 'Full Name',
     'submit.full_name_placeholder': 'Their full name…',
@@ -109,7 +109,7 @@ const translations = {
     'submit.error_general': 'Something went wrong. Please try again.',
 
     'footer.tagline': '"Until the lion learns to write, every story will glorify the hunter."',
-    'footer.mission': 'A permanent digital memorial honoring Oromo lives — built by the community, for all generations.',
+    'footer.mission': 'A permanent memorial for those who gave their lives for the freedom and dignity of the Oromo people — built by the community, for all generations.',
     'footer.odaa': 'Beneath the Odaa, no voice is ever forgotten.',
   },
 
@@ -117,11 +117,11 @@ const translations = {
     'nav.wall': 'Darbii Yaadannoo',
     'nav.honor': 'Jireenyaa Kabaji',
 
-    'hero.kicker': 'Yaadannoodhaaf',
-    'hero.title': 'Seenaan Isaanii Itti Fufa',
-    'hero.subtitle': 'Bakka qunamtii qulqulluu kan maatii fi hawaasni Oromoo walgahuun jireenyaa namoota addunyaa keenya uumanii galmeessu, eegu, kabajaniif — akka yaadannoon isaanii dhaloota hundaaf turuu danda\'uuf.',
-    'hero.btn_honor': 'Jireenyaa Kabaji',
-    'hero.btn_explore': 'Yaadannoo Ilali',
+    'hero.kicker': 'Wareegamtoota Keenutaaf',
+    'hero.title': 'Kufan Akka Uummanni Isaanii Ol Ka\'u',
+    'hero.subtitle': 'Yaadannoo ilmaan Oromoo dhiiraa fi dubartii kan bilisummaa, haqaa fi ulfina uummata isaaniitaaf jireenyaa isaanii itti laatan. Maqaan isaanii seenaa keessatti bara baraan jiraata. Gootummaan isaanii hunda keenyaaf dhaalamee hafa.',
+    'hero.btn_honor': 'Goota Kabaji',
+    'hero.btn_explore': 'Yaadannoo Seeni',
 
     'wall.title': 'Darbii Yaadannoo',
     'wall.subtitle': 'Maqaan asitti jiru jireenya jiraatame, seenaa himamuu qabu',
@@ -223,7 +223,7 @@ const translations = {
     'submit.error_general': 'Rakkoo tokko uumame. Irra deebi\'i yaalii.',
 
     'footer.tagline': '"Leenci barreessuu hin baratiniin, seenaan hundi arabbaa faarsa."',
-    'footer.mission': 'Yaadannoo dijitaalaa kan yeroo hunda turuu jireenyaa Oromoo kabaju — hawaasaan ijaarame, dhaloota hundaaf.',
+    'footer.mission': 'Yaadannoo dhaabbataa namoota bilisummaa fi ulfina uummata Oromoo jechaa jireenyaa isaanii itti laatan — hawaasaan ijaarame, dhaloota hundaaf.',
     'footer.odaa': 'Odaa jalatti, sagaleen kamuu hin dagataamu.',
   },
 };

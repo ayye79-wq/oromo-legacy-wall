@@ -154,7 +154,7 @@ export default function Home() {
             <div className="hero-counter">
               <span className="hero-counter-number">{heroCount.toLocaleString()}</span>
               <span className="hero-counter-label">
-                {heroCount === 1 ? 'life honored on this wall' : 'lives honored on this wall'}
+                {heroCount === 1 ? 'hero remembered on this wall' : 'heroes remembered on this wall'}
               </span>
             </div>
           )}
