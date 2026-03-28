@@ -59,6 +59,7 @@ const translations = {
     'detail.loading': 'Loading their story…',
     'detail.not_found': 'Story Not Found',
     'detail.not_found_sub': 'This legacy may not exist or is still awaiting review.',
+    'detail.trust_badge': 'Reviewed for dignity and accuracy',
     'detail.return_wall': 'Return to the Wall',
     'detail.error': 'Something went wrong. Please try again.',
 
@@ -191,6 +192,7 @@ const translations = {
     'detail.loading': 'Seenaa isaanii fe\'aa jira…',
     'detail.not_found': 'Seenaan Hin Argamne',
     'detail.not_found_sub': 'Jireenyaan kun hin jirre ykn ammallee ilaalamuuf eegaa jira.',
+    'detail.trust_badge': 'Ulfina fi sirricha mirkaneessuuf ilaalame',
     'detail.return_wall': 'Darbii Yaadannootti Deebi\'i',
     'detail.error': 'Rakkoo tokko uumame. Irra deebi\'i yaalii.',
 

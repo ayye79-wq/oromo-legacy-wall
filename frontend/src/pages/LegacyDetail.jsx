@@ -219,6 +219,7 @@ export default function LegacyDetail() {
             <dl className="sidebar-dl">
               <dt>{t('detail.name')}</dt>
               <dd>{full_name}</dd>
+
               {occupation && (
                 <>
                   <dt>Occupation</dt>
@@ -244,6 +245,13 @@ export default function LegacyDetail() {
                 </>
               )}
             </dl>
+
+            <div className="sidebar-trust-badge">
+              <svg className="trust-check" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8.5L6.5 12L13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>{t('detail.trust_badge')}</span>
+            </div>
           </div>
 
           <div className="sidebar-actions">

@@ -220,6 +220,27 @@
   color: var(--text-secondary);
 }
 
+.sidebar-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold-primary, #d4af37);
+  opacity: 0.85;
+}
+
+.trust-check {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--gold-primary, #d4af37);
+}
+
 .sidebar-actions {
   display: flex;
   flex-direction: column;
