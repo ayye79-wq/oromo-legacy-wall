@@ -3,7 +3,7 @@ builder = "dockerfile"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "python healthcheck_server.py"
+startCommand = "gunicorn --bind 0.0.0.0:$PORT --workers 1 --log-level debug oromolegacy.wsgi:application"
 healthcheckPath = "/ping/"
 healthcheckTimeout = 120
 restartPolicyType = "on_failure"
