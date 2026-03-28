@@ -1,21 +1,19 @@
 #!/bin/sh
+echo "=== STARTUP ==="
+echo "PORT=${PORT}"
+echo "PWD=$(pwd)"
+echo "PYTHON=$(python --version 2>&1)"
 
-# Run migrations in background so gunicorn can start immediately.
-# Healthcheck hits /ping/ which needs no DB — passes as soon as gunicorn is up.
-(
-  MAX=10
-  I=0
-  while [ $I -lt $MAX ]; do
-    if python manage.py migrate --noinput 2>&1; then
-      echo "Migrations complete."
-      break
-    fi
-    I=$((I+1))
-    echo "Migration attempt $I/$MAX failed. Retrying in 3s..."
-    sleep 3
-  done
-  [ $I -eq $MAX ] && echo "WARNING: migrations never completed after $MAX attempts."
-) &
+echo "=== IMPORT CHECK ==="
+python -c "import django; print('django OK', django.__version__)" || echo "DJANGO IMPORT FAILED"
+python -c "import gunicorn; print('gunicorn OK', gunicorn.__version__)" || echo "GUNICORN IMPORT FAILED"
+python -c "import oromolegacy.wsgi; print('wsgi OK')" || echo "WSGI IMPORT FAILED"
 
-echo "Starting gunicorn on port ${PORT:-8000}..."
-exec gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 2 oromolegacy.wsgi:application
+echo "=== STARTING GUNICORN ==="
+exec gunicorn \
+  --bind 0.0.0.0:${PORT:-8000} \
+  --workers 1 \
+  --log-level debug \
+  --access-logfile - \
+  --error-logfile - \
+  oromolegacy.wsgi:application
