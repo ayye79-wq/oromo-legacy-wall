@@ -75,6 +75,17 @@
   line-height: 1.7;
 }
 
+.footer-mission-sub {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-style: italic;
+  color: var(--accent);
+  font-size: 1.0rem;
+  max-width: 440px;
+  line-height: 1.6;
+  opacity: 0.85;
+  margin-top: 0.5rem;
+}
+
 .footer-odaa-label {
   font-family: 'EB Garamond', Georgia, serif;
   font-style: italic;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Fragment } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { fetchLegacy } from '../api';
@@ -92,7 +92,7 @@ export default function LegacyDetail() {
 
   const {
     full_name, occupation, relationship_to_person, zone_name,
-    story, story_en, story_om, original_language, photo_url, approved_at,
+    story, story_en, story_om, original_language, quote, photo_url, approved_at,
   } = legacy;
 
   function resolveStory() {
@@ -206,7 +206,16 @@ export default function LegacyDetail() {
 
           <div className="detail-story">
             {storyText.split('\n').filter(p => p.trim()).map((para, i) => (
-              <p key={i}>{para}</p>
+              <Fragment key={i}>
+                <p>{para}</p>
+                {i === 0 && quote && (
+                  <blockquote className="story-quote">
+                    <span className="story-quote-mark">&ldquo;</span>
+                    {quote}
+                    <span className="story-quote-mark">&rdquo;</span>
+                  </blockquote>
+                )}
+              </Fragment>
             ))}
           </div>
           <div className="story-close">

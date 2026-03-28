@@ -53,6 +53,7 @@ class Legacy(models.Model):
     story = models.TextField()
     story_en = models.TextField(blank=True, default='')
     story_om = models.TextField(blank=True, default='')
+    quote = models.CharField(max_length=300, blank=True, default='')
     original_language = models.CharField(max_length=2, choices=LANG_CHOICES, default=LANG_EN)
     photo = models.ImageField(upload_to="legacy_photos/", blank=True, null=True)
 

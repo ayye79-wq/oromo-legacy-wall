@@ -180,6 +180,38 @@
   font-size: 1.22rem;
 }
 
+/* Quote block */
+.story-quote {
+  margin: 0.5rem 2rem 0.5rem;
+  padding: 1.6rem 2rem;
+  border-left: none;
+  text-align: center;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.28rem;
+  font-style: italic;
+  color: var(--accent);
+  line-height: 1.7;
+  position: relative;
+}
+
+.story-quote::before,
+.story-quote::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(212,175,55,0.35), transparent);
+  margin: 0.75rem auto;
+  width: 70%;
+}
+
+.story-quote-mark {
+  font-size: 1.5rem;
+  line-height: 0;
+  vertical-align: -0.25em;
+  opacity: 0.5;
+  margin: 0 0.2rem;
+}
+
 .story-close {
   display: flex;
   align-items: center;

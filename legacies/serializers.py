@@ -66,7 +66,7 @@ class LegacyDetailSerializer(serializers.ModelSerializer):
             "id", "full_name", "occupation", "relationship_to_person",
             "slug", "zone_name",
             "story", "story_en", "story_om", "original_language",
-            "photo_url", "approved_at", "created_at",
+            "quote", "photo_url", "approved_at", "created_at",
         ]
 
     def get_photo_url(self, obj):

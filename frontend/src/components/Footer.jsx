@@ -41,6 +41,7 @@ export default function Footer() {
         <div className="footer-brand">Oromo Legacy Wall</div>
         <p className="footer-tagline">{t('footer.tagline')}</p>
         <p className="footer-mission">{t('footer.mission')}</p>
+        <p className="footer-mission-sub">{t('footer.mission_sub')}</p>
         <p className="footer-odaa-label">{t('footer.odaa')}</p>
       </div>
     </footer>

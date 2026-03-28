@@ -129,6 +129,7 @@ const translations = {
 
     'footer.tagline': '"Until the lion learns to write, every story will glorify the hunter."',
     'footer.mission': 'A permanent memorial for those who gave their lives for the freedom and dignity of the Oromo people — built by the community, for all generations.',
+    'footer.mission_sub': 'This wall exists so their stories are told by their own people.',
     'footer.odaa': 'Beneath the Odaa, no voice is ever forgotten.',
   },
 
@@ -262,6 +263,7 @@ const translations = {
 
     'footer.tagline': '"Leenci barreessuu hin baratiniin, seenaan hundi arabbaa faarsa."',
     'footer.mission': 'Yaadannoo dhaabbataa namoota bilisummaa fi ulfina uummata Oromoo jechaa jireenyaa isaanii itti laatan — hawaasaan ijaarame, dhaloota hundaaf.',
+    'footer.mission_sub': 'Gantichi kun akka seenaan isaanii uummata isaaniitiin himamu jiraata.',
     'footer.odaa': 'Odaa jalatti, sagaleen kamuu hin dagataamu.',
   },
 };
