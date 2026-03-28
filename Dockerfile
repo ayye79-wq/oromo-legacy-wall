@@ -15,8 +15,5 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD sh -c 'set -e && \
-    echo "Starting migrations..." && \
-    python manage.py migrate --noinput --skip-checks 2>&1 && \
-    echo "Migrations done. Starting gunicorn..." && \
-    exec gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120 oromolegacy.wsgi:application'
+CMD python manage.py migrate --noinput --skip-checks && \
+    exec gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120 oromolegacy.wsgi:application
