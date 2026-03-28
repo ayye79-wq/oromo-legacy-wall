@@ -343,7 +343,7 @@ nav a:hover{opacity:1}
 
   background-image:
     linear-gradient(rgba(15,23,42,.55), rgba(17,24,39,.82)),
-    url("/static/img/bosonafinal.jpg");
+    url("/static/legacies/img/bosonafinal.jpg");
   background-size: cover;
   background-position: center 55%;
   background-repeat: no-repeat;
@@ -400,7 +400,7 @@ nav a:hover{opacity:1}
 }
 
 /* ================================
-   PAGE BACKGROUND (bosonafinal.jpg)
+   PAGE BACKGROUND (legacies/img/bosonafinal.jpg)
    ================================ */
 .page-bg{
   position: relative;
