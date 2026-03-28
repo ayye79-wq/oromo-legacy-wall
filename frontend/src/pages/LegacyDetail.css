@@ -134,13 +134,13 @@
   display: grid;
   grid-template-columns: 1fr 280px;
   gap: 4rem;
-  padding: 2rem 2rem 5rem;
+  padding: 3.5rem 2rem 6rem;
   align-items: start;
 }
 
 /* Story */
 .story-intro {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
 }
 
 .story-ornament {
@@ -152,7 +152,7 @@
 .story-orn-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(202,168,90,0.4), transparent);
+  background: linear-gradient(to right, transparent, rgba(212,175,55,0.65), transparent);
 }
 
 .story-orn-label {
@@ -162,22 +162,22 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--accent);
-  opacity: 0.75;
+  opacity: 0.9;
   white-space: nowrap;
 }
 
 .detail-story {
   display: flex;
   flex-direction: column;
-  gap: 1.6rem;
-  margin-bottom: 2.5rem;
+  gap: 2rem;
+  margin-bottom: 3rem;
 }
 
 .detail-story p {
   font-family: 'EB Garamond', Georgia, serif;
   color: var(--text-body);
-  line-height: 1.95;
-  font-size: 1.15rem;
+  line-height: 2.0;
+  font-size: 1.22rem;
 }
 
 .story-close {
