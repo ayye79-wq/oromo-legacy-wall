@@ -90,3 +90,7 @@ build = ["bash", "-c", "cd frontend && npm install && npm run build && cd .. && 
 
 [userenv.shared]
 EXPO_PUBLIC_API_URL = "https://e3449ed0-f706-4bd9-8d98-a4f2fe7628c9-00-2qqp09yl2k8ue.kirk.replit.dev"
+R2_ACCESS_KEY_ID = "7de5d1b5dbe3ce2acb250b5b1330c86a"
+R2_SECRET_ACCESS_KEY = "cffeaa78817603487a23f43ddb7004adef93ec52dfa6ee930c30297957c1acf2"
+R2_ENDPOINT_URL = "https://ce45a24495ca425c01a12a8b7fe34e1d.r2.cloudflarestorage.com"
+R2_BUCKET_NAME = "oromo-legacy-wall"
