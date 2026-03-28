@@ -154,6 +154,10 @@ export default function LegacyDetail() {
         <div className="container detail-hero-inner">
           <Link to="/" className="detail-back">{t('detail.back')}</Link>
 
+          <div className="detail-name-block">
+            <h1 className="detail-name">{full_name}</h1>
+          </div>
+
           <div className="detail-portrait-wrap">
             {photo_url ? (
               <button
@@ -174,7 +178,6 @@ export default function LegacyDetail() {
 
           <div className="detail-meta">
             {zone_name && <span className="tag tag-zone">{zone_name}</span>}
-            <h1 className="detail-name">{full_name}</h1>
             {occupation && (
               <p className="detail-occupation">{occupation}</p>
             )}
