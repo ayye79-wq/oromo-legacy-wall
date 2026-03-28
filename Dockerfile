@@ -12,7 +12,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 RUN python manage.py collectstatic --noinput
+RUN chmod +x docker_start.sh
 
 EXPOSE 8000
 
-CMD gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 2 oromolegacy.wsgi:application
+CMD ["./docker_start.sh"]

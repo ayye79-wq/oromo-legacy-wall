@@ -118,7 +118,7 @@ if _db_url:
             'HOST': _parsed.hostname,
             'PORT': str(_parsed.port or 5432),
             'CONN_MAX_AGE': 600,
-            'OPTIONS': {'sslmode': 'prefer'},
+            'OPTIONS': {'sslmode': 'prefer', 'connect_timeout': 5},
         }
     }
 else:
