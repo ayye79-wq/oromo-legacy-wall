@@ -1,5 +1,31 @@
+import os
 from rest_framework import serializers
 from .models import Legacy, Zone, Tribute
+
+
+def _build_photo_url(obj, context):
+    """
+    Return an absolute URL for the hero's photo.
+    Priority:
+      1. If DEFAULT_FILE_STORAGE is R2, obj.photo.url is already absolute → use it.
+      2. Else fall back to R2_PUBLIC_URL env var (files live in R2 even if Django
+         isn't using it as default storage).
+      3. Else build absolute URL from the current request.
+    """
+    if not obj.photo:
+        return None
+    url = obj.photo.url
+    if url.startswith("http"):
+        return url
+    r2_pub = os.environ.get("R2_PUBLIC_URL", "").rstrip("/")
+    if r2_pub:
+        if not r2_pub.startswith("http"):
+            r2_pub = f"https://{r2_pub}"
+        return f"{r2_pub}/{obj.photo.name}"
+    request = context.get("request")
+    if request:
+        return request.build_absolute_uri(url)
+    return url
 
 
 class ZoneSerializer(serializers.ModelSerializer):
@@ -27,9 +53,7 @@ class LegacyListSerializer(serializers.ModelSerializer):
         return ""
 
     def get_photo_url(self, obj):
-        if obj.photo:
-            return obj.photo.url
-        return None
+        return _build_photo_url(obj, self.context)
 
 
 class LegacyDetailSerializer(serializers.ModelSerializer):
@@ -46,9 +70,7 @@ class LegacyDetailSerializer(serializers.ModelSerializer):
         ]
 
     def get_photo_url(self, obj):
-        if obj.photo:
-            return obj.photo.url
-        return None
+        return _build_photo_url(obj, self.context)
 
 
 class LegacySubmitSerializer(serializers.ModelSerializer):
@@ -88,9 +110,7 @@ class LegacyModerationSerializer(serializers.ModelSerializer):
         ]
 
     def get_photo_url(self, obj):
-        if obj.photo:
-            return obj.photo.url
-        return None
+        return _build_photo_url(obj, self.context)
 
 
 class TributeSerializer(serializers.ModelSerializer):
