@@ -65,7 +65,7 @@ const translations = {
 
     'tribute.heading': 'Honor Their Memory',
     'tribute.subheading': 'Light a candle or leave words that will live alongside their story.',
-    'tribute.candle_zero': 'Be the first to light a candle',
+    'tribute.candle_zero': 'Be the first to honor their memory.',
     'tribute.candle_one': '1 candle has been lit',
     'tribute.candle_many': '{n} candles have been lit',
     'tribute.mode_candle': 'Light a Candle',
@@ -199,7 +199,7 @@ const translations = {
 
     'tribute.heading': 'Yaadannoo Isaanii Kabaji',
     'tribute.subheading': 'Eebicha qabsiisi ykn jecha seenaa isaanii waliin jiraatu dhiisi.',
-    'tribute.candle_zero': 'Kan jalqabaa ta\'i — eebicha qabsiisi',
+    'tribute.candle_zero': 'Kan jalqabaa ta\'i — yaadannoo isaanii kabaji.',
     'tribute.candle_one': 'Eebicha tokko qabsiifame',
     'tribute.candle_many': 'Eebicha {n} qabsiifame',
     'tribute.mode_candle': 'Eebicha Qabsiisi',
