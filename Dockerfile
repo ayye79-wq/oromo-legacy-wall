@@ -14,6 +14,4 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 RUN chmod +x docker_start.sh
 
-EXPOSE 8000
-
 CMD ["./docker_start.sh"]
