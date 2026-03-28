@@ -30,6 +30,7 @@ export default function Navbar() {
   const links = [
     { to: '/', label: t('nav.wall') },
     { to: '/submit', label: t('nav.honor') },
+    { to: '/about', label: t('nav.about') },
   ];
 
   return (

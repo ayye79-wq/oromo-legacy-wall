@@ -9,9 +9,21 @@ const translations = {
     'hero.btn_honor': 'Honor a Hero',
     'hero.btn_explore': 'Enter the Memorial',
 
+    'nav.about': 'About',
+
+    'about.kicker': 'Our Purpose',
+    'about.title': 'About Oromo Legacy Wall',
+    'about.p1': 'Oromo Legacy Wall is an independent, community-driven memorial created to honor the lives and stories of Oromo individuals who gave everything for their people.',
+    'about.p2': 'The project was initiated by a member of the community and is sustained through collective contributions. Every story represents a shared memory, preserved with dignity and respect.',
+    'about.p3': 'While the platform is currently maintained by a small team, its purpose belongs to the Oromo people — to remember, to document, and to ensure that these lives are never forgotten.',
+    'about.p4': 'All submissions are carefully reviewed before publication to maintain accuracy, respect, and integrity.',
+    'about.btn_wall': 'Enter the Memorial',
+    'about.btn_honor': 'Honor a Life',
+
     'about_band.title': 'About Oromo Legacy Wall',
     'about_band.line1': 'An independent, community-driven memorial created to honor Oromo lives.',
     'about_band.line2': 'Stories are submitted by the community and carefully reviewed before publication to ensure dignity and accuracy.',
+    'about_band.learn_more': 'Learn more →',
 
     'wall.title': 'Wall of Remembrance',
     'wall.subtitle': 'Each name here was a life lived, a story worth telling',
@@ -127,9 +139,21 @@ const translations = {
     'hero.btn_honor': 'Goota Kabaji',
     'hero.btn_explore': 'Yaadannoo Seeni',
 
+    'nav.about': 'Waa\'ee',
+
+    'about.kicker': 'Kaayyoo Keenya',
+    'about.title': 'Darbii Yaadannoo Oromoo Waa\'ee',
+    'about.p1': 'Darbii Yaadannoo Oromoo yaadannoo bilisaa fi hawaasaan durfamuu yoo ta\'u, jireenyaa fi seenaa namoota Oromoo kan hunda isaaniitaaf wareegaman kabajuuf ijaarame.',
+    'about.p2': 'Pirojektiin kun miseensa hawaasaa tokkoon jalqabame fi gumaacha waloodhaan eegama. Seenaan hundi yaadannoo waliinii, ulfina fi kabaja qabuun eegame, bakka bu\'a.',
+    'about.p3': 'Kuusaan kun yeroo ammaa gareen xinnoo tiin eegamaa jiru illee, kaayyoon isaa uummata Oromoo irraa — yaadachuuf, barreessuuf, fi jireenyaaleen kun bara baraan hin dagatamuuf.',
+    'about.p4': 'Galmeessitoota hundi sirricha, kabaja fi guutummaas eeguuf darbii irratti mul\'atan dura qulqulleeffamu.',
+    'about.btn_wall': 'Yaadannoo Seeni',
+    'about.btn_honor': 'Jireenyaa Kabaji',
+
     'about_band.title': 'Darbii Yaadannoo Oromoo Waa\'ee',
     'about_band.line1': 'Yaadannoo bilisaa fi hawaasaan durfamuu, jireenyaa Oromoo kabajuuf ijaarame.',
     'about_band.line2': 'Seenaaleen hawaasaan dhiyaatanii ulfina fi sirricha mirkaneessuuf mul\'atan dura qulqulleeffamu.',
+    'about_band.learn_more': 'Dabalata Baradhu →',
 
     'wall.title': 'Darbii Yaadannoo',
     'wall.subtitle': 'Maqaan asitti jiru jireenya jiraatame, seenaa himamuu qabu',

@@ -168,9 +168,12 @@ export default function Home() {
 
       <section className="about-band" aria-label="About">
         <div className="container about-band-inner">
-          <h2 className="about-band-title">{t('about_band.title')}</h2>
+          <h2 className="about-band-title">
+            <Link to="/about" className="about-band-title-link">{t('about_band.title')}</Link>
+          </h2>
           <p className="about-band-text">{t('about_band.line1')}</p>
           <p className="about-band-text">{t('about_band.line2')}</p>
+          <Link to="/about" className="about-band-more">{t('about_band.learn_more')}</Link>
         </div>
       </section>
 

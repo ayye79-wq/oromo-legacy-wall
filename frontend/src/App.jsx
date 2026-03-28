@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import SubmitLegacy from './pages/SubmitLegacy';
 import LegacyDetail from './pages/LegacyDetail';
 import Moderation from './pages/Moderation';
+import About from './pages/About';
 
 function NotFound() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/submit" element={<SubmitLegacy />} />
               <Route path="/legacy/:slug" element={<LegacyDetail />} />
               <Route path="/mod" element={<Moderation />} />
+              <Route path="/about" element={<About />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
