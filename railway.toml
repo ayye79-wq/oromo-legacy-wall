@@ -3,6 +3,7 @@ builder = "dockerfile"
 dockerfilePath = "Dockerfile"
 
 [deploy]
+startCommand = "sh -c 'exec gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 60 --log-level info --access-logfile - --error-logfile - oromolegacy.wsgi:application'"
 healthcheckPath = "/ping/"
 healthcheckTimeout = 120
 restartPolicyType = "on_failure"
