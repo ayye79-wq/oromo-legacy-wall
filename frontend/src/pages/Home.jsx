@@ -173,6 +173,7 @@ export default function Home() {
           </h2>
           <p className="about-band-text">{t('about_band.line1')}</p>
           <p className="about-band-text">{t('about_band.line2')}</p>
+          <p className="about-band-text">{t('about_band.line3')}</p>
           <Link to="/about" className="about-band-more">{t('about_band.learn_more')}</Link>
         </div>
       </section>

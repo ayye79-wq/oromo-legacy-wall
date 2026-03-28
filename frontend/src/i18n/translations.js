@@ -17,12 +17,14 @@ const translations = {
     'about.p2': 'The project was initiated by a member of the community and is sustained through collective contributions. Every story represents a shared memory, preserved with dignity and respect.',
     'about.p3': 'While the platform is currently maintained by a small team, its purpose belongs to the Oromo people — to remember, to document, and to ensure that these lives are never forgotten.',
     'about.p4': 'All submissions are carefully reviewed before publication to maintain accuracy, respect, and integrity.',
+    'about.p5': 'This is an evolving archive. We welcome contributions from across the Oromo community.',
     'about.btn_wall': 'Enter the Memorial',
     'about.btn_honor': 'Honor a Life',
 
     'about_band.title': 'About Oromo Legacy Wall',
     'about_band.line1': 'An independent, community-driven memorial created to honor Oromo lives.',
     'about_band.line2': 'Stories are submitted by the community and respectfully reviewed before publication to ensure dignity, accuracy, and integrity.',
+    'about_band.line3': 'This is an evolving archive. We welcome contributions from across the Oromo community.',
     'about_band.learn_more': 'Learn more →',
 
     'wall.title': 'Wall of Remembrance',
@@ -147,12 +149,14 @@ const translations = {
     'about.p2': 'Pirojektiin kun miseensa hawaasaa tokkoon jalqabame fi gumaacha waloodhaan eegama. Seenaan hundi yaadannoo waliinii, ulfina fi kabaja qabuun eegame, bakka bu\'a.',
     'about.p3': 'Kuusaan kun yeroo ammaa gareen xinnoo tiin eegamaa jiru illee, kaayyoon isaa uummata Oromoo irraa — yaadachuuf, barreessuuf, fi jireenyaaleen kun bara baraan hin dagatamuuf.',
     'about.p4': 'Galmeessitoota hundi sirricha, kabaja fi guutummaas eeguuf darbii irratti mul\'atan dura qulqulleeffamu.',
+    'about.p5': 'Kun galmee guddachaa jiru dha. Gumaacha hawaasa Oromoo guutuu irraa simanna.',
     'about.btn_wall': 'Yaadannoo Seeni',
     'about.btn_honor': 'Jireenyaa Kabaji',
 
     'about_band.title': 'Darbii Yaadannoo Oromoo Waa\'ee',
     'about_band.line1': 'Yaadannoo bilisaa fi hawaasaan durfamuu, jireenyaa Oromoo kabajuuf ijaarame.',
     'about_band.line2': 'Seenaaleen hawaasaan dhiyaatanii ulfina fi sirricha mirkaneessuuf mul\'atan dura qulqulleeffamu.',
+    'about_band.line3': 'Kun galmee guddachaa jiru dha. Gumaacha hawaasa Oromoo guutuu irraa simanna.',
     'about_band.learn_more': 'Dabalata Baradhu →',
 
     'wall.title': 'Darbii Yaadannoo',

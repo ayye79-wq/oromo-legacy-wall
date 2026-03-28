@@ -26,6 +26,7 @@ export default function About() {
           <p className="about-para">{t('about.p2')}</p>
           <p className="about-para">{t('about.p3')}</p>
           <p className="about-para">{t('about.p4')}</p>
+          <p className="about-para">{t('about.p5')}</p>
 
           <div className="about-divider" aria-hidden="true">
             <span className="ornament-line-short" />
