@@ -166,6 +166,14 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="about-band" aria-label="About">
+        <div className="container about-band-inner">
+          <h2 className="about-band-title">{t('about_band.title')}</h2>
+          <p className="about-band-text">{t('about_band.line1')}</p>
+          <p className="about-band-text">{t('about_band.line2')}</p>
+        </div>
+      </section>
+
       <section className="wall-section" id="wall">
         <div className="container">
           <div className="wall-heading">

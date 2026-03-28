@@ -2,6 +2,40 @@
   flex: 1;
 }
 
+/* ── About Band ── */
+.about-band {
+  background: rgba(212, 168, 67, 0.04);
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 0;
+}
+
+.about-band-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.about-band-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-primary, #d4af37);
+  margin-bottom: 0.75rem;
+}
+
+.about-band-text {
+  font-size: 0.92rem;
+  color: var(--text-muted, rgba(255,255,255,0.6));
+  line-height: 1.65;
+  margin: 0;
+}
+
+.about-band-text + .about-band-text {
+  margin-top: 0.45rem;
+}
+
 /* ── Hero ── */
 .hero {
   position: relative;

@@ -9,6 +9,10 @@ const translations = {
     'hero.btn_honor': 'Honor a Hero',
     'hero.btn_explore': 'Enter the Memorial',
 
+    'about_band.title': 'About Oromo Legacy Wall',
+    'about_band.line1': 'An independent, community-driven memorial created to honor Oromo lives.',
+    'about_band.line2': 'Stories are submitted by the community and carefully reviewed before publication to ensure dignity and accuracy.',
+
     'wall.title': 'Wall of Remembrance',
     'wall.subtitle': 'Each name here was a life lived, a story worth telling',
     'wall.search_placeholder': 'Search by name, location, or story…',
@@ -122,6 +126,10 @@ const translations = {
     'hero.subtitle': 'Yaadannoo ilmaan Oromoo dhiiraa fi dubartii kan bilisummaa, haqaa fi ulfina uummata isaaniitaaf jireenyaa isaanii itti laatan. Maqaan isaanii seenaa keessatti bara baraan jiraata. Gootummaan isaanii hunda keenyaaf dhaalamee hafa.',
     'hero.btn_honor': 'Goota Kabaji',
     'hero.btn_explore': 'Yaadannoo Seeni',
+
+    'about_band.title': 'Darbii Yaadannoo Oromoo Waa\'ee',
+    'about_band.line1': 'Yaadannoo bilisaa fi hawaasaan durfamuu, jireenyaa Oromoo kabajuuf ijaarame.',
+    'about_band.line2': 'Seenaaleen hawaasaan dhiyaatanii ulfina fi sirricha mirkaneessuuf mul\'atan dura qulqulleeffamu.',
 
     'wall.title': 'Darbii Yaadannoo',
     'wall.subtitle': 'Maqaan asitti jiru jireenya jiraatame, seenaa himamuu qabu',
