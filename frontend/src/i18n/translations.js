@@ -22,7 +22,7 @@ const translations = {
 
     'about_band.title': 'About Oromo Legacy Wall',
     'about_band.line1': 'An independent, community-driven memorial created to honor Oromo lives.',
-    'about_band.line2': 'Stories are submitted by the community and carefully reviewed before publication to ensure dignity and accuracy.',
+    'about_band.line2': 'Stories are submitted by the community and respectfully reviewed before publication to ensure dignity, accuracy, and integrity.',
     'about_band.learn_more': 'Learn more →',
 
     'wall.title': 'Wall of Remembrance',
