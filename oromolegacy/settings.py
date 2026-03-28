@@ -173,7 +173,6 @@ _frontend_dist = BASE_DIR / "frontend" / "dist"
 STATICFILES_DIRS = [BASE_DIR / "static"] + ([_frontend_dist / "assets"] if (_frontend_dist / "assets").exists() else [])
 
 LOGIN_URL = "/admin/login/"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 _r2_key = os.environ.get('R2_ACCESS_KEY_ID')
 _r2_endpoint = os.environ.get('R2_ENDPOINT_URL')
@@ -181,7 +180,6 @@ _r2_bucket = os.environ.get('R2_BUCKET_NAME', 'oromo-legacy-wall')
 _r2_public_url = os.environ.get('R2_PUBLIC_URL')
 
 if _r2_key and _r2_endpoint:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     AWS_ACCESS_KEY_ID = _r2_key
     AWS_SECRET_ACCESS_KEY = os.environ.get('R2_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = _r2_bucket
@@ -190,16 +188,32 @@ if _r2_key and _r2_endpoint:
     AWS_DEFAULT_ACL = 'public-read'
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_FILE_OVERWRITE = False
-    if _r2_public_url:
-        _r2_domain = _r2_public_url.replace('https://', '').replace('http://', '').rstrip('/')
+    _r2_domain = _r2_public_url.replace('https://', '').replace('http://', '').rstrip('/') if _r2_public_url else None
+    if _r2_domain:
         AWS_S3_CUSTOM_DOMAIN = _r2_domain
         MEDIA_URL = f"https://{_r2_domain}/"
     else:
         MEDIA_URL = f"{_r2_endpoint}/{_r2_bucket}/"
     MEDIA_ROOT = BASE_DIR / "media"
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 else:
     MEDIA_URL = "/media/"
     MEDIA_ROOT = BASE_DIR / "media"
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
