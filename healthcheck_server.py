@@ -1,37 +1,44 @@
 """
-Diagnostic: imports Django WSGI in a background thread and logs any errors.
-Healthcheck always passes so we can see the full traceback in Deploy Logs.
+Diagnostic server: runs Django WSGI import (with a 30s timeout), stores
+any error, starts HTTP server, then returns result from /ping/.
+Visit /ping/ in browser after deploy to see the Django import result.
 """
 import os
 import sys
 import json
-import threading
+import signal
 import traceback
 import http.server
 
 PORT = int(os.environ.get("PORT", 8000))
-print(f"=== DIAG SERVER port={PORT} ===", flush=True)
-print(f"Python: {sys.version}", flush=True)
+
+# ── Try importing Django WSGI ──────────────────────────────────────────────
+django_ok = False
+error_text = None
 
 
-def try_django():
-    print("--- Attempting Django WSGI import ---", flush=True)
-    try:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "oromolegacy.settings")
-        from oromolegacy.wsgi import application
-        print("=== DJANGO WSGI IMPORT OK ===", flush=True)
-    except Exception as e:
-        print("=== DJANGO WSGI IMPORT FAILED ===", flush=True)
-        traceback.print_exc(file=sys.stdout)
-        sys.stdout.flush()
+def _timeout(signum, frame):
+    raise TimeoutError("Django WSGI import timed out after 30s")
 
 
-threading.Thread(target=try_django, daemon=True).start()
+signal.signal(signal.SIGALRM, _timeout)
+signal.alarm(30)
+try:
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "oromolegacy.settings")
+    from oromolegacy.wsgi import application  # noqa: F401
+    signal.alarm(0)
+    django_ok = True
+except Exception:
+    signal.alarm(0)
+    error_text = traceback.format_exc()
 
 
+# ── Serve ──────────────────────────────────────────────────────────────────
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        body = b'{"status":"ok"}'
+        payload = {"django_ok": django_ok, "error": error_text,
+                   "port": PORT, "python": sys.version}
+        body = json.dumps(payload, indent=2).encode()
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
@@ -39,8 +46,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def log_message(self, fmt, *args):
-        print(f"[REQ] {fmt % args}", flush=True)
+        pass  # suppress access logs
 
 
-print(f"Serving on 0.0.0.0:{PORT}", flush=True)
+print(f"Serving on port {PORT}. Visit /ping/ to see Django import result.",
+      flush=True)
 http.server.HTTPServer(("", PORT), Handler).serve_forever()
