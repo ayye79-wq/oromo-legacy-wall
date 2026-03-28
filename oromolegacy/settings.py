@@ -191,8 +191,9 @@ if _r2_key and _r2_endpoint:
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_FILE_OVERWRITE = False
     if _r2_public_url:
-        AWS_S3_CUSTOM_DOMAIN = _r2_public_url.rstrip('/')
-        MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+        _r2_domain = _r2_public_url.replace('https://', '').replace('http://', '').rstrip('/')
+        AWS_S3_CUSTOM_DOMAIN = _r2_domain
+        MEDIA_URL = f"https://{_r2_domain}/"
     else:
         MEDIA_URL = f"{_r2_endpoint}/{_r2_bucket}/"
     MEDIA_ROOT = BASE_DIR / "media"
