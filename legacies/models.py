@@ -83,21 +83,25 @@ class Legacy(models.Model):
     def _compress_photo(self):
         try:
             from PIL import Image
-            img = Image.open(self.photo.path)
+            from django.core.files.storage import default_storage
+            old_name = self.photo.name
+            self.photo.open('rb')
+            img = Image.open(self.photo)
+            img.load()
+            self.photo.close()
             if img.mode in ('RGBA', 'P', 'LA'):
                 img = img.convert('RGB')
             img.thumbnail((800, 1000), Image.LANCZOS)
             output = io.BytesIO()
             img.save(output, format='JPEG', quality=82, optimize=True)
             output.seek(0)
-            old_path = self.photo.path
-            new_name = f"legacy_photos/{self.slug}.jpg"
+            new_name = f"{self.slug}.jpg"
             self.photo.save(new_name, ContentFile(output.read()), save=False)
             Legacy.objects.filter(pk=self.pk).update(photo=self.photo.name)
-            if old_path != self.photo.path:
+            if old_name != self.photo.name:
                 try:
-                    os.remove(old_path)
-                except OSError:
+                    default_storage.delete(old_name)
+                except Exception:
                     pass
         except Exception:
             pass
