@@ -59,6 +59,7 @@ class LegacyListSerializer(serializers.ModelSerializer):
 class LegacyDetailSerializer(serializers.ModelSerializer):
     zone_name = serializers.CharField(source="zone.name", read_only=True)
     photo_url = serializers.SerializerMethodField()
+    photo_enhanced_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Legacy
@@ -66,11 +67,28 @@ class LegacyDetailSerializer(serializers.ModelSerializer):
             "id", "full_name", "occupation", "relationship_to_person",
             "slug", "zone_name",
             "story", "story_en", "story_om", "original_language",
-            "quote", "photo_url", "approved_at", "created_at",
+            "quote", "photo_url", "photo_enhanced_url",
+            "photo_enhancement_status", "approved_at", "created_at",
         ]
 
     def get_photo_url(self, obj):
         return _build_photo_url(obj, self.context)
+
+    def get_photo_enhanced_url(self, obj):
+        if not obj.photo_enhanced:
+            return None
+        url = obj.photo_enhanced.url
+        if url.startswith("http"):
+            return url
+        r2_pub = os.environ.get("R2_PUBLIC_URL", "").rstrip("/")
+        if r2_pub:
+            if not r2_pub.startswith("http"):
+                r2_pub = f"https://{r2_pub}"
+            return f"{r2_pub}/{obj.photo_enhanced.name}"
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(url)
+        return url
 
 
 class LegacySubmitSerializer(serializers.ModelSerializer):

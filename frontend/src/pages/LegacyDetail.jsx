@@ -92,8 +92,12 @@ export default function LegacyDetail() {
 
   const {
     full_name, occupation, relationship_to_person, zone_name,
-    story, story_en, story_om, original_language, quote, photo_url, approved_at,
+    story, story_en, story_om, original_language, quote,
+    photo_url, photo_enhanced_url, photo_enhancement_status, approved_at,
   } = legacy;
+
+  const displayPhoto = photo_enhanced_url || photo_url;
+  const isEnhanced = photo_enhancement_status === 'done' && !!photo_enhanced_url;
 
   function resolveStory() {
     if (lang === 'om') {
@@ -138,8 +142,8 @@ export default function LegacyDetail() {
         {absolutePhoto && <meta name="twitter:image" content={absolutePhoto} />}
       </Helmet>
 
-      {lightboxOpen && photo_url && (
-        <Lightbox src={photo_url} name={full_name} onClose={closeLightbox} />
+      {lightboxOpen && displayPhoto && (
+        <Lightbox src={displayPhoto} name={full_name} onClose={closeLightbox} />
       )}
 
       <div className="detail-hero">
@@ -159,16 +163,23 @@ export default function LegacyDetail() {
           </div>
 
           <div className="detail-portrait-wrap">
-            {photo_url ? (
-              <button
-                className="detail-portrait-btn"
-                onClick={() => setLightboxOpen(true)}
-                title="Click to enlarge portrait"
-                aria-label={`Enlarge portrait of ${full_name}`}
-              >
-                <img src={photo_url} alt={full_name} className="detail-portrait" />
-                <span className="portrait-enlarge-hint" aria-hidden="true">⤢</span>
-              </button>
+            {displayPhoto ? (
+              <div className="detail-portrait-outer">
+                <button
+                  className="detail-portrait-btn"
+                  onClick={() => setLightboxOpen(true)}
+                  title="Click to enlarge portrait"
+                  aria-label={`Enlarge portrait of ${full_name}`}
+                >
+                  <img src={displayPhoto} alt={full_name} className="detail-portrait" />
+                  <span className="portrait-enlarge-hint" aria-hidden="true">⤢</span>
+                </button>
+                {isEnhanced && (
+                  <span className="photo-enhanced-badge" title="This photo has been AI-restored for clarity">
+                    ✦ AI Restored
+                  </span>
+                )}
+              </div>
             ) : (
               <div className="detail-portrait-placeholder" aria-hidden="true">
                 <span>{full_name.charAt(0)}</span>

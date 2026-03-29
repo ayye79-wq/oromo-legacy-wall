@@ -56,6 +56,17 @@ class Legacy(models.Model):
     quote = models.CharField(max_length=300, blank=True, default='')
     original_language = models.CharField(max_length=2, choices=LANG_CHOICES, default=LANG_EN)
     photo = models.ImageField(upload_to="legacy_photos/", blank=True, null=True)
+    photo_enhanced = models.ImageField(upload_to="legacy_photos/", blank=True, null=True)
+    photo_enhancement_status = models.CharField(
+        max_length=20,
+        default='none',
+        choices=[
+            ('none', 'Not enhanced'),
+            ('pending', 'Enhancement in progress'),
+            ('done', 'Enhanced'),
+            ('failed', 'Enhancement failed'),
+        ],
+    )
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
 
@@ -80,6 +91,7 @@ class Legacy(models.Model):
         super().save(*args, **kwargs)
         if self.photo and is_new:
             self._compress_photo()
+            self._trigger_enhancement()
 
     def _compress_photo(self):
         try:
@@ -104,6 +116,18 @@ class Legacy(models.Model):
                     default_storage.delete(old_name)
                 except Exception:
                     pass
+        except Exception:
+            pass
+
+    def _trigger_enhancement(self):
+        """Fire-and-forget AI photo enhancement after save."""
+        try:
+            import os
+            if not os.environ.get('REPLICATE_API_TOKEN'):
+                return
+            Legacy.objects.filter(pk=self.pk).update(photo_enhancement_status='pending')
+            from .enhance import enhance_photo_async
+            enhance_photo_async(self.pk)
         except Exception:
             pass
 
