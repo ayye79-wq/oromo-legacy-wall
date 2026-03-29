@@ -244,7 +244,7 @@ export default function LegacyDetailScreen() {
                 multiline
                 textAlignVertical="top"
               />
-              {msgError ? <Text style={styles.errorText}>{msgError}</Text> : null}
+              {msgError ? <Text style={styles.inputErrorText}>{msgError}</Text> : null}
               <View style={styles.messageActions}>
                 <TouchableOpacity
                   style={styles.cancelBtn}
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
     minHeight: 80,
   },
   inputError: { borderColor: ERROR },
-  errorText: { fontSize: 12, color: ERROR, marginTop: 2 },
+  inputErrorText: { fontSize: 12, color: ERROR, marginTop: 2 },
   messageActions: { flexDirection: 'row', gap: 8, justifyContent: 'flex-end' },
   cancelBtn: {
     paddingHorizontal: 14,
