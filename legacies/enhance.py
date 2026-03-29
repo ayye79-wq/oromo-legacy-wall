@@ -2,13 +2,17 @@
 AI photo enhancement via Replicate (GFPGAN face restoration).
 Called as a background thread after a new Legacy is saved with a photo.
 """
-import io
 import logging
 import os
+import time
 import threading
 import urllib.request
 
 logger = logging.getLogger(__name__)
+
+GFPGAN_VERSION = '0fbacf7afc6c144e5be9767cff80f25aff23e52b0708f17e20f9879b2f21516c'
+_MAX_RETRIES = 3
+_RETRY_WAIT = 15  # seconds between retries when rate-limited
 
 
 def _run_enhancement(legacy_pk: int) -> None:
@@ -38,14 +42,31 @@ def _run_enhancement(legacy_pk: int) -> None:
 
         logger.info('Enhancing photo for legacy %s (pk=%d) …', legacy.slug, legacy_pk)
 
-        output = replicate.run(
-            'tencentarc/gfpgan:9283608cc6b7be6b65a8e44983db012355f829a539ad21ef2cde5f8c0e5421a',
-            input={
-                'img': photo_url,
-                'version': 'v1.4',
-                'scale': 2,
-            },
-        )
+        output = None
+        last_exc = None
+        for attempt in range(1, _MAX_RETRIES + 1):
+            try:
+                output = replicate.run(
+                    f'tencentarc/gfpgan:{GFPGAN_VERSION}',
+                    input={
+                        'img': photo_url,
+                        'version': 'v1.4',
+                        'scale': 2,
+                    },
+                )
+                break
+            except Exception as exc:
+                last_exc = exc
+                err_str = str(exc)
+                if '429' in err_str or 'throttled' in err_str.lower():
+                    logger.warning('Rate limited on attempt %d/%d for pk=%d, waiting %ds…',
+                                   attempt, _MAX_RETRIES, legacy_pk, _RETRY_WAIT)
+                    time.sleep(_RETRY_WAIT)
+                else:
+                    raise
+
+        if output is None:
+            raise last_exc
 
         # output is a URL string pointing to the enhanced image
         enhanced_url = output if isinstance(output, str) else str(output)
