@@ -19,7 +19,8 @@
       "minimumOsVersion": "16.0",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow Oromo Legacy Wall to access your photos to add a portrait when submitting a hero record.",
-        "NSCameraUsageDescription": "Allow Oromo Legacy Wall to use your camera to capture a portrait when submitting a hero record."
+        "NSCameraUsageDescription": "Allow Oromo Legacy Wall to use your camera to capture a portrait when submitting a hero record.",
+        "ITSAppUsesNonExemptEncryption": false
       },
       "privacyManifests": {
         "NSPrivacyTracking": false,
