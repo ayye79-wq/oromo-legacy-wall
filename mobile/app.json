@@ -36,7 +36,10 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.oromolegacy.wall"
+      "package": "com.oromolegacy.wall",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -57,9 +60,11 @@
       "typedRoutes": true
     },
     "extra": {
+      "router": {},
       "eas": {
-        "projectId": "FILL_IN_AFTER_EAS_INIT"
+        "projectId": "e3b9f8e1-505e-4430-a1db-73eccd790d76"
       }
-    }
+    },
+    "owner": "fantoli"
   }
 }
