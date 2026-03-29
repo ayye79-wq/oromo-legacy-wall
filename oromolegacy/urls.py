@@ -57,6 +57,12 @@ def sitemap_xml(request):
     <priority>0.6</priority>
     <lastmod>{today}</lastmod>
   </url>""",
+        f"""  <url>
+    <loc>{base}/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <lastmod>{today}</lastmod>
+  </url>""",
     ]
 
     for hero in heroes:

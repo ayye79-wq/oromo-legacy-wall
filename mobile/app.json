@@ -14,7 +14,19 @@
     "scheme": "oromo-legacy",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.oromolegacy.wall"
+      "bundleIdentifier": "com.oromolegacy.wall",
+      "buildNumber": "1",
+      "minimumOsVersion": "16.0",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Allow Oromo Legacy Wall to access your photos to add a portrait when submitting a hero record.",
+        "NSCameraUsageDescription": "Allow Oromo Legacy Wall to use your camera to capture a portrait when submitting a hero record."
+      },
+      "privacyManifests": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": []
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +35,8 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.oromolegacy.wall"
     },
     "web": {
       "bundler": "metro",
@@ -35,13 +48,18 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow Oromo Legacy Wall to access your photos to add a portrait."
+          "photosPermission": "Allow Oromo Legacy Wall to access your photos to add a portrait when submitting a hero record.",
+          "cameraPermission": "Allow Oromo Legacy Wall to use your camera to capture a portrait."
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
     },
-    "extra": {}
+    "extra": {
+      "eas": {
+        "projectId": "FILL_IN_AFTER_EAS_INIT"
+      }
+    }
   }
 }

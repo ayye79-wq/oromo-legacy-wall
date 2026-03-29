@@ -43,6 +43,11 @@ export default function Footer() {
         <p className="footer-mission">{t('footer.mission')}</p>
         <p className="footer-mission-sub">{t('footer.mission_sub')}</p>
         <p className="footer-odaa-label">{t('footer.odaa')}</p>
+        <p style={{ marginTop: '1.5rem', fontSize: '0.78rem', opacity: 0.45 }}>
+          <a href="/privacy" style={{ color: 'inherit', textDecoration: 'underline' }}>
+            Privacy Policy
+          </a>
+        </p>
       </div>
     </footer>
   );
