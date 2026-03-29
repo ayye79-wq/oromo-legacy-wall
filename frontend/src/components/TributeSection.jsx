@@ -35,6 +35,8 @@ function formatDate(iso) {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 export default function TributeSection({ slug }) {
   const { t } = useLang();
   const [candleCount, setCandleCount] = useState(0);
@@ -51,7 +53,7 @@ export default function TributeSection({ slug }) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch(`/api/legacies/${slug}/tributes/`)
+    fetch(`${API_BASE}/api/legacies/${slug}/tributes/`)
       .then(r => r.json())
       .then(data => {
         setCandleCount(data.candle_count || 0);
@@ -74,7 +76,7 @@ export default function TributeSection({ slug }) {
     };
 
     try {
-      const res = await fetch(`/api/legacies/${slug}/tributes/`, {
+      const res = await fetch(`${API_BASE}/api/legacies/${slug}/tributes/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
