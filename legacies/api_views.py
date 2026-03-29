@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Legacy, Zone, Tribute
+from .throttles import SubmitThrottle, TributeThrottle
 from .serializers import (
     ZoneSerializer,
     LegacyListSerializer,
@@ -84,6 +85,7 @@ class LegacyDetailView(generics.RetrieveAPIView):
 class LegacySubmitView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
+    throttle_classes = [SubmitThrottle]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def post(self, request):
@@ -106,6 +108,7 @@ class LegacySubmitView(APIView):
 class TributeListCreateView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
+    throttle_classes = [TributeThrottle]
 
     def get(self, request, slug):
         legacy = get_object_or_404(Legacy, slug=slug, status=Legacy.STATUS_APPROVED)

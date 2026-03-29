@@ -37,6 +37,6 @@ def notify_admin_on_submission(sender, instance, created, **kwargs):
             recipient_list=[admin_email],
             fail_silently=True,
         )
-        logger.info(f'Submission notification sent for legacy {instance.pk}: {instance.full_name}')
+        logger.info('Submission notification sent for legacy pk=%d', instance.pk)
     except Exception as e:
-        logger.warning(f'Could not send submission notification: {e}')
+        logger.warning('Could not send submission notification: %s', e)

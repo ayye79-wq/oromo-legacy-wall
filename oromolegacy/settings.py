@@ -27,33 +27,27 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(z)8@$mxrc-02ypc_c+q@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [
-    "oromo-legacy-wall.onrender.com",
+_production_hosts = [
     "oromolegacywall.com",
     "www.oromolegacywall.com",
     "oromolegacywall.org",
     "www.oromolegacywall.org",
-    "0.0.0.0",
-    "localhost",
-    "127.0.0.1",
-    ".replit.dev",
-    ".repl.co",
-    ".replit.app",
     ".railway.app",
     ".up.railway.app",
+    "localhost",
+    "127.0.0.1",
 ]
+_replit_domains = [d.strip() for d in os.environ.get("REPLIT_DOMAINS", "").split(",") if d.strip()]
+ALLOWED_HOSTS = _production_hosts + _replit_domains
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.replit.dev",
-    "https://*.repl.co",
-    "https://*.replit.app",
-    "https://*.railway.app",
-    "https://*.up.railway.app",
     "https://oromolegacywall.com",
     "https://www.oromolegacywall.com",
     "https://oromolegacywall.org",
     "https://www.oromolegacywall.org",
-]
+    "https://*.railway.app",
+    "https://*.up.railway.app",
+] + [f"https://{d}" for d in _replit_domains]
 
 
 
@@ -223,4 +217,12 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 9,
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "300/hour",
+        "submit": "10/hour",
+        "tribute": "30/hour",
+    },
 }

@@ -49,10 +49,17 @@ def _run_enhancement(legacy_pk: int) -> None:
 
         # output is a URL string pointing to the enhanced image
         enhanced_url = output if isinstance(output, str) else str(output)
-        logger.info('Enhancement done for pk=%d, URL=%s', legacy_pk, enhanced_url)
+        logger.info('Enhancement done for pk=%d', legacy_pk)
+
+        # Validate URL before downloading — must be HTTPS from Replicate's CDN
+        from urllib.parse import urlparse as _urlparse
+        _parsed = _urlparse(enhanced_url)
+        if _parsed.scheme != 'https' or not _parsed.netloc.endswith(('replicate.delivery', 'replicate.com', 'pbxt.replicate.delivery')):
+            raise ValueError(f'Unexpected enhancement URL origin: {_parsed.netloc}')
 
         # Download enhanced image
-        with urllib.request.urlopen(enhanced_url, timeout=60) as resp:
+        req = urllib.request.Request(enhanced_url, headers={'User-Agent': 'OromoLegacyWall/1.0'})
+        with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310
             img_bytes = resp.read()
 
         enhanced_name = f'{legacy.slug}_enhanced.jpg'
