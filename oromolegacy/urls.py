@@ -11,7 +11,7 @@ def serve_react(request, *args, **kwargs):
     index = Path(settings.BASE_DIR) / "frontend" / "dist" / "index.html"
     if index.exists():
         return FileResponse(open(index, "rb"), content_type="text/html")
-    return HttpResponse("Frontend not built. Run: cd frontend && npm run build", status=503)
+    return HttpResponsePermanentRedirect("https://oromolegacywall.org" + request.path)
 
 
 def ping(request):
