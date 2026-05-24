@@ -9,25 +9,9 @@ const API_BASE = import.meta.env.VITE_API_URL || '';
 
 function FlameIcon() {
   return (
-    <svg className="hero-flame" viewBox="0 0 36 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M18 2C18 2 5 20 5 32C5 43.6 10.9 52 18 54C25.1 52 31 43.6 31 32C31 20 18 2 18 2Z"
-        fill="url(#fg1)" />
-      <path d="M18 22C18 22 12 30 12 36C12 40.4 14.7 44 18 45C21.3 44 24 40.4 24 36C24 30 18 22 18 22Z"
-        fill="url(#fg2)" />
-      <defs>
-        <linearGradient id="fg1" x1="18" y1="2" x2="18" y2="54" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#e8c268" />
-          <stop offset="100%" stopColor="#a06820" stopOpacity="0.8" />
-        </linearGradient>
-        <linearGradient id="fg2" x1="18" y1="22" x2="18" y2="45" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#f5ead5" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#e8c268" />
-        </linearGradient>
-      </defs>
-    </svg>
+    <span className="hero-flame" aria-hidden="true">🕯️</span>
   );
 }
-
 function OdaaWatermark() {
   return (
     <svg
