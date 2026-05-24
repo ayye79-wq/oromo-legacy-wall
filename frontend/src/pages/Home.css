@@ -111,18 +111,19 @@
 }
 
 .hero-flame {
-  width: 42px;
-  height: 64px;
+  font-size: 64px;
+  line-height: 1.2;
   margin-bottom: 1.5rem;
-  filter: drop-shadow(0 0 16px rgba(228, 186, 90, 0.55));
+  display: block;
+  text-shadow: 0 0 24px rgba(228, 186, 90, 0.65);
   animation: flicker 4s ease-in-out infinite;
 }
 
 @keyframes flicker {
-  0%, 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 16px rgba(228,186,90,0.55)); }
-  25% { transform: scale(0.97) translateY(-1px); filter: drop-shadow(0 0 22px rgba(228,186,90,0.7)); }
-  50% { transform: scale(1.02) translateY(0); filter: drop-shadow(0 0 14px rgba(228,186,90,0.45)); }
-  75% { transform: scale(0.98) translateY(-1px); filter: drop-shadow(0 0 18px rgba(228,186,90,0.6)); }
+  0%, 100% { transform: scale(1) translateY(0); text-shadow: 0 0 24px rgba(228,186,90,0.65); }
+  25% { transform: scale(0.97) translateY(-1px); text-shadow: 0 0 32px rgba(228,186,90,0.8); }
+  50% { transform: scale(1.02) translateY(0); text-shadow: 0 0 18px rgba(228,186,90,0.5); }
+  75% { transform: scale(0.98) translateY(-1px); text-shadow: 0 0 28px rgba(228,186,90,0.7); }
 }
 
 .hero-kicker {
