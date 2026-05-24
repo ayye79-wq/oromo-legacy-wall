@@ -94,7 +94,7 @@ export default function Moderation() {
       <div className="mod-page">
         <div className="mod-login-wrap">
           <div className="mod-login-card">
-            <div className="mod-login-icon" aria-hidden="true">🛡️</div>
+            <div className="mod-login-icon" aria-hidden="true">🕯️</div>
             <h1 className="mod-login-title">Moderation Dashboard</h1>
             <p className="mod-login-sub">Enter the moderation password to continue.</p>
             {authError && <div className="mod-alert mod-alert-error">{authError}</div>}
