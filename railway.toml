@@ -3,6 +3,8 @@ builder = "dockerfile"
 dockerfilePath = "Dockerfile"
 
 [deploy]
+preDeployCommand = "python manage.py migrate --noinput && python manage.py shell -c \"import os; from django.contrib.auth.models import User; pw=os.environ.get('DJANGO_SUPERUSER_PASSWORD',''); u,c=User.objects.update_or_create(username=os.environ.get('DJANGO_SUPERUSER_USERNAME','admin'),defaults={'is_staff':True,'is_superuser':True,'is_active':True,'email':os.environ.get('DJANGO_SUPERUSER_EMAIL','admin@example.com')}); u.set_password(pw); u.save() if pw else None; print('[su]','Created' if c else 'Updated',u.username)\""
+startCommand = "gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 60 --log-level info --access-logfile - --error-logfile - oromolegacy.wsgi:application"
 healthcheckPath = "/ping/"
 healthcheckTimeout = 120
 restartPolicyType = "on_failure"
