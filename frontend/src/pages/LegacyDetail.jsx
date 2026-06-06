@@ -14,6 +14,15 @@ function formatDate(dateStr, lang) {
   });
 }
 
+function extractLifespan(name, story) {
+  const pattern = /\((\d{4})\s*[–\-]\s*(\d{4})\)/;
+  const nameMatch = name?.match(pattern);
+  if (nameMatch) return `${nameMatch[1]} – ${nameMatch[2]}`;
+  const storyMatch = (story || '').slice(0, 400).match(pattern);
+  if (storyMatch) return `${storyMatch[1]} – ${storyMatch[2]}`;
+  return null;
+}
+
 function Lightbox({ src, name, onClose }) {
   useEffect(() => {
     function onKey(e) { if (e.key === 'Escape') onClose(); }
@@ -31,6 +40,8 @@ function Lightbox({ src, name, onClose }) {
     </div>
   );
 }
+
+const DEFAULT_MEMORIAL_QUOTE = 'Their legacy lives on through the generations they inspired.';
 
 export default function LegacyDetail() {
   const { slug } = useParams();
@@ -98,6 +109,8 @@ export default function LegacyDetail() {
 
   const displayPhoto = photo_enhanced_url || photo_url;
   const isEnhanced = photo_enhancement_status === 'done' && !!photo_enhanced_url;
+  const lifespan = extractLifespan(full_name, story_en || story);
+  const memorialQuote = (quote && quote.trim()) ? quote : DEFAULT_MEMORIAL_QUOTE;
 
   function resolveStory() {
     if (lang === 'om') {
@@ -160,6 +173,9 @@ export default function LegacyDetail() {
 
           <div className="detail-name-block">
             <h1 className="detail-name">{full_name}</h1>
+            {lifespan && (
+              <p className="detail-lifespan">{lifespan}</p>
+            )}
           </div>
 
           <div className="detail-portrait-wrap">
@@ -198,10 +214,18 @@ export default function LegacyDetail() {
               </time>
             )}
           </div>
+
+          <div className="detail-memorial-quote">
+            <span className="memorial-quote-mark">"</span>
+            {memorialQuote}
+            <span className="memorial-quote-mark">"</span>
+          </div>
         </div>
       </div>
 
-      <div className="container detail-body">
+      <div className="detail-hero-divider" aria-hidden="true" />
+
+      <div className="detail-body">
         <article className="detail-story-wrap">
           <div className="story-intro">
             <div className="story-ornament">
@@ -242,6 +266,13 @@ export default function LegacyDetail() {
             <dl className="sidebar-dl">
               <dt>{t('detail.name')}</dt>
               <dd>{full_name}</dd>
+
+              {lifespan && (
+                <>
+                  <dt>Years</dt>
+                  <dd>{lifespan}</dd>
+                </>
+              )}
 
               {occupation && (
                 <>
