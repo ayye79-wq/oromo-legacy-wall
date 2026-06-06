@@ -88,8 +88,16 @@ class Legacy(models.Model):
         if not self.slug:
             base = slugify(self.full_name)[:180] or "legacy"
             self.slug = base
+        # Detect photo change on existing records
+        photo_changed = False
+        if not is_new and self.photo:
+            try:
+                old = Legacy.objects.only('photo').get(pk=self.pk)
+                photo_changed = old.photo != self.photo
+            except Legacy.DoesNotExist:
+                pass
         super().save(*args, **kwargs)
-        if self.photo and is_new:
+        if self.photo and (is_new or photo_changed):
             self._compress_photo()
             self._trigger_enhancement()
 
