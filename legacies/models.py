@@ -180,6 +180,10 @@ class Legacy(models.Model):
     # ── Status / meta ──
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
+    archive_id = models.CharField(
+        max_length=12, unique=True, blank=True, db_index=True,
+        help_text='Permanent archive identifier e.g. OLW-000001'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     approved_at = models.DateTimeField(blank=True, null=True)
 
@@ -208,6 +212,9 @@ class Legacy(models.Model):
             except Legacy.DoesNotExist:
                 pass
         super().save(*args, **kwargs)
+        if not self.archive_id:
+            self.archive_id = f"OLW-{self.pk:06d}"
+            Legacy.objects.filter(pk=self.pk).update(archive_id=self.archive_id)
         if self.photo and (is_new or photo_changed):
             self._compress_photo()
             self._trigger_enhancement()
@@ -331,6 +338,165 @@ class MediaItem(models.Model):
 
     def __str__(self):
         return f"{self.get_media_type_display()} — {self.legacy.full_name}"
+
+
+class Place(models.Model):
+    PLACE_TYPE_CHOICES = [
+        ('city', 'City / Town'),
+        ('village', 'Village / Kebele'),
+        ('region', 'Region / Zone'),
+        ('prison', 'Prison / Detention Center'),
+        ('battlefield', 'Battlefield / Conflict Site'),
+        ('institution', 'Institution / Building'),
+        ('grave', 'Grave / Memorial Site'),
+        ('other', 'Other'),
+    ]
+
+    name = models.CharField(max_length=200)
+    name_om = models.CharField(max_length=200, blank=True, default='', help_text='Name in Afaan Oromo')
+    slug = models.SlugField(max_length=220, unique=True)
+    place_type = models.CharField(max_length=20, choices=PLACE_TYPE_CHOICES, default='other')
+    zone = models.ForeignKey(
+        Zone, on_delete=models.SET_NULL, null=True, blank=True, related_name='places'
+    )
+    description = models.TextField(blank=True, default='')
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)[:220] or 'place'
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Organization(models.Model):
+    ORG_TYPE_CHOICES = [
+        ('political', 'Political Party / Movement'),
+        ('military', 'Military / Armed Group'),
+        ('cultural', 'Cultural / Self-Help Association'),
+        ('religious', 'Religious Organization'),
+        ('academic', 'Academic / Educational Institution'),
+        ('media', 'Media Organization'),
+        ('government', 'Government Body'),
+        ('ngo', 'NGO / Civil Society'),
+        ('other', 'Other'),
+    ]
+
+    name = models.CharField(max_length=200)
+    name_om = models.CharField(max_length=200, blank=True, default='')
+    slug = models.SlugField(max_length=220, unique=True)
+    org_type = models.CharField(max_length=20, choices=ORG_TYPE_CHOICES, default='other')
+    description = models.TextField(blank=True, default='')
+    founded_year = models.IntegerField(null=True, blank=True)
+    dissolved_year = models.IntegerField(null=True, blank=True)
+    historical_period = models.ForeignKey(
+        HistoricalPeriod, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='organizations'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)[:220] or 'org'
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class PersonConnection(models.Model):
+    RELATION_CHOICES = [
+        ('colleague', 'Colleague / Comrade'),
+        ('co_defendant', 'Co-defendant / Co-prisoner'),
+        ('mentor', 'Mentor'),
+        ('student', 'Student / Mentee'),
+        ('family', 'Family Member'),
+        ('commander', 'Commander'),
+        ('subordinate', 'Subordinate'),
+        ('contemporary', 'Contemporary / Peer'),
+        ('collaborator', 'Collaborator'),
+        ('opponent', 'Political Opponent'),
+        ('other', 'Other'),
+    ]
+
+    from_legacy = models.ForeignKey(
+        'Legacy', on_delete=models.CASCADE, related_name='connections_from'
+    )
+    to_legacy = models.ForeignKey(
+        'Legacy', on_delete=models.CASCADE, related_name='connections_to'
+    )
+    relationship_type = models.CharField(max_length=20, choices=RELATION_CHOICES)
+    description = models.CharField(max_length=400, blank=True, default='')
+    year_from = models.IntegerField(null=True, blank=True)
+    year_to = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('from_legacy', 'to_legacy', 'relationship_type')
+        ordering = ['relationship_type']
+
+    def __str__(self):
+        return f"{self.from_legacy} → {self.get_relationship_type_display()} → {self.to_legacy}"
+
+
+class LegacyPlace(models.Model):
+    CONNECTION_CHOICES = [
+        ('born', 'Born Here'),
+        ('lived', 'Lived / Resided'),
+        ('died', 'Died Here'),
+        ('imprisoned', 'Imprisoned / Detained'),
+        ('exiled', 'Exiled From / To'),
+        ('organized', 'Organized / Activist Work'),
+        ('buried', 'Buried Here'),
+        ('other', 'Other Connection'),
+    ]
+
+    legacy = models.ForeignKey(
+        'Legacy', on_delete=models.CASCADE, related_name='place_connections'
+    )
+    place = models.ForeignKey(
+        Place, on_delete=models.CASCADE, related_name='legacy_connections'
+    )
+    connection_type = models.CharField(max_length=20, choices=CONNECTION_CHOICES)
+    year_from = models.IntegerField(null=True, blank=True)
+    year_to = models.IntegerField(null=True, blank=True)
+    description = models.CharField(max_length=400, blank=True, default='')
+
+    class Meta:
+        unique_together = ('legacy', 'place', 'connection_type')
+        ordering = ['connection_type']
+
+    def __str__(self):
+        return f"{self.legacy} — {self.get_connection_type_display()} — {self.place}"
+
+
+class LegacyOrganization(models.Model):
+    legacy = models.ForeignKey(
+        'Legacy', on_delete=models.CASCADE, related_name='org_connections'
+    )
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, related_name='legacy_connections'
+    )
+    role = models.CharField(max_length=200, blank=True, default='', help_text='e.g. Founder, Secretary, Member')
+    year_from = models.IntegerField(null=True, blank=True)
+    year_to = models.IntegerField(null=True, blank=True)
+    description = models.CharField(max_length=400, blank=True, default='')
+
+    class Meta:
+        unique_together = ('legacy', 'organization')
+        ordering = ['organization__name']
+
+    def __str__(self):
+        return f"{self.legacy} — {self.role or 'Member'} — {self.organization}"
 
 
 class Tribute(models.Model):
