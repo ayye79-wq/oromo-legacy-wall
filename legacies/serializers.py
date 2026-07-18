@@ -1,17 +1,9 @@
 import os
 from rest_framework import serializers
-from .models import Legacy, Zone, Tribute
+from .models import Legacy, Zone, Tribute, HistoricalPeriod, HistoricalEvent, Source, MediaItem
 
 
 def _build_photo_url(obj, context):
-    """
-    Return an absolute URL for the hero's photo.
-    Priority:
-      1. If DEFAULT_FILE_STORAGE is R2, obj.photo.url is already absolute → use it.
-      2. Else fall back to R2_PUBLIC_URL env var (files live in R2 even if Django
-         isn't using it as default storage).
-      3. Else build absolute URL from the current request.
-    """
     if not obj.photo:
         return None
     url = obj.photo.url
@@ -34,16 +26,57 @@ class ZoneSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "slug"]
 
 
+class HistoricalPeriodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HistoricalPeriod
+        fields = ["id", "slug", "name", "years_label", "years_start", "years_end", "description", "order"]
+
+
+class HistoricalEventSerializer(serializers.ModelSerializer):
+    period_name = serializers.CharField(source="period.name", read_only=True)
+    period_slug = serializers.CharField(source="period.slug", read_only=True)
+
+    class Meta:
+        model = HistoricalEvent
+        fields = ["id", "slug", "name", "period_name", "period_slug", "event_date", "description"]
+
+
+class SourceSerializer(serializers.ModelSerializer):
+    source_type_display = serializers.CharField(source="get_source_type_display", read_only=True)
+
+    class Meta:
+        model = Source
+        fields = [
+            "id", "source_type", "source_type_display",
+            "title", "url", "publication_date", "page_number", "excerpt",
+        ]
+
+
+class MediaItemSerializer(serializers.ModelSerializer):
+    media_type_display = serializers.CharField(source="get_media_type_display", read_only=True)
+
+    class Meta:
+        model = MediaItem
+        fields = [
+            "id", "media_type", "media_type_display",
+            "file", "external_url", "caption", "caption_om", "media_date", "order",
+        ]
+
+
 class LegacyListSerializer(serializers.ModelSerializer):
     zone_name = serializers.CharField(source="zone.name", read_only=True)
     photo_url = serializers.SerializerMethodField()
     story_preview = serializers.SerializerMethodField()
+    period_name = serializers.CharField(source="historical_period.name", read_only=True)
+    period_slug = serializers.CharField(source="historical_period.slug", read_only=True)
 
     class Meta:
         model = Legacy
         fields = [
             "id", "full_name", "occupation", "relationship_to_person",
             "slug", "zone_name", "photo_url", "story_preview",
+            "birth_year", "death_year", "category", "gender",
+            "period_name", "period_slug",
             "approved_at", "created_at",
         ]
 
@@ -60,15 +93,26 @@ class LegacyDetailSerializer(serializers.ModelSerializer):
     zone_name = serializers.CharField(source="zone.name", read_only=True)
     photo_url = serializers.SerializerMethodField()
     photo_enhanced_url = serializers.SerializerMethodField()
+    historical_period = HistoricalPeriodSerializer(read_only=True)
+    historical_event = HistoricalEventSerializer(read_only=True)
+    sources = SourceSerializer(many=True, read_only=True)
+    media_items = MediaItemSerializer(many=True, read_only=True)
+    lifespan = serializers.CharField(read_only=True)
 
     class Meta:
         model = Legacy
         fields = [
-            "id", "full_name", "occupation", "relationship_to_person",
-            "slug", "zone_name",
+            "id", "full_name", "alternative_spellings", "gender",
+            "birth_year", "death_year", "date_of_death", "lifespan",
+            "occupation", "category", "relationship_to_person",
+            "slug", "zone_name", "woreda", "village",
+            "place_of_death", "burial_location",
+            "historical_period", "historical_event",
             "story", "story_en", "story_om", "original_language",
-            "quote", "photo_url", "photo_enhanced_url",
-            "photo_enhancement_status", "approved_at", "created_at",
+            "quote", "circumstances", "family_notes",
+            "photo_url", "photo_enhanced_url", "photo_enhancement_status",
+            "sources", "media_items",
+            "verification_status", "approved_at", "created_at",
         ]
 
     def get_photo_url(self, obj):
@@ -95,8 +139,15 @@ class LegacySubmitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Legacy
         fields = [
-            "full_name", "occupation", "relationship_to_person",
-            "zone", "story", "story_en", "story_om", "original_language", "photo",
+            "full_name", "alternative_spellings", "gender",
+            "birth_year", "death_year", "date_of_death",
+            "occupation", "category", "relationship_to_person",
+            "zone", "woreda", "village",
+            "place_of_death", "burial_location",
+            "historical_period", "historical_event",
+            "story", "story_en", "story_om", "original_language",
+            "circumstances", "family_notes",
+            "photo",
         ]
 
     def validate(self, data):
@@ -117,6 +168,7 @@ class LegacySubmitSerializer(serializers.ModelSerializer):
 class LegacyModerationSerializer(serializers.ModelSerializer):
     zone_name = serializers.CharField(source="zone.name", read_only=True)
     photo_url = serializers.SerializerMethodField()
+    period_name = serializers.CharField(source="historical_period.name", read_only=True)
 
     class Meta:
         model = Legacy
@@ -124,6 +176,8 @@ class LegacyModerationSerializer(serializers.ModelSerializer):
             "id", "full_name", "occupation", "relationship_to_person",
             "slug", "zone_name", "photo_url",
             "story", "story_en", "story_om", "original_language",
+            "birth_year", "death_year", "category",
+            "period_name", "verification_status",
             "status", "created_at",
         ]
 
