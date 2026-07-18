@@ -8,10 +8,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Legacy, Zone, Tribute
+from .models import Legacy, Zone, Tribute, HistoricalPeriod, HistoricalEvent
 from .throttles import SubmitThrottle, TributeThrottle
 from .serializers import (
     ZoneSerializer,
+    HistoricalPeriodSerializer,
+    HistoricalEventSerializer,
     LegacyListSerializer,
     LegacyDetailSerializer,
     LegacySubmitSerializer,
@@ -36,6 +38,26 @@ class ZoneListView(generics.ListAPIView):
     serializer_class = ZoneSerializer
 
 
+class HistoricalPeriodListView(generics.ListAPIView):
+    queryset = HistoricalPeriod.objects.all().order_by("order")
+    serializer_class = HistoricalPeriodSerializer
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+
+class HistoricalEventListView(generics.ListAPIView):
+    serializer_class = HistoricalEventSerializer
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        qs = HistoricalEvent.objects.select_related("period").all()
+        period = self.request.query_params.get("period", "").strip()
+        if period:
+            qs = qs.filter(period__slug=period)
+        return qs
+
+
 class LegacyListView(generics.ListAPIView):
     serializer_class = LegacyListSerializer
 
@@ -43,15 +65,32 @@ class LegacyListView(generics.ListAPIView):
         qs = (
             Legacy.objects
             .filter(status=Legacy.STATUS_APPROVED)
-            .select_related("zone")
+            .select_related("zone", "historical_period", "historical_event")
             .order_by("-approved_at", "-created_at")
         )
         q = self.request.query_params.get("q", "").strip()
         zone = self.request.query_params.get("zone", "").strip()
+        period = self.request.query_params.get("period", "").strip()
+        event = self.request.query_params.get("event", "").strip()
+        category = self.request.query_params.get("category", "").strip()
+        gender = self.request.query_params.get("gender", "").strip()
+
         if q:
-            qs = qs.filter(Q(full_name__icontains=q) | Q(story__icontains=q))
+            qs = qs.filter(
+                Q(full_name__icontains=q) |
+                Q(alternative_spellings__icontains=q) |
+                Q(story__icontains=q)
+            )
         if zone:
             qs = qs.filter(zone__slug=zone)
+        if period:
+            qs = qs.filter(historical_period__slug=period)
+        if event:
+            qs = qs.filter(historical_event__slug=event)
+        if category:
+            qs = qs.filter(category=category)
+        if gender:
+            qs = qs.filter(gender=gender)
         return qs
 
     def get_serializer_context(self):
@@ -75,7 +114,8 @@ class LegacyDetailView(generics.RetrieveAPIView):
         return (
             Legacy.objects
             .filter(status=Legacy.STATUS_APPROVED)
-            .select_related("zone")
+            .select_related("zone", "historical_period", "historical_event")
+            .prefetch_related("sources", "media_items")
         )
 
     def get_serializer_context(self):
@@ -145,7 +185,7 @@ class ModPendingView(APIView):
         legacies = (
             Legacy.objects
             .filter(status=Legacy.STATUS_PENDING)
-            .select_related("zone")
+            .select_related("zone", "historical_period")
             .order_by("created_at")
         )
         serializer = LegacyModerationSerializer(legacies, many=True)
