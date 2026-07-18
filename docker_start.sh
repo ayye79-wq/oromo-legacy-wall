@@ -1,8 +1,12 @@
 #!/bin/sh
 set -e
 
-# Run migrations
-python manage.py migrate --noinput 2>&1 | head -30
+# Run migrations — normal first (fresh DB); fallback to --fake if schema
+# already exists but django_migrations is empty (avoids "table already exists")
+python manage.py migrate --noinput || python manage.py migrate --fake --noinput
+
+# Seed foundation data if the database is empty
+python manage.py seed_production
 
 # Create/reset superuser if DJANGO_SUPERUSER_PASSWORD is set
 python manage.py shell -c "
