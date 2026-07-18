@@ -169,6 +169,12 @@ STATICFILES_DIRS = [BASE_DIR / "static"] + ([_frontend_dist / "assets"] if (_fro
 LOGIN_URL = "/admin/login/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# Serve Vite's build output (index.html, /assets/*, /favicon.svg, etc.)
+# directly from the root URL so /assets/… isn't swallowed by the catch-all.
+# Only set when the build exists — Railway Docker may build separately.
+if _frontend_dist.exists():
+    WHITENOISE_ROOT = _frontend_dist
+
 _r2_key = os.environ.get('R2_ACCESS_KEY_ID')
 _r2_endpoint = os.environ.get('R2_ENDPOINT_URL')
 _r2_bucket = os.environ.get('R2_BUCKET_NAME', 'oromo-legacy-wall')
