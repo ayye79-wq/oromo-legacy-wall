@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.utils import timezone
-from .models import Legacy, Zone, ZoneModerator, HistoricalPeriod, HistoricalEvent, Source, MediaItem
+from .models import (
+    Legacy, Zone, ZoneModerator, HistoricalPeriod, HistoricalEvent,
+    Source, MediaItem, Place, Organization, PersonConnection, LegacyPlace, LegacyOrganization,
+)
 
 
 @admin.register(Zone)
@@ -45,23 +48,51 @@ class MediaItemInline(admin.TabularInline):
     fields = ("media_type", "file", "external_url", "caption", "media_date", "order")
 
 
+class PersonConnectionInline(admin.TabularInline):
+    model = PersonConnection
+    fk_name = 'from_legacy'
+    extra = 1
+    fields = ("to_legacy", "relationship_type", "description", "year_from", "year_to")
+    autocomplete_fields = ("to_legacy",)
+    verbose_name = "Person Connection"
+    verbose_name_plural = "Connected People"
+
+
+class LegacyPlaceInline(admin.TabularInline):
+    model = LegacyPlace
+    extra = 1
+    fields = ("place", "connection_type", "year_from", "year_to", "description")
+    autocomplete_fields = ("place",)
+    verbose_name = "Place Connection"
+    verbose_name_plural = "Connected Places"
+
+
+class LegacyOrganizationInline(admin.TabularInline):
+    model = LegacyOrganization
+    extra = 1
+    fields = ("organization", "role", "year_from", "year_to", "description")
+    autocomplete_fields = ("organization",)
+    verbose_name = "Organization Connection"
+    verbose_name_plural = "Connected Organizations"
+
+
 @admin.register(Legacy)
 class LegacyAdmin(admin.ModelAdmin):
     list_display = (
-        "full_name", "zone", "historical_period", "category",
+        "archive_id", "full_name", "zone", "historical_period", "category",
         "birth_year", "death_year", "verification_status", "status", "created_at",
     )
     list_filter = ("status", "zone", "historical_period", "category", "gender", "verification_status")
-    search_fields = ("full_name", "alternative_spellings", "story", "story_en", "story_om")
-    readonly_fields = ("created_at", "approved_at", "slug")
+    search_fields = ("full_name", "alternative_spellings", "story", "story_en", "story_om", "archive_id")
+    readonly_fields = ("created_at", "approved_at", "slug", "archive_id")
     autocomplete_fields = ("historical_period", "historical_event")
     actions = ("approve_selected", "reject_selected", "mark_verified", "mark_partially_verified")
-    inlines = [SourceInline, MediaItemInline]
+    inlines = [SourceInline, MediaItemInline, PersonConnectionInline, LegacyPlaceInline, LegacyOrganizationInline]
 
     fieldsets = (
         ("Identity", {
             "fields": (
-                "full_name", "alternative_spellings", "gender", "slug",
+                "archive_id", "full_name", "alternative_spellings", "gender", "slug",
             )
         }),
         ("Dates", {
@@ -148,3 +179,44 @@ class MediaItemAdmin(admin.ModelAdmin):
     list_filter = ("media_type",)
     search_fields = ("legacy__full_name", "caption")
     autocomplete_fields = ("legacy",)
+
+
+@admin.register(Place)
+class PlaceAdmin(admin.ModelAdmin):
+    list_display = ("name", "place_type", "zone", "slug")
+    list_filter = ("place_type", "zone")
+    search_fields = ("name", "name_om", "description")
+    prepopulated_fields = {"slug": ("name",)}
+    autocomplete_fields = ("zone",)
+
+
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ("name", "org_type", "founded_year", "dissolved_year", "historical_period")
+    list_filter = ("org_type", "historical_period")
+    search_fields = ("name", "name_om", "description")
+    prepopulated_fields = {"slug": ("name",)}
+    autocomplete_fields = ("historical_period",)
+
+
+@admin.register(PersonConnection)
+class PersonConnectionAdmin(admin.ModelAdmin):
+    list_display = ("from_legacy", "relationship_type", "to_legacy", "year_from", "year_to")
+    list_filter = ("relationship_type",)
+    search_fields = ("from_legacy__full_name", "to_legacy__full_name", "description")
+    autocomplete_fields = ("from_legacy", "to_legacy")
+
+
+@admin.register(LegacyPlace)
+class LegacyPlaceAdmin(admin.ModelAdmin):
+    list_display = ("legacy", "connection_type", "place", "year_from", "year_to")
+    list_filter = ("connection_type",)
+    search_fields = ("legacy__full_name", "place__name")
+    autocomplete_fields = ("legacy", "place")
+
+
+@admin.register(LegacyOrganization)
+class LegacyOrganizationAdmin(admin.ModelAdmin):
+    list_display = ("legacy", "organization", "role", "year_from", "year_to")
+    search_fields = ("legacy__full_name", "organization__name", "role")
+    autocomplete_fields = ("legacy", "organization")
