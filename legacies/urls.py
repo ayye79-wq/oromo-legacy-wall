@@ -3,6 +3,8 @@ from . import views, api_views
 
 urlpatterns = [
     path("api/zones/", api_views.ZoneListView.as_view(), name="api-zones"),
+    path("api/periods/", api_views.HistoricalPeriodListView.as_view(), name="api-periods"),
+    path("api/events/", api_views.HistoricalEventListView.as_view(), name="api-events"),
     path("api/count/", api_views.LegacyCountView.as_view(), name="api-count"),
     path("api/legacies/submit/", api_views.LegacySubmitView.as_view(), name="api-submit"),
     path("api/legacies/<slug:slug>/tributes/", api_views.TributeListCreateView.as_view(), name="api-tributes"),
