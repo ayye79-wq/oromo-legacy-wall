@@ -28,6 +28,40 @@ class ZoneModerator(models.Model):
         return f"{self.user.username} (Zone Moderator)"
 
 
+class HistoricalPeriod(models.Model):
+    slug = models.SlugField(max_length=80, unique=True)
+    name = models.CharField(max_length=120)
+    years_label = models.CharField(max_length=40, blank=True, default='')
+    years_start = models.IntegerField(null=True, blank=True)
+    years_end = models.IntegerField(null=True, blank=True)
+    description = models.TextField(blank=True, default='')
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        label = f" ({self.years_label})" if self.years_label else ""
+        return f"{self.name}{label}"
+
+
+class HistoricalEvent(models.Model):
+    slug = models.SlugField(max_length=120, unique=True)
+    name = models.CharField(max_length=200)
+    period = models.ForeignKey(
+        HistoricalPeriod, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='events'
+    )
+    event_date = models.DateField(null=True, blank=True)
+    description = models.TextField(blank=True, default='')
+
+    class Meta:
+        ordering = ['event_date', 'name']
+
+    def __str__(self):
+        return self.name
+
+
 class Legacy(models.Model):
     STATUS_PENDING = "PENDING"
     STATUS_APPROVED = "APPROVED"
@@ -46,15 +80,84 @@ class Legacy(models.Model):
         (LANG_OM, 'Afaan Oromo'),
     ]
 
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('U', 'Unknown'),
+    ]
+
+    CATEGORY_CHOICES = [
+        ('fighter', 'Fighter / Combatant'),
+        ('commander', 'Commander / Military Leader'),
+        ('civilian', 'Civilian'),
+        ('political', 'Political Leader'),
+        ('student', 'Student / Youth'),
+        ('journalist', 'Journalist / Writer'),
+        ('intellectual', 'Intellectual / Academic'),
+        ('religious', 'Religious Leader'),
+        ('cultural', 'Cultural Figure'),
+        ('women', 'Women\'s Rights Leader'),
+        ('lawyer', 'Lawyer / Legal Professional'),
+        ('other', 'Other'),
+    ]
+
+    VERIFICATION_CHOICES = [
+        ('unverified', 'Unverified'),
+        ('partial', 'Partially Verified'),
+        ('verified', 'Fully Verified'),
+    ]
+
+    # ── Core identity ──
     full_name = models.CharField(max_length=200)
-    occupation = models.CharField(max_length=200, blank=True, default='')
-    relationship_to_person = models.CharField(max_length=120, blank=True, default='')
+    alternative_spellings = models.CharField(
+        max_length=400, blank=True, default='',
+        help_text='Comma-separated alternative name spellings'
+    )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='U', blank=True)
+
+    # ── Dates ──
+    birth_year = models.IntegerField(null=True, blank=True)
+    death_year = models.IntegerField(null=True, blank=True)
+    date_of_death = models.DateField(null=True, blank=True)
+
+    # ── Location ──
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT, related_name="legacies")
+    woreda = models.CharField(max_length=200, blank=True, default='')
+    village = models.CharField(max_length=200, blank=True, default='')
+    place_of_death = models.CharField(max_length=300, blank=True, default='')
+    burial_location = models.CharField(max_length=300, blank=True, default='')
+
+    # ── Classification ──
+    occupation = models.CharField(max_length=200, blank=True, default='')
+    category = models.CharField(
+        max_length=20, choices=CATEGORY_CHOICES, blank=True, default=''
+    )
+    historical_period = models.ForeignKey(
+        HistoricalPeriod, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='legacies'
+    )
+    historical_event = models.ForeignKey(
+        HistoricalEvent, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='legacies'
+    )
+
+    # ── Narrative ──
+    relationship_to_person = models.CharField(max_length=120, blank=True, default='')
     story = models.TextField()
     story_en = models.TextField(blank=True, default='')
     story_om = models.TextField(blank=True, default='')
     quote = models.CharField(max_length=300, blank=True, default='')
     original_language = models.CharField(max_length=2, choices=LANG_CHOICES, default=LANG_EN)
+    circumstances = models.TextField(
+        blank=True, default='',
+        help_text='Circumstances of death or persecution'
+    )
+    family_notes = models.TextField(
+        blank=True, default='',
+        help_text='Known surviving family, relatives'
+    )
+
+    # ── Media ──
     photo = models.ImageField(upload_to="legacy_photos/", blank=True, null=True)
     photo_enhanced = models.ImageField(upload_to="legacy_photos/", blank=True, null=True)
     photo_enhancement_status = models.CharField(
@@ -68,8 +171,14 @@ class Legacy(models.Model):
         ],
     )
 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    # ── Research / admin ──
+    notes = models.TextField(blank=True, default='', help_text='Internal research notes')
+    verification_status = models.CharField(
+        max_length=12, choices=VERIFICATION_CHOICES, default='unverified'
+    )
 
+    # ── Status / meta ──
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     approved_at = models.DateTimeField(blank=True, null=True)
@@ -81,6 +190,9 @@ class Legacy(models.Model):
             models.Index(fields=["zone", "status"], name="legacy_zone_status_idx"),
             models.Index(fields=["-created_at"], name="legacy_created_idx"),
             models.Index(fields=["-approved_at"], name="legacy_approved_idx"),
+            models.Index(fields=["historical_period", "status"], name="legacy_period_status_idx"),
+            models.Index(fields=["category", "status"], name="legacy_category_status_idx"),
+            models.Index(fields=["death_year"], name="legacy_death_year_idx"),
         ]
 
     def save(self, *args, **kwargs):
@@ -88,7 +200,6 @@ class Legacy(models.Model):
         if not self.slug:
             base = slugify(self.full_name)[:180] or "legacy"
             self.slug = base
-        # Detect photo change on existing records
         photo_changed = False
         if not is_new and self.photo:
             try:
@@ -128,9 +239,7 @@ class Legacy(models.Model):
             pass
 
     def _trigger_enhancement(self):
-        """Fire-and-forget AI photo enhancement after save."""
         try:
-            import os
             if not os.environ.get('REPLICATE_API_TOKEN'):
                 return
             Legacy.objects.filter(pk=self.pk).update(photo_enhancement_status='pending')
@@ -149,6 +258,79 @@ class Legacy(models.Model):
     @property
     def message_count(self):
         return self.tributes.filter(tribute_type=Tribute.MESSAGE).count()
+
+    @property
+    def lifespan(self):
+        if self.birth_year and self.death_year:
+            return f"{self.birth_year} – {self.death_year}"
+        if self.birth_year:
+            return f"b. {self.birth_year}"
+        if self.death_year:
+            return f"d. {self.death_year}"
+        return None
+
+
+class Source(models.Model):
+    SOURCE_TYPE_CHOICES = [
+        ('hrw', 'Human Rights Watch'),
+        ('amnesty', 'Amnesty International'),
+        ('ehrc', 'Ethiopian Human Rights Council'),
+        ('qeerroo', 'Qeerroo Archives'),
+        ('omn', 'OMN'),
+        ('addis_standard', 'Addis Standard'),
+        ('bbc_om', 'BBC Afaan Oromo'),
+        ('voa_om', 'VOA Afaan Oromo'),
+        ('esat', 'ESAT'),
+        ('academic', 'Academic Paper'),
+        ('book', 'Book'),
+        ('family', 'Family Submission'),
+        ('cemetery', 'Cemetery Record'),
+        ('newspaper', 'Newspaper'),
+        ('court', 'Court Document'),
+        ('other', 'Other'),
+    ]
+
+    legacy = models.ForeignKey(Legacy, on_delete=models.CASCADE, related_name='sources')
+    source_type = models.CharField(max_length=20, choices=SOURCE_TYPE_CHOICES)
+    title = models.CharField(max_length=400, blank=True, default='')
+    url = models.URLField(max_length=800, blank=True, default='')
+    publication_date = models.DateField(null=True, blank=True)
+    page_number = models.CharField(max_length=40, blank=True, default='')
+    excerpt = models.TextField(blank=True, default='')
+    uploaded_file = models.FileField(upload_to='sources/', blank=True, null=True)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['source_type', 'publication_date']
+
+    def __str__(self):
+        return f"{self.get_source_type_display()} — {self.title or self.legacy.full_name}"
+
+
+class MediaItem(models.Model):
+    MEDIA_TYPE_CHOICES = [
+        ('photo', 'Photo'),
+        ('video', 'Video'),
+        ('document', 'Document'),
+        ('newspaper', 'Newspaper Clipping'),
+        ('audio', 'Audio'),
+    ]
+
+    legacy = models.ForeignKey(Legacy, on_delete=models.CASCADE, related_name='media_items')
+    media_type = models.CharField(max_length=12, choices=MEDIA_TYPE_CHOICES)
+    file = models.FileField(upload_to='legacy_media/', blank=True, null=True)
+    external_url = models.URLField(max_length=800, blank=True, default='')
+    caption = models.CharField(max_length=400, blank=True, default='')
+    caption_om = models.CharField(max_length=400, blank=True, default='')
+    media_date = models.DateField(null=True, blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'added_at']
+
+    def __str__(self):
+        return f"{self.get_media_type_display()} — {self.legacy.full_name}"
 
 
 class Tribute(models.Model):
