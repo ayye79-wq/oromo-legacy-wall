@@ -1,11 +1,21 @@
 #!/bin/sh
 set -e
 
-# Run migrations — normal first (fresh DB); fallback to --fake if schema
-# already exists but django_migrations is empty (avoids "table already exists")
+# Run migrations first — fast, must complete before gunicorn serves traffic
 python manage.py migrate --noinput || python manage.py migrate --fake --noinput
 
-# Seed foundation data if the database is empty
+# Start gunicorn in the background immediately so healthchecks pass
+gunicorn \
+  --bind "0.0.0.0:${PORT:-8000}" \
+  --workers 2 \
+  --timeout 60 \
+  --log-level info \
+  --access-logfile - \
+  --error-logfile - \
+  oromolegacy.wsgi:application &
+GUNICORN_PID=$!
+
+# Seed foundation data — runs after gunicorn is up (healthchecks already passing)
 python manage.py seed_production
 
 # Create/reset superuser if DJANGO_SUPERUSER_PASSWORD is set
@@ -17,7 +27,6 @@ username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
 password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', '')
 email    = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
 
-# Always print existing superusers for debugging
 existing = list(User.objects.filter(is_superuser=True).values_list('username', 'is_active'))
 print('[superuser] Existing superusers:', existing)
 
@@ -25,7 +34,6 @@ if not password:
     print('[superuser] DJANGO_SUPERUSER_PASSWORD not set — skipping')
     sys.exit(0)
 
-# Force-create or update, always set is_active=True
 u, created = User.objects.update_or_create(
     username=username,
     defaults={
@@ -40,12 +48,5 @@ u.save()
 print('[superuser]', 'Created' if created else 'Updated', 'user:', username, '| is_active:', u.is_active, '| is_superuser:', u.is_superuser)
 " || echo "[superuser] setup failed (non-fatal) — continuing"
 
-# Start gunicorn – PORT is injected by Railway
-exec gunicorn \
-  --bind "0.0.0.0:${PORT:-8000}" \
-  --workers 2 \
-  --timeout 60 \
-  --log-level info \
-  --access-logfile - \
-  --error-logfile - \
-  oromolegacy.wsgi:application
+# Wait for gunicorn
+wait $GUNICORN_PID
